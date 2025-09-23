@@ -26,7 +26,7 @@ const Home = () => {
                 (<div className="spinner-border" role="status">
                     <span className="visually-hidden">Cargando...</span>
                 </div>):
-                (<div className="row row-cols-auto">
+                (<div className="row border border-primary">
                     {insumos.map(i => <InsumoCard insumo={i} key={i.id}/>)}
                 </div>)
             }    
