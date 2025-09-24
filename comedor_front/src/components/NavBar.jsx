@@ -13,8 +13,8 @@ const NavBar = () => {
                                 Usuario
                             </a>
                             <ul className="dropdown-menu">
-                                <li><a className="dropdown-item" href="/usuario">Registrar</a></li>
-                                <li><a className="dropdown-item" href="#">Buscar</a></li>
+                                <li><a className="dropdown-item" href="/usuario/registro">Registrar</a></li>
+                                <li><a className="dropdown-item" href="/usuario">Buscar</a></li>
                             </ul>
                         </li>
                         <li className="nav-item dropdown">
