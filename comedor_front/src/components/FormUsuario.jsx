@@ -1,18 +1,52 @@
 import {useState} from "react"
-const FormUsuario = ({roles, onSubmit}) => {
-    const [formData, setFormData] = useState({nombre:"", apellido:"", dni:"", cuil:"", telefono:"", rol:[]});
+const FormUsuario = ({usuario = null, roles, onSubmit}) => {
+    const [formData, setFormData] = useState({
+        nombre: usuario?.nombre || "",
+        apellido: usuario?.apellido || "", 
+        dni: usuario?.dni || "", 
+        cuil: usuario?.cuil || "", 
+        telefono: usuario?.telefono || "", 
+        rol:[]
+    });
+
+    const isEditing = usuario !== null
+    const [areChanges, setAreChanges] = useState(false);
 
     const handleSubmit = e => {
         e.preventDefault();
-        onSubmit(formData);
+        if(!isEditing || (isEditing && areChanges)){
+            onSubmit(formData);
+        }
     }
 
     const handleChange = e => {
         const {name, value, checked} = e.target;
-        if(name === "rol"){
-            setFormData(prev => ({...prev, rol: checked? [...prev.rol, value] : prev.rol.filter(r => r !== value) }));
+        
+        const newFormData = name === "rol"
+        ?{...formData, rol: checked ? [...formData.rol, value] : formData.rol.filter(r => r !== value) }
+        :{...formData, [name]: value};
+        
+        setFormData(newFormData);
+        if(usuario !== null){ // => esta editando
+            const {id, estado, password, ...filteredUsuario} = usuario;
+            const {rol, ...filteredFormData} = newFormData;
+            setAreChanges(JSON.stringify(filteredUsuario) !== JSON.stringify(filteredFormData));
+        }
+    }
+
+    const handleReset = () => {
+        if(usuario){
+            setFormData({
+                nombre: usuario?.nombre || "",
+                apellido: usuario?.apellido || "",
+                dni: usuario?.dni || "",
+                cuil: usuario?.cuil || "",
+                telefono: usuario?.telefono || ""
+            });
         }else{
-            setFormData(prev => ({...prev, [name]: value}));
+            setFormData({
+                nombre:"",apellido:"",dni:"",cuil:"",telefono:""
+            });
         }
     }
 
@@ -20,23 +54,23 @@ const FormUsuario = ({roles, onSubmit}) => {
             <form className="row g-3" onSubmit={handleSubmit}>
                 <div className="col-md-6">
                     <label className="form-label">Nombre</label>
-                    <input name="nombre" onChange={handleChange} type="text" className="form-control" required/>
+                    <input name="nombre" onChange={handleChange} type="text" className="form-control" value={formData.nombre} required/>
                 </div>
                 <div className="col-md-6">
                     <label className="form-label">Apellido</label>
-                    <input name="apellido" onChange={handleChange} type="text" className="form-control" required/>
+                    <input name="apellido" onChange={handleChange} type="text" className="form-control" value={formData.apellido} required/>
                 </div>
                 <div className="col-md-4">
                     <label className="form-label">DNI</label>
-                    <input name="dni" onChange={handleChange} type="text" className="form-control"  required/>
+                    <input name="dni" onChange={handleChange} type="text" className="form-control"  value={formData.dni} required/>
                 </div>
                 <div className="col-md-4">
                     <label className="form-label">CUIL</label>
-                    <input name="cuil" onChange={handleChange} type="text" className="form-control" required/>
+                    <input name="cuil" onChange={handleChange} type="text" className="form-control" value={formData.cuil} required/>
                 </div>
                 <div className="col-md-4">
                     <label className="form-label">Teléfono</label>
-                    <input name="telefono" onChange={handleChange} type="text" className="form-control" required/>
+                    <input name="telefono" onChange={handleChange} type="text" className="form-control" value={formData.telefono} required/>
                 </div>
                 <div className="col-md-12">
                     <label className="form-label">Roles</label>  
@@ -48,7 +82,8 @@ const FormUsuario = ({roles, onSubmit}) => {
                     )}
                 </div>
                 <div className="col-12">
-                    <button className="btn btn-primary" type="submit">Registrar</button>
+                    <button className="btn btn-primary" type="submit" disabled={!isEditing? false:isEditing && areChanges? false : true}>{isEditing?"Editar":"Registrar"}</button>
+                    <input className="btn btn-secondary" type="button" disabled={!isEditing? false:isEditing && areChanges? false : true} onClick={handleReset} value={"Cancelar"}/>
                 </div>
             </form>
     </>

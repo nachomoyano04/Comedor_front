@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const ListaUsuarios = ({usuarios}) => {
     return <>
         <table className="table">
@@ -8,6 +10,7 @@ const ListaUsuarios = ({usuarios}) => {
                     <th scope="col">DNI</th>
                     <th scope="col">CUIL</th>
                     <th scope="col">Teléfono</th>
+                    <th scope="col"></th>
                 </tr>
             </thead>
             <tbody>
@@ -18,6 +21,12 @@ const ListaUsuarios = ({usuarios}) => {
                         <td>{u.dni}</td>
                         <td>{u.cuil}</td>
                         <td>{u.telefono}</td>
+                        <td>
+                            <Link to={`/usuario/editar/${u.dni}`}>
+                                {u.nombre}{u.apellido}
+                                {/* <FontAwesomeIcon icon={byPrefixAndName.fas['pencil']} /> */}
+                            </Link>
+                        </td>
                     </tr>
                 )}
             </tbody>

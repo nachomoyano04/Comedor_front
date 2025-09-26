@@ -22,6 +22,15 @@ export const createUsuario = async usuario_y_roles => {
     }
 }
 
+export const getUsuarioByDni = async dni => {
+    try {
+        const response = await axios.get(`${BASE_URL}/usuario/dni/${dni}`);
+        return response.data[0];
+    } catch (error) {
+        throw error;
+    }
+}
+
 //Insumos
 export const getInsumos = async () => {
     try {

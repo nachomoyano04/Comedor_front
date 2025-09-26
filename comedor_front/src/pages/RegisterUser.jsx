@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { createUsuario, getRoles } from "../services/api";
 import FormUsuario from "../components/FormUsuario"
 import Swal from "sweetalert2"
-// import UsuarioForm from "../components/UsuarioForm"
 const RegisterUser = () => {
     const [roles, setRoles] = useState([]);
     const [error, setError] = useState(null);
