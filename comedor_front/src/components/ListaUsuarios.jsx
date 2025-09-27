@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-const ListaUsuarios = ({usuarios}) => {
+const ListaUsuarios = ({usuarios, onClickChangeState}) => {
     return <>
         <table className="table">
             <thead>
@@ -10,6 +10,7 @@ const ListaUsuarios = ({usuarios}) => {
                     <th scope="col">DNI</th>
                     <th scope="col">CUIL</th>
                     <th scope="col">Teléfono</th>
+                    <th scope="col">Estado</th>
                     <th scope="col"></th>
                 </tr>
             </thead>
@@ -23,9 +24,12 @@ const ListaUsuarios = ({usuarios}) => {
                         <td>{u.telefono}</td>
                         <td>
                             <Link to={`/usuario/editar/${u.dni}`}>
-                                {u.nombre}{u.apellido}
+                                {u.nombre} {u.apellido}
                                 {/* <FontAwesomeIcon icon={byPrefixAndName.fas['pencil']} /> */}
                             </Link>
+                        </td>
+                        <td>
+                            <button onClick={() => onClickChangeState(u.id, u.estado)}>{u.estado === 1?"Activo":"Inactivo"}</button>
                         </td>
                     </tr>
                 )}

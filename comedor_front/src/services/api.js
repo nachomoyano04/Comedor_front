@@ -3,7 +3,6 @@ import axios from "axios";
 const BASE_URL = "http://localhost:6970";
 
 //Usuario
-
 export const getUsuarios = async () => {
     try {
         const response = await axios(`${BASE_URL}/usuario`);
@@ -22,10 +21,32 @@ export const createUsuario = async usuario_y_roles => {
     }
 }
 
+export const updateUsuario = async (usuario, id) => {
+    try {
+        const response = await axios.put(`${BASE_URL}/usuario/${id}`, usuario);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
 export const getUsuarioByDni = async dni => {
     try {
         const response = await axios.get(`${BASE_URL}/usuario/dni/${dni}`);
         return response.data[0];
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const changeStateUsuarioById = async (id, state) => {
+    try {
+        if(state === 1){
+            const response = await axios.patch(`${BASE_URL}/usuario/del/${id}`);
+            return response.data;
+        }
+        const response = await axios.patch(`${BASE_URL}/usuario/alt/${id}`);
+        return response.data;
     } catch (error) {
         throw error;
     }
@@ -45,6 +66,15 @@ export const getInsumos = async () => {
 export const getRoles = async () => {
     try {
         const response = await axios(`${BASE_URL}/roles`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const getRolesByUser = async usuario_id => {
+    try {
+        const response = await axios(`${BASE_URL}/roles/usuario/${usuario_id}`);
         return response.data;
     } catch (error) {
         throw error;

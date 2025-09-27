@@ -1,16 +1,29 @@
-import {useState} from "react"
-const FormUsuario = ({usuario = null, roles, onSubmit}) => {
+import {useEffect, useState} from "react"
+const FormUsuario = ({usuario = null, rolesUser = null, roles, onSubmit}) => {
     const [formData, setFormData] = useState({
         nombre: usuario?.nombre || "",
         apellido: usuario?.apellido || "", 
         dni: usuario?.dni || "", 
         cuil: usuario?.cuil || "", 
         telefono: usuario?.telefono || "", 
-        rol:[]
+        rol: rolesUser || []
     });
-
     const isEditing = usuario !== null
     const [areChanges, setAreChanges] = useState(false);
+
+    useEffect(() => {
+        if(usuario){
+            setFormData({
+                nombre: usuario?.nombre || "",
+                apellido: usuario?.apellido || "",
+                dni: usuario?.dni || "",
+                cuil: usuario?.cuil || "",
+                telefono: usuario?.telefono || "",
+                rol: rolesUser || []
+            });
+            setAreChanges(false);
+        }
+    }, [usuario, rolesUser])
 
     const handleSubmit = e => {
         e.preventDefault();
@@ -21,16 +34,16 @@ const FormUsuario = ({usuario = null, roles, onSubmit}) => {
 
     const handleChange = e => {
         const {name, value, checked} = e.target;
-        
         const newFormData = name === "rol"
-        ?{...formData, rol: checked ? [...formData.rol, value] : formData.rol.filter(r => r !== value) }
+        ?{...formData, rol: checked ? [...formData.rol, Number(value)] : formData.rol.filter(r => r !== Number(value)) }
         :{...formData, [name]: value};
         
         setFormData(newFormData);
         if(usuario !== null){ // => esta editando
             const {id, estado, password, ...filteredUsuario} = usuario;
-            const {rol, ...filteredFormData} = newFormData;
-            setAreChanges(JSON.stringify(filteredUsuario) !== JSON.stringify(filteredFormData));
+            filteredUsuario.rol = rolesUser.sort((a,b)=>a-b);
+            newFormData.rol.sort((a,b) => a-b);
+            setAreChanges(JSON.stringify(filteredUsuario) !== JSON.stringify(newFormData));
         }
     }
 
@@ -41,11 +54,13 @@ const FormUsuario = ({usuario = null, roles, onSubmit}) => {
                 apellido: usuario?.apellido || "",
                 dni: usuario?.dni || "",
                 cuil: usuario?.cuil || "",
-                telefono: usuario?.telefono || ""
+                telefono: usuario?.telefono || "",
+                rol: rolesUser || []
             });
+            setAreChanges(false);
         }else{
             setFormData({
-                nombre:"",apellido:"",dni:"",cuil:"",telefono:""
+                nombre:"",apellido:"",dni:"",cuil:"",telefono:"",rol:[]
             });
         }
     }
@@ -76,13 +91,13 @@ const FormUsuario = ({usuario = null, roles, onSubmit}) => {
                     <label className="form-label">Roles</label>  
                     {roles.map(r => 
                         <div className="form-check" key={r.id}>
-                            <input name="rol" onChange={handleChange} value={r.id} className="form-check-input" type="checkbox" />
+                            <input name="rol" onChange={handleChange} value={r.id} checked={formData.rol.includes(r.id)} className="form-check-input" type="checkbox" />
                             <label className="form-check-label">{r.nombre_rol}</label>
                         </div>
                     )}
                 </div>
                 <div className="col-12">
-                    <button className="btn btn-primary" type="submit" disabled={!isEditing? false:isEditing && areChanges? false : true}>{isEditing?"Editar":"Registrar"}</button>
+                    <button className="btn btn-primary" type="submit" disabled={!isEditing? false:isEditing && areChanges? false : true}>{isEditing?"Guardar cambios":"Registrar"}</button>
                     <input className="btn btn-secondary" type="button" disabled={!isEditing? false:isEditing && areChanges? false : true} onClick={handleReset} value={"Cancelar"}/>
                 </div>
             </form>
