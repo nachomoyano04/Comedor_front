@@ -62,6 +62,15 @@ export const getInsumos = async () => {
     }
 }
 
+export const getInsumo = async id => {
+    try {
+        const response = await axios(`${BASE_URL}/insumos/id/${id}`);
+        return response.data[0];
+    } catch (error) {
+        throw error;
+    }
+}
+
 //Roles
 export const getRoles = async () => {
     try {
@@ -78,5 +87,15 @@ export const getRolesByUser = async usuario_id => {
         return response.data;
     } catch (error) {
         throw error;
+    }
+}
+
+//Unidades de medida
+export const getUdm = async() => {
+    try {
+        const response = await axios(`${BASE_URL}/udm`);
+        return response.data;
+    } catch (error) {
+        
     }
 }

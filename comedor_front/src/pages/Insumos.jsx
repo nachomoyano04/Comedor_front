@@ -21,7 +21,6 @@ const Insumos = () => {
         }
         loadInsumos();
     }, []);
-        console.log(insumos);
 
     return <>
         <h1 className="card-title my-4">Insumo</h1>

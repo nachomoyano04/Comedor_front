@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const ListaInsumos = ({insumos}) => {
     return <>
         <table className="table">
@@ -7,8 +9,8 @@ const ListaInsumos = ({insumos}) => {
                     <th scope="col">Producto</th>
                     <th scope="col">Marca</th>
                     <th scope="col">Unidad de medida</th>
+                    <th scope="col">Editar</th>
                     <th scope="col">Estado</th>
-                    <th scope="col"></th>
                 </tr>
             </thead>
             <tbody>
@@ -18,11 +20,9 @@ const ListaInsumos = ({insumos}) => {
                         <td>{i.producto}</td>
                         <td>{i.marca}</td>
                         <td>{i.id_unidad_de_medida}</td>
-                        {/* <td>
-                            <Link to={`/usuario/editar/${u.dni}`}>
-                                {u.nombre} {u.apellido}
-                            </Link>
-                        </td> */}
+                        <td>
+                            <Link to={`/insumos/editar/${i.id}`}>{i.producto}</Link>
+                        </td>
                         <td>
                             <button>{i.estado === 1?"Activo":"Inactivo"}</button>
                         </td>
@@ -31,6 +31,5 @@ const ListaInsumos = ({insumos}) => {
             </tbody>
         </table>
     </> 
-    ;
 }
 export default ListaInsumos;

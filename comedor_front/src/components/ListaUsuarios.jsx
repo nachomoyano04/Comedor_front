@@ -25,7 +25,6 @@ const ListaUsuarios = ({usuarios, onClickChangeState}) => {
                         <td>
                             <Link to={`/usuario/editar/${u.dni}`}>
                                 {u.nombre} {u.apellido}
-                                {/* <FontAwesomeIcon icon={byPrefixAndName.fas['pencil']} /> */}
                             </Link>
                         </td>
                         <td>

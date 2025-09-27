@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 const FormInsumo = ({insumo = null, unidades_de_medida, onSubmit}) => {
     const [formData, setFormData] = useState({
@@ -7,60 +7,71 @@ const FormInsumo = ({insumo = null, unidades_de_medida, onSubmit}) => {
         marca: insumo?.marca || "",
         id_unidad_de_medida: insumo?.id_unidad_de_medida || ""
     });
+    useEffect(() => {
+        if(insumo){
+            setFormData({
+                codigo: insumo?.codigo || "",
+                producto: insumo?.producto || "",
+                marca: insumo?.marca || "",
+                id_unidad_de_medida: insumo?.id_unidad_de_medida || ""
+            });
+            setAreChanges(false);
+        }
+    }, [insumo]);
 
     const isEditing = insumo !== null;
     const [areChanges, setAreChanges] = useState(false);
 
-    const handleSubmit = () => {
-
+    const handleSubmit = e => {
+        e.preventDefault();
+        onSubmit(formData);
     }
 
     const handleChange = e => {
-        const {name, value} = e.target;
+        const {name} = e.target;
+        let {value} = e.target;
+        const {id, estado, ...restInsumo} = insumo;
         const newFormData = {...formData, [name]: value};    
         setFormData(newFormData);
-        // if(isEditing){
-        //     insumo[name] === value;
-        // }
+        console.log(newFormData);
+        console.log(restInsumo);
+        if(isEditing){
+            setAreChanges(JSON.stringify(restInsumo) == JSON.stringify(newFormData));
+            // console.log(JSON.stringify(restInsumo));
+            // console.log(JSON.stringify(newFormData));
+            // console.log(JSON.stringify(restInsumo) == JSON.stringify(newFormData));
+        }
     }
+
+    const handleReset = () => {
+
+    }
+
     return <>
             <form className="row g-3" onSubmit={handleSubmit}>
                 <div className="col-md-6">
                     <label className="form-label">Código</label>
-                    <input name="codigo" onChange={handleChange} type="text" className="form-control" value={formData.nombre} required/>
+                    <input name="codigo" onChange={handleChange} type="text" className="form-control" value={formData.codigo} required/>
                 </div>
                 <div className="col-md-6">
                     <label className="form-label">Producto</label>
-                    <input name="producto" onChange={handleChange} type="text" className="form-control" value={formData.apellido} required/>
+                    <input name="producto" onChange={handleChange} type="text" className="form-control" value={formData.producto} required/>
                 </div>
                 <div className="col-md-6">
                     <label className="form-label">Marca</label>
-                    <input name="marca" onChange={handleChange} type="text" className="form-control"  value={formData.dni} required/>
+                    <input name="marca" onChange={handleChange} type="text" className="form-control"  value={formData.marca} required/>
                 </div>
                 <div className="col-md-6">
-                    <fieldset>
-                        <legend>Unidad de medida</legend>
-                        {unidades_de_medida.map(u => {
-                            <div>
-                                <input type="radio" value={u.nombre} name="id_unidad_de_medida" className="form-check-input"/>
-                                <label htmlFor={u.nombre}>u.nombre</label>
-                            </div>
+                    <label className="form-label">Unidad de medida</label>
+                    <select name="id_unidad_de_medida" className="form-select" onChange={handleChange} defaultValue={isEditing? insumo.id_unidad_de_medida : "" }>
+                        {unidades_de_medida.map(udm => {
+                            return <option key={udm.id} value={udm.id}>{udm.nombre} ({udm.simbolo})</option>
                         })}
-                    </fieldset>
-                    <label className="form-label">Unidad de medida</label> 
-                    <input type="radio" name="id_unidad_de_medida" className="form-check-input"/>
-                    <input type="radio" name="id_unidad_de_medida" className="form-check-input"/>
-                    {/* {unidades_de_medida.map(u => 
-                        <div className="form-check" key={u.id}>
-                            <input name="unidad_medida" onChange={handleChange} value={u.id} checked={formData.id_unidad_de_medida === u.id} className="form-check-input" type="radio" />
-                            <label className="form-check-label">{u.nombre} ({u.simbolo})</label>
-                        </div>
-                    )} */}
+                    </select>
                 </div>
                 <div className="col-12">
                     <button className="btn btn-primary" type="submit" disabled={!isEditing? false:isEditing && areChanges? false : true}>{isEditing?"Guardar cambios":"Registrar"}</button>
-                    {/* <input className="btn btn-secondary" type="button" disabled={!isEditing? false:isEditing && areChanges? false : true} onClick={handleReset} value={"Cancelar"}/> */}
-                    <input className="btn btn-secondary" type="button" disabled={!isEditing? false:isEditing && areChanges? false : true} value={"Cancelar"}/>
+                    <input className="btn btn-secondary" type="button" disabled={!isEditing? false:isEditing && areChanges? false : true} onClick={handleReset} value={"Cancelar"}/>
                 </div>
             </form>
     </>
