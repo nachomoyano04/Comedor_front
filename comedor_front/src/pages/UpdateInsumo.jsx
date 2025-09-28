@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
-import { useOutletContext, useParams } from "react-router-dom";
-import { getInsumo } from "../services/api";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
+import { getInsumo, updateInsumo } from "../services/api";
 import FormInsumo from "../components/FormInsumo";
+import Swal from "sweetalert2";
 
 const UpdateInsumo = () => {
+    const navigate = useNavigate();
     const {unidades_de_medida} = useOutletContext();
     const {id} = useParams();
     const [insumo, setInsumo] = useState(null);
@@ -25,8 +27,22 @@ const UpdateInsumo = () => {
         loadInsumo();
     }, []);
 
-    const handleSubmitForm = (formData) => {
-        console.log(formData);
+    const handleSubmitForm = async formData => {
+        try {
+            const resultado = await updateInsumo(id, formData);
+            await Swal.fire({
+                title: resultado,
+                icon: "success",
+                timer: 4000
+            })
+            navigate("/insumos/listado");
+        } catch (e) {
+            Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: e.response.data.mensaje
+            })
+        }
     }
 
     return <div className="border">

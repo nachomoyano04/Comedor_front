@@ -5,7 +5,7 @@ const FormInsumo = ({insumo = null, unidades_de_medida, onSubmit}) => {
         codigo: insumo?.codigo || "",
         producto: insumo?.producto || "",
         marca: insumo?.marca || "",
-        id_unidad_de_medida: insumo?.id_unidad_de_medida || ""
+        id_unidad_de_medida: insumo?.id_unidad_de_medida || unidades_de_medida[0].id
     });
     useEffect(() => {
         if(insumo){
@@ -13,7 +13,7 @@ const FormInsumo = ({insumo = null, unidades_de_medida, onSubmit}) => {
                 codigo: insumo?.codigo || "",
                 producto: insumo?.producto || "",
                 marca: insumo?.marca || "",
-                id_unidad_de_medida: insumo?.id_unidad_de_medida || ""
+                id_unidad_de_medida: insumo?.id_unidad_de_medida || unidades_de_medida[0].id
             });
             setAreChanges(false);
         }
@@ -28,23 +28,35 @@ const FormInsumo = ({insumo = null, unidades_de_medida, onSubmit}) => {
     }
 
     const handleChange = e => {
-        const {name} = e.target;
-        let {value} = e.target;
-        const {id, estado, ...restInsumo} = insumo;
+        const {name, value} = e.target;
         const newFormData = {...formData, [name]: value};    
         setFormData(newFormData);
-        console.log(newFormData);
-        console.log(restInsumo);
-        if(isEditing){
-            setAreChanges(JSON.stringify(restInsumo) == JSON.stringify(newFormData));
-            // console.log(JSON.stringify(restInsumo));
-            // console.log(JSON.stringify(newFormData));
-            // console.log(JSON.stringify(restInsumo) == JSON.stringify(newFormData));
+        if(isEditing && insumo){
+            const {id, estado, ...restInsumo} = insumo;
+            const areEqual = (a, b) => {
+                return Object.keys(a).every(key => String(a[key]) === String(b[key]));
+            }
+            setAreChanges(!areEqual(restInsumo, newFormData));
         }
     }
 
     const handleReset = () => {
-
+        if(insumo){
+            setFormData({
+                codigo: insumo.codigo || "",
+                producto: insumo.producto || "",
+                marca: insumo.marca || "",
+                id_unidad_de_medida: insumo.id_unidad_de_medida || unidades_de_medida[0].id
+            })
+            setAreChanges(false);
+        }else{
+            setFormData({
+                codigo: "",
+                producto: "",
+                marca: "",
+                id_unidad_de_medida: unidades_de_medida[0].id
+            })
+        }
     }
 
     return <>
@@ -63,7 +75,7 @@ const FormInsumo = ({insumo = null, unidades_de_medida, onSubmit}) => {
                 </div>
                 <div className="col-md-6">
                     <label className="form-label">Unidad de medida</label>
-                    <select name="id_unidad_de_medida" className="form-select" onChange={handleChange} defaultValue={isEditing? insumo.id_unidad_de_medida : "" }>
+                    <select name="id_unidad_de_medida" className="form-select" onChange={handleChange} value={formData.id_unidad_de_medida}>
                         {unidades_de_medida.map(udm => {
                             return <option key={udm.id} value={udm.id}>{udm.nombre} ({udm.simbolo})</option>
                         })}

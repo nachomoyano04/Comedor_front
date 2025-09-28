@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {faPencil} from "@fortawesome/free-solid-svg-icons"
 
-const ListaUsuarios = ({usuarios, onClickChangeState}) => {
+const ListaUsuarios = ({usuarios, onClickChangeStateUsuario}) => {
     return <>
         <table className="table">
             <thead>
@@ -23,12 +25,12 @@ const ListaUsuarios = ({usuarios, onClickChangeState}) => {
                         <td>{u.cuil}</td>
                         <td>{u.telefono}</td>
                         <td>
-                            <Link to={`/usuario/editar/${u.dni}`}>
-                                {u.nombre} {u.apellido}
+                            <Link className="btn btn-warning" to={`/usuario/editar/${u.dni}`}>
+                                <FontAwesomeIcon icon={faPencil} />
                             </Link>
                         </td>
                         <td>
-                            <button onClick={() => onClickChangeState(u.id, u.estado)}>{u.estado === 1?"Activo":"Inactivo"}</button>
+                            <button onClick={() => onClickChangeStateUsuario(u.id, u.estado)}>{u.estado === 1?"Activo":"Inactivo"}</button>
                         </td>
                     </tr>
                 )}

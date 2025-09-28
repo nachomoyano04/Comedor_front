@@ -19,9 +19,7 @@ const Users = () => {
         };
         loadUsers();
     }, []);
-
-    console.log(typeof usuarios)
-    console.log(usuarios)
+    
     const handleStateUser = (id, state) => {
         Swal.fire({
             title: `Esta seguro que desea dar de ${state === 1?"baja":"alta"} al usuario?`,

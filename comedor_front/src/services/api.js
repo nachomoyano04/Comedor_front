@@ -71,6 +71,37 @@ export const getInsumo = async id => {
     }
 }
 
+export const createInsumo = async insumo => {
+    try {
+        const response = await axios.post(`${BASE_URL}/insumos`, insumo);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const updateInsumo = async (id, insumo) => {
+    try {
+        const response = await axios.put(`${BASE_URL}/insumos/${id}`, insumo);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const changeStateInsumoById = async (id, estado) => {
+    try {
+        if(estado == 1){
+            const response = await axios.patch(`${BASE_URL}/insumos/del/${id}`);
+            return response.data;
+        }
+        const response = await axios.patch(`${BASE_URL}/insumos/act/${id}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
 //Roles
 export const getRoles = async () => {
     try {
