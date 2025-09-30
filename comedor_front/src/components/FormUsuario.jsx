@@ -67,36 +67,36 @@ const FormUsuario = ({usuario = null, rolesUser = null, roles, onSubmit}) => {
 
     return <>
             <form className="row g-3" onSubmit={handleSubmit}>
-                <div className="col-md-6">
+                <div className="col-md-6 mb-3">
                     <label className="form-label">Nombre</label>
-                    <input name="nombre" onChange={handleChange} type="text" className="form-control" value={formData.nombre} required/>
+                    <input name="nombre" onChange={handleChange} type="text" className="form-control form-control-lg" value={formData.nombre} required/>
                 </div>
-                <div className="col-md-6">
+                <div className="col-md-6 mb-3">
                     <label className="form-label">Apellido</label>
-                    <input name="apellido" onChange={handleChange} type="text" className="form-control" value={formData.apellido} required/>
+                    <input name="apellido" onChange={handleChange} type="text" className="form-control form-control-lg" value={formData.apellido} required/>
                 </div>
-                <div className="col-md-4">
+                <div className="col-md-4 mb-3">
                     <label className="form-label">DNI</label>
-                    <input name="dni" onChange={handleChange} type="text" className="form-control"  value={formData.dni} required/>
+                    <input name="dni" onChange={handleChange} type="text" className="form-control form-control-lg"  value={formData.dni} required/>
                 </div>
-                <div className="col-md-4">
+                <div className="col-md-4 mb-3">
                     <label className="form-label">CUIL</label>
-                    <input name="cuil" onChange={handleChange} type="text" className="form-control" value={formData.cuil} required/>
+                    <input name="cuil" onChange={handleChange} type="text" className="form-control form-control-lg" value={formData.cuil} required/>
                 </div>
-                <div className="col-md-4">
+                <div className="col-md-4 mb-3">
                     <label className="form-label">Teléfono</label>
-                    <input name="telefono" onChange={handleChange} type="text" className="form-control" value={formData.telefono} required/>
+                    <input name="telefono" onChange={handleChange} type="text" className="form-control form-control-lg" value={formData.telefono} required/>
                 </div>
-                <div className="col-md-12">
-                    <label className="form-label">Roles</label>  
+                <div className="col-md-12 mb-3 p-2 bg-light rounded">
+                    <legend className="small">Roles</legend>
                     {roles.map(r => 
-                        <div className="form-check" key={r.id}>
+                        <div className="form-check mb-1" key={r.id}>
                             <input name="rol" onChange={handleChange} value={r.id} checked={formData.rol.includes(r.id)} className="form-check-input" type="checkbox" />
                             <label className="form-check-label">{r.nombre_rol}</label>
                         </div>
                     )}
                 </div>
-                <div className="col-12">
+                <div className="col-12 d-flex justify-content-end gap-2 mt-3">
                     <button className="btn btn-primary" type="submit" disabled={!isEditing? false:isEditing && areChanges? false : true}>{isEditing?"Guardar cambios":"Registrar"}</button>
                     <input className="btn btn-secondary" type="button" disabled={!isEditing? false:isEditing && areChanges? false : true} onClick={handleReset} value={"Cancelar"}/>
                 </div>

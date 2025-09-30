@@ -31,26 +31,44 @@ const UpdateUser = () => {
     }, []);
 
     const handleSubmitForm = async formData => {
-        const answer = await updateUsuario(formData, usuario.id);
-        await Swal.fire({
-            title: answer,
-            icon: "success",
-            timer: 2000,
-        });
-        navigate("/usuario/listado");
+        try {
+            const answer = await updateUsuario(formData, usuario.id);
+            await Swal.fire({
+                title: answer,
+                icon: "success",
+                timer: 2000,
+            });
+            navigate("/usuario/listado");
+        } catch (err) {
+            Swal.fire({
+                title: "Error",
+                icon: "error",
+                text: err.response.data
+            })
+        }
     }
 
-    return <div className="border">
-                <h4 className="card-title mt-3">Datos del usuario</h4>
-                {error && <span className="bs-danger">{error}</span>}
-                {loading? 
-                    (<div className="spinner-border" role="status">
-                        <span className="visually-hidden">Cargando...</span>
-                    </div>):
-                    (<div className="container my-3 py-3">
-                        <FormUsuario usuario={usuario} rolesUser={rolesUser} roles={roles} onSubmit={handleSubmitForm}/>
-                    </div>)};
+    return (
+        <div className="card shadow-sm border-0">
+            {/* Card Header */}
+            <div className="card-header bg-primary text-white">
+                <h5 className="mb-0">Editar Usuario</h5>
             </div>
+            {/* Card Body */}
+            <div className="card-body">
+                {error && <div className="alert alert-danger">{error}</div>}
+                {loading ? (
+                <div className="d-flex justify-content-center py-5">
+                    <div className="spinner-border text-primary" role="status">
+                    <span className="visually-hidden">Cargando...</span>
+                    </div>
+                </div>
+                ) : (
+                <FormUsuario usuario={usuario} rolesUser={rolesUser} roles={roles} onSubmit={handleSubmitForm}/>
+                )}
+            </div>
+        </div>
+    );
 }
 
 export default UpdateUser;

@@ -22,16 +22,27 @@ const LayoutUsers = () => {
         loadRoles();
     }, [])
     
-    return <div>
-        <h1>Gestión de usuarios</h1>
-        {error && <span className="bs-danger">{error}</span>}
-        {loading?
-                (<div className="spinner-border" role="status">
-                    <span className="visually-hidden">Cargando...</span>
-                </div>): 
-            <Outlet context={{roles}}/>
-        }
-        
-    </div>
-}
+    return (
+        <div className="bg-light rounded shadow-sm p-4">
+        {/* Encabezado */}
+        <div className="d-flex justify-content-between align-items-center mb-4">
+            <h2 className="mb-0">Gestión de Usuarios</h2>
+            <small className="text-muted">Administra roles y usuarios</small>
+        </div>
+        {/* Mensajes */}
+        {error && <div className="alert alert-danger">{error}</div>}
+
+        {/* Loader o contenido */}
+        {loading ? (
+            <div className="d-flex justify-content-center py-5">
+            <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Cargando...</span>
+            </div>
+            </div>
+        ) : (
+            <Outlet context={{ roles }} />
+        )}
+        </div>
+    );
+};
 export default LayoutUsers;

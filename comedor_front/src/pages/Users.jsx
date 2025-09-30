@@ -45,12 +45,18 @@ const Users = () => {
     }
 
     return <>
-        <h1 className="card-title my-4">Usuarios</h1>
-        {error && <span className="bs-danger">{error}</span>}
-        {loading?(<div className="spinner-border" role="status">
-                    <span className="visually-hidden">Cargando...</span>
-                 </div>) : (<ListaUsuarios usuarios={usuarios} onClickChangeState={handleStateUser} />)
-        }
+        <div className="card shadow-sm border-0">
+            <div className="card-header bg-primary text-white">
+                <h5 className="mb-0">Lista de usuarios</h5>
+            </div>
+        </div>
+        <div className="card-body">
+            {error && <span className="bs-danger">{error}</span>}
+            {loading?(<div className="spinner-border" role="status">
+                        <span className="visually-hidden">Cargando...</span>
+                    </div>) : (<ListaUsuarios usuarios={usuarios} onClickChangeStateUsuario={handleStateUser} />)
+            }
+        </div>
         
     </>
 }

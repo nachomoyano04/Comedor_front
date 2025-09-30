@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
 import { createUsuario, getRoles } from "../services/api";
 import FormUsuario from "../components/FormUsuario"
 import Swal from "sweetalert2"
-import { useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 const RegisterUser = () => {
+    const navigate = useNavigate();
     const {roles} = useOutletContext();
 
     const handleSubmitForm = formData => {
@@ -15,19 +15,34 @@ const RegisterUser = () => {
             cancelButtonText: "Cancelar",
         }).then(async res => {
             if(res.isConfirmed){
-                const respuesta = await createUsuario(formData);
-                Swal.fire({
-                    title:"Usuario registrado",
-                    icon: "success",
-                    text: respuesta
-                })
+                try {
+                    const respuesta = await createUsuario(formData);
+                    await Swal.fire({
+                        title:"Usuario registrado",
+                        icon: "success",
+                        text: respuesta
+                    });
+                    navigate("/usuario/listado")
+                } catch (err) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: err.response.data
+                    });
+                }
             }
         });
     }
 
     return <>
-        <h1 className="card-title mt-3">Registro de usuario</h1>
-        <FormUsuario roles={roles} onSubmit={handleSubmitForm}/>
+        <div className="card shadow-sm border-0">
+            <div className="card-header bg-primary text-white">
+                <h5 className="mb-0">Registrar Usuario</h5>
+            </div>
+            <div className="card-body">
+                <FormUsuario roles={roles} onSubmit={handleSubmitForm}/>
+            </div>
+        </div>
     </>
 }
 

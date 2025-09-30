@@ -40,7 +40,7 @@ const UpdateInsumo = () => {
             Swal.fire({
                     icon: "error",
                     title: "Error",
-                    text: e.response.data.mensaje
+                    text: e.response.data
             })
         }
     }

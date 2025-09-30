@@ -1,12 +1,14 @@
 import { Outlet } from "react-router-dom";
-import NavBar from "../components/NavBar";
+import Sidebar from "../components/Sidebar"
 const LayoutGeneral = () => {
-    return <div className="bg-secondary">
-                <NavBar />
-                <div className="container">
-                    <Outlet />
-                </div>
+    return (<> 
+        <div className="d-flex">
+            <Sidebar />
+            <div className="flex-grow-1 p-4" style={{ marginLeft: "240px" }}>
+                <Outlet />
             </div>
+        </div>
+    </>);
 }
 
 export default LayoutGeneral;

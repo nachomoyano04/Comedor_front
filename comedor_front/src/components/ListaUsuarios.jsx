@@ -4,16 +4,16 @@ import {faPencil} from "@fortawesome/free-solid-svg-icons"
 
 const ListaUsuarios = ({usuarios, onClickChangeStateUsuario}) => {
     return <>
-        <table className="table">
-            <thead>
+        <table className="table table-striped table-hover align-middle">
+            <thead className="table-dark">
                 <tr>
                     <th scope="col">Nombre</th>
                     <th scope="col">Apellido</th>
                     <th scope="col">DNI</th>
                     <th scope="col">CUIL</th>
                     <th scope="col">Teléfono</th>
-                    <th scope="col">Estado</th>
-                    <th scope="col"></th>
+                    <th scope="col" className="text-center">Editar</th>
+                    <th scope="col" className="text-center">Estado</th>
                 </tr>
             </thead>
             <tbody>
@@ -24,13 +24,16 @@ const ListaUsuarios = ({usuarios, onClickChangeStateUsuario}) => {
                         <td>{u.dni}</td>
                         <td>{u.cuil}</td>
                         <td>{u.telefono}</td>
-                        <td>
+                        <td className="text-center">
                             <Link className="btn btn-warning" to={`/usuario/editar/${u.dni}`}>
                                 <FontAwesomeIcon icon={faPencil} />
                             </Link>
                         </td>
-                        <td>
-                            <button onClick={() => onClickChangeStateUsuario(u.id, u.estado)}>{u.estado === 1?"Activo":"Inactivo"}</button>
+                        <td className="text-center">
+                            <button onClick={() => onClickChangeStateUsuario(u.id, u.estado)}
+                                className={`btn btn-sm ${u.estado === 1 ? 'btn-success' : 'btn-danger'}`}>
+                                {u.estado === 1 ? "Activo" : "Inactivo"}
+                            </button>
                         </td>
                     </tr>
                 )}
