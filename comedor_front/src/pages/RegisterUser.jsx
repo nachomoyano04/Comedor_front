@@ -35,11 +35,11 @@ const RegisterUser = () => {
     }
 
     return <>
-        <div className="card shadow-sm border-0">
-            <div className="card-header bg-primary text-white">
-                <h5 className="mb-0">Registrar Usuario</h5>
-            </div>
-            <div className="card-body">
+        <div className="card-header bg-primary text-white">
+            <h5 className="mb-0">Registrar Usuario</h5>
+        </div>
+        <div className="card-body d-flex justify-content-center">
+            <div style={{width: "100%", maxWidth: "800px"}}>
                 <FormUsuario roles={roles} onSubmit={handleSubmitForm}/>
             </div>
         </div>

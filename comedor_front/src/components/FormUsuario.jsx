@@ -65,27 +65,26 @@ const FormUsuario = ({usuario = null, rolesUser = null, roles, onSubmit}) => {
         }
     }
 
-    return <>
-            <form className="row g-3" onSubmit={handleSubmit}>
+    return  <form className="row g-2" onSubmit={handleSubmit}>
                 <div className="col-md-6 mb-3">
                     <label className="form-label">Nombre</label>
-                    <input name="nombre" onChange={handleChange} type="text" className="form-control form-control-lg" value={formData.nombre} required/>
+                    <input name="nombre" onChange={handleChange} type="text" className="form-control" value={formData.nombre} required/>
                 </div>
                 <div className="col-md-6 mb-3">
                     <label className="form-label">Apellido</label>
-                    <input name="apellido" onChange={handleChange} type="text" className="form-control form-control-lg" value={formData.apellido} required/>
+                    <input name="apellido" onChange={handleChange} type="text" className="form-control" value={formData.apellido} required/>
                 </div>
                 <div className="col-md-4 mb-3">
                     <label className="form-label">DNI</label>
-                    <input name="dni" onChange={handleChange} type="text" className="form-control form-control-lg"  value={formData.dni} required/>
+                    <input name="dni" onChange={handleChange} type="text" className="form-control"  value={formData.dni} required/>
                 </div>
                 <div className="col-md-4 mb-3">
                     <label className="form-label">CUIL</label>
-                    <input name="cuil" onChange={handleChange} type="text" className="form-control form-control-lg" value={formData.cuil} required/>
+                    <input name="cuil" onChange={handleChange} type="text" className="form-control" value={formData.cuil} required/>
                 </div>
                 <div className="col-md-4 mb-3">
                     <label className="form-label">Teléfono</label>
-                    <input name="telefono" onChange={handleChange} type="text" className="form-control form-control-lg" value={formData.telefono} required/>
+                    <input name="telefono" onChange={handleChange} type="text" className="form-control" value={formData.telefono} required/>
                 </div>
                 <div className="col-md-12 mb-3 p-2 bg-light rounded">
                     <legend className="small">Roles</legend>
@@ -101,7 +100,6 @@ const FormUsuario = ({usuario = null, rolesUser = null, roles, onSubmit}) => {
                     <input className="btn btn-secondary" type="button" disabled={!isEditing? false:isEditing && areChanges? false : true} onClick={handleReset} value={"Cancelar"}/>
                 </div>
             </form>
-    </>
 }
 
 export default FormUsuario;

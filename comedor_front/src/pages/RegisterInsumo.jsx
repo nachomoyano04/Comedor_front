@@ -26,8 +26,14 @@ const RegisterInsumo = () => {
     }
 
     return <>
-        <h4 className="card-title my-3">Registro de insumo</h4>
-        <FormInsumo unidades_de_medida={unidades_de_medida} onSubmit={handleSubmitForm} />
+        <div className="card-header bg-primary text-white">
+            <h5 className="mb-0">Registrar Insumo</h5>
+        </div>
+        <div className="card-body d-flex justify-content-center">
+            <div style={{width: "100%", maxWidth: "800px"}}>
+                <FormInsumo unidades_de_medida={unidades_de_medida} onSubmit={handleSubmitForm} />
+            </div>
+        </div>
     </>
 }
 

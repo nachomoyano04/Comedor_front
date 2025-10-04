@@ -22,16 +22,28 @@ const LayoutInsumos = () => {
         loadInsumos();
     }, []);
 
-    return <div>
-        <h1>Gestion de insumos</h1>
-            {error && <span className="bs-danger">{error}</span>}
-            {loading ?
-            (<div className="spinner-border" role="status">
-                <span className="visually-hidden">Cargando...</span>
-            </div>) :
-                <Outlet context={{unidades_de_medida}} />
-            }
-    </div>
+    return(
+        <div className="bg-light rounded shadow-sm p-4">
+            {/* Encabezado */}
+            <div className="d-flex justify-content-between align-items-center mb-4">
+                <h2 className="mb-0">Gestión de Insumos</h2>
+            </div>
+            {/* Mensajes */}
+            {error && <div className="alert alert-danger">{error}</div>}
+            
+            {/* Loader o contenido */}
+            {loading ? (
+                <div className="d-flex justify-content-center py-5">
+                    <div className="spinner-border text-primary" role="status">
+                        <span className="visually-hidden">Cargando...</span>
+                    </div>
+                </div>) : 
+                (
+                <div className="card shadow-sm border-0">
+                    <Outlet context={{unidades_de_medida}}/>
+                </div>
+            )}
+        </div>) 
 }
 
 export default LayoutInsumos;

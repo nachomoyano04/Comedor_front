@@ -130,3 +130,22 @@ export const getUdm = async() => {
         
     }
 }
+
+//Proveedores 
+export const getProveedores = async () => {
+    try {
+        const resultado = await axios(`${BASE_URL}/proveedor`);
+        return resultado.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const createProveedor = async proveedor => {
+    try {
+        const resultado = await axios.post(`${BASE_URL}/proveedor`, proveedor);
+        return resultado.data;
+    } catch (error) {
+        throw error;
+    }
+}

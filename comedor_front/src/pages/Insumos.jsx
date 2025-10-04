@@ -8,7 +8,7 @@ const Insumos = () => {
     const [insumos, setInsumos] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
-    const {unidades_de_medida} = useOutletContext();
+    const { unidades_de_medida } = useOutletContext();
 
     useEffect(() => {
         const loadInsumos = async () => {
@@ -18,7 +18,7 @@ const Insumos = () => {
             } catch (err) {
                 console.log(err);
                 setError("Error al traer los insumos");
-            } finally{
+            } finally {
                 setLoading(false);
             }
         }
@@ -33,14 +33,14 @@ const Insumos = () => {
             cancelButtonText: "Cancelar",
             confirmButtonText: "Si"
         }).then(async res => {
-            if(res.isConfirmed){
+            if (res.isConfirmed) {
                 const resultado = await changeStateInsumoById(id, state);
                 await Swal.fire({
                     title: resultado, icon: "success", timer: 1500
                 });
                 setInsumos(insumos.map(i => {
-                    if(i.id == id){
-                        return {...i, estado: state == 1? 0 : 1}
+                    if (i.id == id) {
+                        return { ...i, estado: state == 1 ? 0 : 1 }
                     }
                     return i;
                 }))
@@ -49,12 +49,17 @@ const Insumos = () => {
     }
 
     return <>
-        <h1 className="card-title my-4">Insumo</h1>
-        {error && <span className="bs-danger">{error}</span>}
-        {loading?(<div className="spinner-border" role="status">
+            <div className="card-header bg-primary text-white">
+                <h5 className="mb-0">Lista de insumos</h5>
+            </div>
+            <div className="card-body">
+                {error && <span className="bs-danger">{error}</span>}
+                {loading ? (<div className="spinner-border" role="status">
                     <span className="visually-hidden">Cargando...</span>
-                 </div>) : (<ListaInsumos insumos={insumos} unidades_de_medida={unidades_de_medida} onClickChangeStateInsumo={handleStateInsumo} />)
-        }    
+                </div>) :
+                    (<ListaInsumos insumos={insumos} unidades_de_medida={unidades_de_medida} onClickChangeStateInsumo={handleStateInsumo} />)
+                }
+            </div>
     </>
 }
 

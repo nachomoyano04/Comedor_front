@@ -48,8 +48,7 @@ const UpdateUser = () => {
         }
     }
 
-    return (
-        <div className="card shadow-sm border-0">
+    return <>
             {/* Card Header */}
             <div className="card-header bg-primary text-white">
                 <h5 className="mb-0">Editar Usuario</h5>
@@ -58,17 +57,20 @@ const UpdateUser = () => {
             <div className="card-body">
                 {error && <div className="alert alert-danger">{error}</div>}
                 {loading ? (
-                <div className="d-flex justify-content-center py-5">
+                    <div className="d-flex justify-content-center py-5">
                     <div className="spinner-border text-primary" role="status">
                     <span className="visually-hidden">Cargando...</span>
                     </div>
                 </div>
                 ) : (
-                <FormUsuario usuario={usuario} rolesUser={rolesUser} roles={roles} onSubmit={handleSubmitForm}/>
+                    <div className="card-body d-flex justify-content-center">
+                        <div style={{width: "100%", maxWidth: "800px"}}>
+                            <FormUsuario usuario={usuario} rolesUser={rolesUser} roles={roles} onSubmit={handleSubmitForm}/>
+                        </div>
+                    </div>
                 )}
             </div>
-        </div>
-    );
+        </>
 }
 
 export default UpdateUser;

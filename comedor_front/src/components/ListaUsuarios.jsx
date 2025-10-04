@@ -4,6 +4,7 @@ import {faPencil} from "@fortawesome/free-solid-svg-icons"
 
 const ListaUsuarios = ({usuarios, onClickChangeStateUsuario}) => {
     return <>
+    <div className="table-responsive">
         <table className="table table-striped table-hover align-middle">
             <thead className="table-dark">
                 <tr>
@@ -39,6 +40,7 @@ const ListaUsuarios = ({usuarios, onClickChangeStateUsuario}) => {
                 )}
             </tbody>
         </table>
+    </div>
     </> 
     ;
 }

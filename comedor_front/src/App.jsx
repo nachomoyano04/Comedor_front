@@ -9,6 +9,9 @@ import LayoutInsumos from "./layouts/LayoutInsumos";
 import Insumos from "./pages/Insumos";
 import RegisterInsumo from "./pages/RegisterInsumo";
 import UpdateInsumo from "./pages/UpdateInsumo";
+import LayoutProveedores from "./layouts/LayoutProveedores";
+import Proveedores from "./pages/Proveedores";
+import RegisterProve from "./pages/RegisterProve";
 
 function App() {
   return (
@@ -25,6 +28,12 @@ function App() {
             <Route path="listado" element={<Insumos />} />
             <Route path="nuevo" element={<RegisterInsumo />} />
             <Route path="editar/:id" element={<UpdateInsumo />} />
+          </Route>
+          {/* Insumos */}
+          <Route path="/proveedores" element={<LayoutProveedores />}>
+            <Route path="listado" element={<Proveedores />} />
+            <Route path="registrar" element={<RegisterProve />} />
+            {/* <Route path="editar/:id" element={<UpdateInsumo />} /> */}
           </Route>
         </Route>
       </Routes>

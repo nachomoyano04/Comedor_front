@@ -24,24 +24,25 @@ const LayoutUsers = () => {
     
     return (
         <div className="bg-light rounded shadow-sm p-4">
-        {/* Encabezado */}
-        <div className="d-flex justify-content-between align-items-center mb-4">
-            <h2 className="mb-0">Gestión de Usuarios</h2>
-            <small className="text-muted">Administra roles y usuarios</small>
-        </div>
-        {/* Mensajes */}
-        {error && <div className="alert alert-danger">{error}</div>}
+            {/* Encabezado */}
+            <div className="d-flex justify-content-between align-items-center mb-4">
+                <h2 className="mb-0">Gestión de Usuarios</h2>
+            </div>
+            {/* Mensajes */}
+            {error && <div className="alert alert-danger">{error}</div>}
 
-        {/* Loader o contenido */}
-        {loading ? (
-            <div className="d-flex justify-content-center py-5">
-            <div className="spinner-border text-primary" role="status">
-                <span className="visually-hidden">Cargando...</span>
-            </div>
-            </div>
-        ) : (
-            <Outlet context={{ roles }} />
-        )}
+            {/* Loader o contenido */}
+            {loading ? (
+                <div className="d-flex justify-content-center py-5">
+                    <div className="spinner-border text-primary" role="status">
+                        <span className="visually-hidden">Cargando...</span>
+                    </div>
+                </div>
+            ) : (
+                <div className="card shadow-sm border-0">
+                    <Outlet context={{ roles }} />
+                </div>
+            )}
         </div>
     );
 };

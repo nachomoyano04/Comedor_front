@@ -45,18 +45,29 @@ const UpdateInsumo = () => {
         }
     }
 
-    return <div className="border">
-                <h4 className="card-title mt-3">Datos del insumo</h4>
-                {error && <span className="bs-danger">{error}</span>}
-                {loading? 
-                    (<div className="spinner-border" role="status">
-                        <span className="visually-hidden">Cargando...</span>
-                    </div>):
-                    (<div className="container my-3 py-3">
-                        <FormInsumo insumo={insumo} unidades_de_medida={unidades_de_medida} onSubmit={handleSubmitForm}/>
-                    </div>)}
+    return <>
+        {/* Card Header */}
+            <div className="card-header bg-primary text-white">
+                <h5 className="mb-0">Editar Insumo</h5>
             </div>
-
+            {/* Card Body */}
+            <div className="card-body">
+                {error && <div className="alert alert-danger">{error}</div>}
+                {loading ? (
+                    <div className="d-flex justify-content-center py-5">
+                    <div className="spinner-border text-primary" role="status">
+                    <span className="visually-hidden">Cargando...</span>
+                    </div>
+                </div>
+                ) : (
+                    <div className="card-body d-flex justify-content-center">
+                        <div style={{width: "100%", maxWidth: "800px"}}>
+                            <FormInsumo insumo={insumo} unidades_de_medida={unidades_de_medida} onSubmit={handleSubmitForm}/>
+                        </div>
+                    </div>
+                )}
+            </div>
+    </>
 }
 
 export default UpdateInsumo;
