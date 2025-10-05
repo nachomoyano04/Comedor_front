@@ -141,6 +141,15 @@ export const getProveedores = async () => {
     }
 }
 
+export const getProveedor = async id => {
+    try {
+        const resultado = await axios(`${BASE_URL}/proveedor/${id}`);
+        return resultado.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
 export const createProveedor = async proveedor => {
     try {
         const resultado = await axios.post(`${BASE_URL}/proveedor`, proveedor);
