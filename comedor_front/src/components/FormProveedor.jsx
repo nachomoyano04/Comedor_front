@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 
 const FormProveedor = ({proveedor = null, onSubmit}) => {
-    const [formData, setFormData] = useState({ codigo: proveedor?.codigo || "", razon_social: proveedor?.razon_social || "", nombre_fantasia: proveedor?.nombre_fantasia || "", horarios_atencion: proveedor?.horarios_atencion || "", cuit: proveedor?.cuit || "", domicilio: proveedor?.domicilio || "", localidad: proveedor?.localidad || "", email: proveedor?.email || "" });
+    const [formData, setFormData] = useState({ codigo: proveedor?.codigo || "", razon_social: proveedor?.razon_social || "", nombre_fantasia: proveedor?.nombre_fantasia || "", cuit: proveedor?.cuit || "", horarios_atencion: proveedor?.horarios_atencion || "", domicilio: proveedor?.domicilio || "", localidad: proveedor?.localidad || "", email: proveedor?.email || "" });
     const [areChanges, setAreChanges] = useState(false);
 
     useEffect(() => {
-        setFormData({ codigo: proveedor?.codigo || "", razon_social: proveedor?.razon_social || "", nombre_fantasia: proveedor?.nombre_fantasia || "", horarios_atencion: proveedor?.horarios_atencion || "", cuit: proveedor?.cuit || "", domicilio: proveedor?.domicilio || "", localidad: proveedor?.localidad || "", email: proveedor?.email || "" });
+        setFormData({ codigo: proveedor?.codigo || "", razon_social: proveedor?.razon_social || "", nombre_fantasia: proveedor?.nombre_fantasia || "", cuit: proveedor?.cuit || "", horarios_atencion: proveedor?.horarios_atencion || "", domicilio: proveedor?.domicilio || "", localidad: proveedor?.localidad || "", email: proveedor?.email || "" });
         setAreChanges(false);
     }, [proveedor]);
 
@@ -16,10 +16,17 @@ const FormProveedor = ({proveedor = null, onSubmit}) => {
         const newFormData = {...formData, [name]: value};
         setFormData(newFormData);
         //Logica de comparacion para ver si hay cambios o no...
+        if(isEditing && proveedor){
+            const {id, estado, ...restProveedor} = proveedor;
+            const areEqual = (a,b) => {
+                return Object.keys(a).every(key => String(a[key]) === String(b[key]));
+            }
+            setAreChanges(!areEqual(newFormData, restProveedor));
+        }
     }
 
     const handleReset = () => {
-        setFormData({ codigo: proveedor?.codigo || "", razon_social: proveedor?.razon_social || "", nombre_fantasia: proveedor?.nombre_fantasia || "", horarios_atencion: proveedor?.horarios_atencion || "", cuit: proveedor?.cuit || "", domicilio: proveedor?.domicilio || "", localidad: proveedor?.localidad || "", email: proveedor?.email || "" });
+        setFormData({ codigo: proveedor?.codigo || "", razon_social: proveedor?.razon_social || "", nombre_fantasia: proveedor?.nombre_fantasia || "", cuit: proveedor?.cuit || "", horarios_atencion: proveedor?.horarios_atencion || "", domicilio: proveedor?.domicilio || "", localidad: proveedor?.localidad || "", email: proveedor?.email || "" });
         setAreChanges(false);
     }
 

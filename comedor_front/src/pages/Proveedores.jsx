@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { getProveedores } from "../services/api";
+import { changeStateProveeById, getProveedores } from "../services/api";
 import ListaProveedores from "../components/ListaProveedores";
+import Swal from "sweetalert2";
 
 const Proveedores = () => {
     const [proveedores, setProveedores] = useState([]);
@@ -22,8 +23,24 @@ const Proveedores = () => {
         loadProveedores();
     }, []);
 
-    const handleStateProv = (id, estado) => {
-        console.log("RAW");
+    const handleStateProv = async (id, state) => {
+        const res = await Swal.fire({
+            title: `Esta seguro que desea dar de ${state == 1? "Baja":"Alta"} el proveedor?`,
+            icon: "warning",
+            confirmButtonText: "Si",
+            cancelButtonText: "Cancelar",
+            showCancelButton: true
+        })
+        if(res.isConfirmed){
+            const respuesta = await changeStateProveeById(id, state);
+            await Swal.fire({icon: "success", title: respuesta});
+            setProveedores(proveedores.map(p => {
+                if(p.id == id){
+                    return {...p, estado: state == 1 ? 0 : 1}; 
+                }
+                return p;
+            }));
+        }
     }
 
     return <>

@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { getProveedor } from "../services/api";
+import { useNavigate, useParams } from "react-router-dom";
+import { getProveedor, updateProveedor } from "../services/api";
+import FormProveedor from "../components/FormProveedor"
+import Swal from "sweetalert2";
 
 const UpdateProve = () => {
     const {id} = useParams();
     const [proveedor, setProveedor] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const loadProv = async () => {
@@ -22,6 +25,25 @@ const UpdateProve = () => {
         }
         loadProv();
     }, [])
+
+    const handleSubmitForm = async formData => {
+        try {
+            const response = await updateProveedor(id, formData);
+            await Swal.fire({
+                icon:"success",
+                title: "Proveedor editado",
+                text: response
+            })
+            navigate("/proveedores/listado");
+        } catch (err) {
+            console.log(err);
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: err.response.data
+            })
+        }
+    }
 
     return <>
         {/* Card Header */}
@@ -40,7 +62,7 @@ const UpdateProve = () => {
             ) : (
                 <div className="card-body d-flex justify-content-center">
                     <div style={{width: "100%", maxWidth: "800px"}}>
-                        <FormUsuario usuario={usuario} rolesUser={rolesUser} roles={roles} onSubmit={handleSubmitForm}/>
+                        <FormProveedor proveedor={proveedor} onSubmit={handleSubmitForm} />
                     </div>
                 </div>
             )}

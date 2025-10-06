@@ -40,7 +40,7 @@ const Insumos = () => {
                 });
                 setInsumos(insumos.map(i => {
                     if (i.id == id) {
-                        return { ...i, estado: state == 1 ? 0 : 1 }
+                        return { ...i, estado: state == 1 ? 0 : 1 };
                     }
                     return i;
                 }))

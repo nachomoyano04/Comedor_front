@@ -12,6 +12,7 @@ import UpdateInsumo from "./pages/UpdateInsumo";
 import LayoutProveedores from "./layouts/LayoutProveedores";
 import Proveedores from "./pages/Proveedores";
 import RegisterProve from "./pages/RegisterProve";
+import UpdateProve from "./pages/UpdateProve";
 
 function App() {
   return (
@@ -33,7 +34,7 @@ function App() {
           <Route path="/proveedores" element={<LayoutProveedores />}>
             <Route path="listado" element={<Proveedores />} />
             <Route path="registrar" element={<RegisterProve />} />
-            {/* <Route path="editar/:id" element={<UpdateInsumo />} /> */}
+            <Route path="editar/:id" element={<UpdateProve />} />
           </Route>
         </Route>
       </Routes>

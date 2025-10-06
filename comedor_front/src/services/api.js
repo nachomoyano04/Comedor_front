@@ -144,7 +144,7 @@ export const getProveedores = async () => {
 export const getProveedor = async id => {
     try {
         const resultado = await axios(`${BASE_URL}/proveedor/${id}`);
-        return resultado.data;
+        return resultado.data[0];
     } catch (error) {
         throw error;
     }
@@ -154,6 +154,29 @@ export const createProveedor = async proveedor => {
     try {
         const resultado = await axios.post(`${BASE_URL}/proveedor`, proveedor);
         return resultado.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const updateProveedor = async (id, proveedor) => {
+    try {
+        const resultado = await axios.put(`${BASE_URL}/proveedor/${id}`, proveedor);
+        return resultado.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const changeStateProveeById = async (id, estado) => {
+    try {
+        if(estado == 1){
+            const resultado = await axios.patch(`${BASE_URL}/proveedor/del/${id}`);
+            return resultado.data;
+        }else{
+            const resultado = await axios.patch(`${BASE_URL}/proveedor/alt/${id}`);
+            return resultado.data;
+        }
     } catch (error) {
         throw error;
     }
