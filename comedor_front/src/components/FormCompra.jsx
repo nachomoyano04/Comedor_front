@@ -1,0 +1,51 @@
+import { useState } from "react";
+import Select from "react-select"
+
+const FormCompra = ({onSubmit, insumos, proveedores}) => {
+    const [formData, setFormData] = useState({insumo_id: "", proveedor_id: "", insumo_nombre: "", proveedor_razon_social: "", precio_unitario: "", fecha_desde: ""});
+    const handleChange = e => {
+        if(e.target){
+            const {name, value} = e.target;
+            setFormData({...formData, [name]: value});
+        }else{
+            const {name, value ,label} = e;
+            setFormData({...formData, [name]: value, [name == "insumo_id"? "insumo_nombre": "proveedor_razon_social"] : label });
+        }
+    }
+
+    const handleReset = () => {
+        setFormData({insumo_id: "", proveedor_id: "", precio_unitario: "", fecha_desde: ""})
+    }
+
+    const handleSubmit = e => {
+        e.preventDefault();
+        onSubmit(formData);
+    }
+
+    return <>
+        <form className="row g-3" onSubmit={handleSubmit}>
+            <div className="col-md-6">
+                <label className="form-label">Insumo</label>
+                <Select required name="insumo_id" onChange={handleChange} value={{value: formData.insumo_id, label: formData.insumo_nombre }} options={insumos}></Select>  
+            </div>
+            <div className="col-md-6">
+                <label className="form-label">Proveedor</label>
+                <Select required name="proveedor_id" onChange={handleChange} value={{value: formData.proveedor_id, label: formData.proveedor_razon_social }} options={proveedores}></Select>
+            </div>
+            <div className="col-md-6">
+                <label className="form-label">Precio</label>
+                <input name="precio_unitario" onChange={handleChange} value={formData.precio_unitario} type="text" className="form-control" required/>
+            </div>
+            <div className="col-md-6">
+                <label className="form-label">Fecha</label>
+                <input name="fecha_desde" onChange={handleChange} value={formData.fecha_desde} type="date" className="form-control" required/>
+            </div>
+            <div className="col-12">
+                <button className="btn btn-primary" type="submit">Guardar</button>
+                <input className="btn btn-secondary" type="button" onClick={handleReset} value={"Cancelar"}/>
+            </div>
+        </form>
+    </>
+}
+
+export default FormCompra;

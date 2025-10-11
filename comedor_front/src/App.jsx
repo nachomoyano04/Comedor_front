@@ -7,12 +7,14 @@ import LayoutGeneral from "./layouts/LayoutGeneral";
 import LayoutUsers from "./layouts/LayoutUsers";
 import LayoutInsumos from "./layouts/LayoutInsumos";
 import Insumos from "./pages/Insumos";
+import Compras from "./pages/Compras";
 import RegisterInsumo from "./pages/RegisterInsumo";
 import UpdateInsumo from "./pages/UpdateInsumo";
 import LayoutProveedores from "./layouts/LayoutProveedores";
 import Proveedores from "./pages/Proveedores";
 import RegisterProve from "./pages/RegisterProve";
 import UpdateProve from "./pages/UpdateProve";
+import RegisterCompra from "./pages/RegisterCompra";
 
 function App() {
   return (
@@ -29,6 +31,8 @@ function App() {
             <Route path="listado" element={<Insumos />} />
             <Route path="nuevo" element={<RegisterInsumo />} />
             <Route path="editar/:id" element={<UpdateInsumo />} />
+            <Route path="nueva_compra" element={<RegisterCompra />} />
+            <Route path="compras" element={<Compras />} />
           </Route>
           {/* Insumos */}
           <Route path="/proveedores" element={<LayoutProveedores />}>
