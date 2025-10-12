@@ -126,13 +126,8 @@ const Sidebar = () => {
                 {openMenu === "precios" && isOpen && (
                     <ul className="list-unstyled ms-3">
                         <li>
-                        <NavLink to="/proveedores/listado" className={({isActive}) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive? "bg-light text-dark fw-semibold": "text-white"}`}>
-                            Lista
-                        </NavLink>
-                        </li>
-                        <li>
-                        <NavLink to="/proveedores/registrar" className={({isActive}) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive? "bg-light text-dark fw-semibold": "text-white"}`}>
-                            Registrar
+                        <NavLink to="/precios/listado" className={({isActive}) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive? "bg-light text-dark fw-semibold": "text-white"}`}>
+                            Listado
                         </NavLink>
                         </li>
                     </ul>

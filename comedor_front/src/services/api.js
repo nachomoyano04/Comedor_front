@@ -183,6 +183,15 @@ export const changeStateProveeById = async (id, estado) => {
 }
 
 /* Precios-Compra */
+export const getPrecios = async () => {
+    try {
+        const precios = await axios(`${BASE_URL}/precio`);
+        return precios.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
 export const getPreciosByInsumo = async insumo_id => {
     try {
         const precios = await axios(`${BASE_URL}/precio/${insumo_id}`);

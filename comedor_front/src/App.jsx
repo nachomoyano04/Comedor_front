@@ -15,6 +15,8 @@ import Proveedores from "./pages/Proveedores";
 import RegisterProve from "./pages/RegisterProve";
 import UpdateProve from "./pages/UpdateProve";
 import RegisterCompra from "./pages/RegisterCompra";
+import LayoutPrecios from "./layouts/LayoutPrecios";
+import Precios from "./pages/Precios";
 
 function App() {
   return (
@@ -39,6 +41,10 @@ function App() {
             <Route path="listado" element={<Proveedores />} />
             <Route path="registrar" element={<RegisterProve />} />
             <Route path="editar/:id" element={<UpdateProve />} />
+          </Route>
+          {/* Precios */}
+          <Route path="/precios" element={<LayoutPrecios />}>
+            <Route path="listado" element={<Precios />} />
           </Route>
         </Route>
       </Routes>
