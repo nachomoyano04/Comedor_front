@@ -76,7 +76,13 @@ const Sidebar = () => {
                     <li className="mb-1">
                         <NavLink to="/insumos/nueva_compra" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${
                             isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
-                            Compra
+                            Registrar Compra
+                        </NavLink>
+                    </li>
+                    <li className="mb-1">
+                        <NavLink to="/insumos/compras" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${
+                            isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
+                            Compras
                         </NavLink>
                     </li>
                 </ul>)}

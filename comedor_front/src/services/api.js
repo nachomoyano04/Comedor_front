@@ -181,3 +181,31 @@ export const changeStateProveeById = async (id, estado) => {
         throw error;
     }
 }
+
+/* Precios-Compra */
+export const getPreciosByInsumo = async insumo_id => {
+    try {
+        const precios = await axios(`${BASE_URL}/precio/${insumo_id}`);
+        return precios.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const newCompra = async compra => {
+    try {
+        const resultado = await axios.post(`${BASE_URL}/precio`, compra);
+        return resultado.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const deleteCompra = async id => {
+    try {
+        const resultado = await axios.delete(`${BASE_URL}/precio/${id}`);
+        return resultado.data;
+    } catch (error) {
+        throw error;
+    }
+}

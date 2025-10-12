@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getInsumos, getProveedores } from "../services/api";
+import { getInsumos, getProveedores, newCompra } from "../services/api";
 import FormCompra from "../components/FormCompra";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
@@ -43,11 +43,11 @@ const RegisterCompra = () => {
             confirmButtonText: "Si"
         });
         if(res.isConfirmed){
-            // const resultado = await newCompra(); //Debo registrar la compa y modificar el stock del insumo
-            console.log(formData);
+            const {insumo_nombre, proveedor_razon_social, precio_total, ...compra} = formData;
+            const resultado = await newCompra(compra); //Debo registrar la compa y modificar el stock del insumo
             await Swal.fire({
                 icon: "success",
-                text: "Compra realizada con exito"       
+                text: resultado       
             });
             navigate("/insumos/compras");
         }
