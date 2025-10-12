@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import ListaCompras from "../components/ListaCompras";
 import { deleteCompra, getInsumos, getPreciosByInsumo } from "../services/api";
 import Swal from "sweetalert2";
@@ -13,10 +13,12 @@ const Compras = () => {
         const loadCompras = async () => {
             try {
                 const i = await getInsumos();
-                const c = await getPreciosByInsumo(i[0].id); //le pasamos el primer insumo para ver la lista de precios
-                setCompras(c);
                 const insu = i.map(ins => {return {value: ins.id, label: ins.producto}});
                 setInsumos(insu);
+                if(i.length > 0){
+                    const c = await getPreciosByInsumo(i[0].id); //le pasamos el primer insumo para ver la lista de precios
+                    setCompras(c);
+                }
             } catch (err) {
                 console.log(error);
                 setError("Error al cargar las compras realizadas");
@@ -27,10 +29,15 @@ const Compras = () => {
         loadCompras();
     }, [])
 
-    const handleChangeInsumo = async (e) => {
-        const c = await getPreciosByInsumo(e.value);
-        setCompras(c.length > 0? c : [])
-    }
+    const handleChangeInsumo = useCallback(async (e) => {
+        try {
+            const c = await getPreciosByInsumo(e.value);
+            setCompras(c.length > 0? c : [])
+        } catch (err) {
+            setError(`Error al cambiar el insumo: ${err}`)
+            setCompras([]);
+        }
+    }, []); 
 
     const handleDeleteCompra = async id => {
         const res = await Swal.fire({
