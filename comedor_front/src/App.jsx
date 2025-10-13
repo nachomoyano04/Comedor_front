@@ -45,6 +45,7 @@ function App() {
           {/* Precios */}
           <Route path="/precios" element={<LayoutPrecios />}>
             <Route path="listado" element={<Precios />} />
+            <Route path="listado/:id" element={<Precios />} />
           </Route>
         </Route>
       </Routes>

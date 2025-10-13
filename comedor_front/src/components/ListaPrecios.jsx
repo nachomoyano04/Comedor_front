@@ -1,4 +1,4 @@
-import { faPencil } from "@fortawesome/free-solid-svg-icons";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 
@@ -18,20 +18,28 @@ const ListaPrecios = ({precios}) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {precios.map(p =>
+                    {precios.length == 0 ? (
+                        <tr>
+                            <td colSpan="6" className="text-center text-danger">
+                                No hay precios todavía
+                            </td>
+                        </tr>
+                    ) :
+                    (precios.map(p =>
                         <tr key={p.id}>
                             <td className="text-center">{p.codigo}</td>
                             <td className="text-center">{p.producto}</td>
                             <td className="text-center">{p.unidad_de_medida}</td>
-                            <td className="text-center">{p.fecha_desde}</td>
+                            <td className="text-center">${p.precio_unitario}</td>
+                            <td className="text-center">{new Date(p.fecha_desde).toLocaleString()}</td>
                             <td className="text-center">{p.razon_social}</td>
                             <td className="text-center">
-                                {/* <Link className="btn btn-warning" to={`/insumos/editar/${p.id}`}>
-                                    <FontAwesomeIcon icon={faPencil} />
-                                </Link> */}
+                                <Link className="btn btn-warning" to={`/precios/listado/${p.id}`}>
+                                    <FontAwesomeIcon icon={faBars} />
+                                </Link>
                             </td>
                         </tr>
-                    )}
+                    ))}
                 </tbody>
             </table>
         </div>

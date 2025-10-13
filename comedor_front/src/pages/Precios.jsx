@@ -1,17 +1,24 @@
 import { useEffect, useState } from "react";
-import { getPrecios } from "../services/api";
+import { getPrecios, getPreciosByInsumo } from "../services/api";
 import ListaPrecios from "../components/ListaPrecios";
+import { useParams } from "react-router-dom";
+import ListaPreciosInsumo from "../components/ListaPreciosInsumo";
 
 const Precios = () => {
+    const {id} = useParams();
     const [precios, setPrecios] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
         const loadPrecios = async () => {
             try {
-                const prices = await getPrecios();
-                console.log(prices);
-                setPrecios(prices);
+                if(id){ //necesita el historial de precios de un insumo
+                    const prices = await getPreciosByInsumo(id);
+                    setPrecios(prices);
+                }else{
+                    const prices = await getPrecios();
+                    setPrecios(prices);
+                }
             } catch (err) {
                 console.log(err);
                 setError("Error al obtener precios");
@@ -20,18 +27,18 @@ const Precios = () => {
             }
         }
         loadPrecios();
-    }, [])
+    }, [id])
 
     return <>
         <div className="card-header bg-primary text-white">
-            <h5 className="mb-0">Listado de precios</h5>
+            <h5 className="mb-0">{id? `Historial de precios de "${precios.length>0?precios[0].producto:"- - -"}"`: `Listado de precios`}</h5>
         </div>
         <div className="card-body">
             {error && <span className="bs-danger">{error}</span>}
             {loading ? (<div className="spinner-border" role="status">
                 <span className="visually-hidden">Cargando...</span>
             </div>) :
-                (<ListaPrecios precios={precios}/>)
+                (id ? <ListaPreciosInsumo historial={precios} /> : <ListaPrecios precios={precios}/>)
             }
         </div>
     </>
