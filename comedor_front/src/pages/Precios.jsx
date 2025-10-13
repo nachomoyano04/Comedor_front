@@ -3,6 +3,7 @@ import { getPrecios, getPreciosByInsumo } from "../services/api";
 import ListaPrecios from "../components/ListaPrecios";
 import { useParams } from "react-router-dom";
 import ListaPreciosInsumo from "../components/ListaPreciosInsumo";
+import LineApexChart from "../components/LineApexChart";
 
 const Precios = () => {
     const {id} = useParams();
@@ -38,7 +39,7 @@ const Precios = () => {
             {loading ? (<div className="spinner-border" role="status">
                 <span className="visually-hidden">Cargando...</span>
             </div>) :
-                (id ? <ListaPreciosInsumo historial={precios} /> : <ListaPrecios precios={precios}/>)
+                (id ? <><ListaPreciosInsumo historial={precios} /><LineApexChart precios={precios}/></>:<ListaPrecios precios={precios}/>)
             }
         </div>
     </>

@@ -22,8 +22,8 @@ const ListaPreciosInsumo = ({historial}) => {
                         <tr key={h.id}>
                             <td className="text-center">{h.razon_social}</td>
                             <td className="text-center">${h.precio_unitario}</td>
-                            <td className="text-center">{new Date(h.fecha_desde).toLocaleString()}</td>
-                            <td className="text-center">{h.fecha_hasta?new Date(h.fecha_hasta).toLocaleString():"actualidad"}</td>
+                            <td className="text-center">{h.fecha_desde.replace("T", " ").replace(".000Z", "")}</td>
+                            <td className="text-center">{h.fecha_hasta?h.fecha_hasta.replace("T", " ").replace(".000Z", ""):"actualidad"}</td>
                         </tr>
                     ))}
                 </tbody>
