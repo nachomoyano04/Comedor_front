@@ -100,7 +100,7 @@ const Sidebar = () => {
                     <li className="mb-1">
                         <NavLink to="/recetas/listado" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${
                             isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
-                            Lista
+                            Listado
                         </NavLink>
                     </li>
                     <li className="mb-1">

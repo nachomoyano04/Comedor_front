@@ -218,3 +218,22 @@ export const deleteCompra = async id => {
         throw error;
     }
 }
+
+// Recetas
+export const getRecetas = async () => {
+    try {
+        const resultado = await axios(`${BASE_URL}/receta`);
+        return resultado.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const newReceta = async receta => {
+    try {
+        const resultado = await axios.post(`${BASE_URL}/receta`, receta);
+        return resultado.data;
+    } catch (error) {
+        throw error;
+    }
+}

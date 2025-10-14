@@ -8,14 +8,14 @@ const ListaProveedores = ({proveedores, onClickChangeStateProveedor}) => {
             <table className="table table-striped table-hover align-middle">
                 <thead className="table-dark">
                     <tr>
-                        <th scope="col">Codigo</th>
-                        <th scope="col">Razón Social</th>
-                        <th scope="col">Nombre Fantasía</th>
-                        <th scope="col">CUIT</th>
-                        <th scope="col">Horarios</th>
-                        <th scope="col">Domicilio</th>
-                        <th scope="col">Localidad</th>
-                        <th scope="col">Email</th>
+                        <th scope="col" className="text-center">Codigo</th>
+                        <th scope="col" className="text-center">Razón Social</th>
+                        <th scope="col" className="text-center">Nombre Fantasía</th>
+                        <th scope="col" className="text-center">CUIT</th>
+                        <th scope="col" className="text-center">Horarios</th>
+                        <th scope="col" className="text-center">Domicilio</th>
+                        <th scope="col" className="text-center">Localidad</th>
+                        <th scope="col" className="text-center">Email</th>
                         <th scope="col" className="text-center">Editar</th>
                         <th scope="col" className="text-center">Estado</th>
                     </tr>
@@ -23,14 +23,14 @@ const ListaProveedores = ({proveedores, onClickChangeStateProveedor}) => {
                 <tbody>
                     {proveedores.map(p => 
                         <tr key={p.id}>
-                            <td>{p.codigo}</td>
-                            <td>{p.razon_social}</td>
-                            <td>{p.nombre_fantasia}</td>
-                            <td>{p.cuit}</td>
-                            <td>{p.horarios_atencion}</td>
-                            <td>{p.domicilio}</td>
-                            <td>{p.localidad}</td>
-                            <td>{p.email}</td>
+                            <td className="text-center">{p.codigo}</td>
+                            <td className="text-center">{p.razon_social}</td>
+                            <td className="text-center">{p.nombre_fantasia}</td>
+                            <td className="text-center">{p.cuit}</td>
+                            <td className="text-center">{p.horarios_atencion}</td>
+                            <td className="text-center">{p.domicilio}</td>
+                            <td className="text-center">{p.localidad}</td>
+                            <td className="text-center">{p.email}</td>
                             <td className="text-center">
                                 <Link className="btn btn-warning" to={`/proveedores/editar/${p.id}`}>
                                     <FontAwesomeIcon icon={faPencil} />

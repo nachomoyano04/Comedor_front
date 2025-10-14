@@ -19,6 +19,7 @@ import LayoutPrecios from "./layouts/LayoutPrecios";
 import Precios from "./pages/Precios";
 import LayoutRecetas from "./layouts/LayoutRecetas";
 import RegisterReceta from "./pages/RegisterReceta";
+import Recetas from "./pages/Recetas";
 
 function App() {
   return (
@@ -40,7 +41,7 @@ function App() {
           </Route>
           {/* Recetas */}
           <Route path="/recetas" element={<LayoutRecetas />}>
-            {/* <Route path="listado" element={<Insumos />} /> */}
+            <Route path="listado" element={<Recetas />} />
             <Route path="nueva" element={<RegisterReceta />} />
           </Route>
           {/* Proveedores */}

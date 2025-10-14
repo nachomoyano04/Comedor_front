@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import FormReceta from "../components/FormReceta";
-import { getInsumos } from "../services/api";
+import { getInsumos, newReceta } from "../services/api";
+import Swal from "sweetalert2"
+import { useNavigate } from "react-router-dom";
 
 const RegisterReceta = () => {
+    const navigate = useNavigate();
     const [insumos, setInsumos] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -23,8 +26,23 @@ const RegisterReceta = () => {
         loadInsumos();
     }, []);
 
-    const handleSubmitReceta = formData => {
-        console.log(formData);
+    const handleSubmitReceta = async formData => {
+        const res = await Swal.fire({
+            icon: "warning",
+            title: "Seguro desea registrar la receta?",
+            showCancelButton: true,
+            cancelButtonText: "Cancelar",
+            confirmButtonText: "Sí"
+        });
+        if(res.isConfirmed){
+            try {
+                const resultado = await newReceta(formData);
+                await Swal.fire({ icon: "success", title: resultado});
+                navigate("/receta/listado")
+            } catch (err) {
+                Swal.fire({icon:"error", title: err.response.data});
+            }
+        }
     }
 
     return <>
