@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { FaUser, FaBox, FaTruck, FaChevronDown, FaChevronRight, FaDollarSign} from "react-icons/fa";
+import { FaUser, FaBox, FaTruck, FaChevronDown, FaChevronRight, FaDollarSign, FaFlask} from "react-icons/fa";
 
 const Sidebar = () => {
     const [openMenu, setOpenMenu] = useState(null);
@@ -83,6 +83,30 @@ const Sidebar = () => {
                         <NavLink to="/insumos/compras" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${
                             isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
                             Compras
+                        </NavLink>
+                    </li>
+                </ul>)}
+                {/* Recetas */}
+                <button className="btn w-100 text-start text-white d-flex align-items-center justify-content-between mb-1"
+                    onClick={() => toggleMenu("recetas")}>
+                    <div className="d-flex align-items-center">
+                        <FaFlask className="me-2" />
+                        {isOpen && <span className="text-truncate">Recetas</span>}
+                    </div>
+                    {isOpen && (openMenu === "recetas" ? <FaChevronDown /> : <FaChevronRight />)}
+                </button>
+                {openMenu === "recetas" && isOpen && (
+                <ul className="list-unstyled ms-3">
+                    <li className="mb-1">
+                        <NavLink to="/recetas/listado" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${
+                            isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
+                            Lista
+                        </NavLink>
+                    </li>
+                    <li className="mb-1">
+                        <NavLink to="/recetas/nueva" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${
+                            isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
+                            Nueva
                         </NavLink>
                     </li>
                 </ul>)}

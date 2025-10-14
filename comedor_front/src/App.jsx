@@ -17,6 +17,8 @@ import UpdateProve from "./pages/UpdateProve";
 import RegisterCompra from "./pages/RegisterCompra";
 import LayoutPrecios from "./layouts/LayoutPrecios";
 import Precios from "./pages/Precios";
+import LayoutRecetas from "./layouts/LayoutRecetas";
+import RegisterReceta from "./pages/RegisterReceta";
 
 function App() {
   return (
@@ -36,7 +38,12 @@ function App() {
             <Route path="nueva_compra" element={<RegisterCompra />} />
             <Route path="compras" element={<Compras />} />
           </Route>
-          {/* Insumos */}
+          {/* Recetas */}
+          <Route path="/recetas" element={<LayoutRecetas />}>
+            {/* <Route path="listado" element={<Insumos />} /> */}
+            <Route path="nueva" element={<RegisterReceta />} />
+          </Route>
+          {/* Proveedores */}
           <Route path="/proveedores" element={<LayoutProveedores />}>
             <Route path="listado" element={<Proveedores />} />
             <Route path="registrar" element={<RegisterProve />} />

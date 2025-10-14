@@ -3,9 +3,6 @@ import ReactApexChart from "react-apexcharts";
 
 const LineApexChart = ({precios}) => {
     const insumo = precios.length > 0? precios[0].producto : "---";
-    
-    console.log(precios);
-
     const data = useMemo(() => {
             return precios.map(p => ({
                 x: new Date(p.fecha_desde).getTime(),
