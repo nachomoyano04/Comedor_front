@@ -42,6 +42,7 @@ const FormReceta = ({ re, ins, onSubmit }) => {
     const handleReset = () => {
         setListaInsumos([]);
         setFormData({ nombre: re?.nombre || "", descripcion: re?.descripcion || "", insumos: [] });
+        setInsumos(ins);
     }
 
     return <form className="row g-2" onSubmit={handleSubmit}>
@@ -63,7 +64,7 @@ const FormReceta = ({ re, ins, onSubmit }) => {
                 {listaInsumos.map((l) => (
                     <li key={l.value} className="list-group-item d-flex justify-content-between align-items-center">
                         <span>{l.label}</span>
-                        <input type="number" name="insumo" data-id={l.value} onChange={handleChange} className="form-control form-control-sm ms-3" style={{ width: "100px" }} placeholder="Cantidad" required/>
+                        <input type="number" name="insumo" data-id={l.value} onChange={handleChange} className="form-control form-control-sm ms-3" style={{ width: "150px" }} placeholder={"cantidad ("+l.simbolo+")"} required/>
                         <button type="button" className="btn" onClick={() => handleClickBtnListaInsumos(l)}><FontAwesomeIcon  icon={faTrash} style={{color: "#ff0000",}}/></button>
                     </li>
                 ))}

@@ -1,17 +1,43 @@
-const ListaRecetas = ({recetas}) => {
-    return <div className="container text-center">
-        <div className="row">
-            {recetas.map(r => {
-                return <div key={r.id} className={r.estado == 1?"card ms-3 text-bg-primary":"card ms-3 text-bg-danger"} style={{maxWidth: "18rem"}}>
-                        <div className="card-header">{r.nombre}</div>
-                        <div className="card-body">
-                            <h5 className="card-title">Descripción</h5>
-                            <p className="card-text">{r.descripcion}</p>
-                        </div>
+const ListaRecetas = ({ recetas, onClickStateButton}) => {
+    return <div className="row row-cols-1 row-cols-md-2 g-4">
+        {recetas.map(r => {
+            return <div key={r.id} className="col">
+                <div className={`card shadow-sm border-0 h-100 ${r.estado == 1 ? "bg-body text-dark" : "bg-danger-subtle text-dark"}`}>
+                    <div className="card-header border-0 d-flex justify-content-between align-items-center">
+                        <h5 className="mb-0 fw-semibold">{r.nombre}</h5>
+                        <button onClick={() => onClickStateButton(r.id, r.estado)} className={`btn badge rounded-pill px-3 py-2 fw-normal ${r.estado === 1 ? "btn-success text-ligth" : "btn-danger text-ligth"}`}>
+                            {r.estado === 1 ? "Activa" : "Inactiva"}
+                        </button>
                     </div>
-            })}
-        </div>
+                    <div className="card-body">
+                        <h5 className="card-text text-light-emphasis mb-3">{r.descripcion}</h5>
+                    </div>
+                    <ul className="list-group list-group-flush rounded-3 overflow-hidden mx-3 mb-3">
+                        {r.insumos.map((r) => (
+                            <li key={r.insumo_id} className="list-group-item d-flex justify-content-between align-items-center">
+                                <span className="fw-medium">{r.producto}</span>
+                                <span className="text-muted small">{r.cantidad} {r.simbolo}</span>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            </div>
+        })}
     </div>
+    // return <div className="container text-center">
+    //     <div className="row">
+    //         {recetas.map(r => {
+    //             return <div key={r.id} className={r.estado == 1?"card ms-3 text-bg-primary":"card ms-3 text-bg-danger"} style={{maxWidth: "18rem"}}>
+    //                     <div className="card-header">
+    //                         <h5 className="card-title">{r.nombre}</h5>
+    //                     </div>
+    //                     <div className="card-body">
+    //                         <p className="card-text">{r.descripcion}</p>
+    //                     </div>
+    //                 </div>
+    //         })}
+    //     </div>
+    // </div>
 }
 
 export default ListaRecetas;

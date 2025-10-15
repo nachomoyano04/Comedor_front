@@ -14,7 +14,8 @@ const RegisterReceta = () => {
         const loadInsumos = async () => {
             try {
                 const respuesta = await getInsumos();
-                const ins = respuesta.filter(i => i.estado == 1).map(i => {return {value: i.id, label: i.producto}});
+                console.log(respuesta);
+                const ins = respuesta.filter(i => i.estado == 1).map(i => {return {value: i.id, label: i.producto, simbolo: i.simbolo}});
                 setInsumos(ins);
             } catch (err) {
                 console.log(err);
@@ -38,7 +39,7 @@ const RegisterReceta = () => {
             try {
                 const resultado = await newReceta(formData);
                 await Swal.fire({ icon: "success", title: resultado});
-                navigate("/receta/listado")
+                navigate("/recetas/listado")
             } catch (err) {
                 Swal.fire({icon:"error", title: err.response.data});
             }

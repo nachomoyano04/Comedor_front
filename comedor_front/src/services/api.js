@@ -237,3 +237,16 @@ export const newReceta = async receta => {
         throw error;
     }
 }
+
+export const changeStateRecetaById = async (id, estado) => {
+    try {
+        if(estado == 1){
+            const resultado = await axios.patch(`${BASE_URL}/receta/del/${id}`);
+            return resultado.data;
+        }
+        const resultado = await axios.patch(`${BASE_URL}/receta/alt/${id}`);
+        return resultado.data;
+    } catch (error) {
+        throw error;
+    }
+}
