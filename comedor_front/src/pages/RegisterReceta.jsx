@@ -1,47 +1,31 @@
-import { useEffect, useState } from "react";
 import FormReceta from "../components/FormReceta";
-import { getInsumos, newReceta } from "../services/api";
+import { newReceta } from "../services/api";
 import Swal from "sweetalert2"
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 
 const RegisterReceta = () => {
     const navigate = useNavigate();
-    const [insumos, setInsumos] = useState([]);
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        const loadInsumos = async () => {
-            try {
-                const respuesta = await getInsumos();
-                console.log(respuesta);
-                const ins = respuesta.filter(i => i.estado == 1).map(i => {return {value: i.id, label: i.producto, simbolo: i.simbolo}});
-                setInsumos(ins);
-            } catch (err) {
-                console.log(err);
-                setError("Error al cargar los insumos");
-            } finally {
-                setLoading(false);
-            }
-        }
-        loadInsumos();
-    }, []);
+    const {insumos} = useOutletContext();
 
     const handleSubmitReceta = async formData => {
-        const res = await Swal.fire({
-            icon: "warning",
-            title: "Seguro desea registrar la receta?",
-            showCancelButton: true,
-            cancelButtonText: "Cancelar",
-            confirmButtonText: "Sí"
-        });
-        if(res.isConfirmed){
-            try {
-                const resultado = await newReceta(formData);
-                await Swal.fire({ icon: "success", title: resultado});
-                navigate("/recetas/listado")
-            } catch (err) {
-                Swal.fire({icon:"error", title: err.response.data});
+        if(formData.insumo.length == 0){ // si no seleccionó ningun insumo para la receta...
+            Swal.fire({icon:"error", title: "Debe seleccionar al menos un insumo"});
+        }else{
+            const res = await Swal.fire({
+                icon: "warning",
+                title: "Seguro desea registrar la receta?",
+                showCancelButton: true,
+                cancelButtonText: "Cancelar",
+                confirmButtonText: "Sí"
+            });
+            if(res.isConfirmed){
+                try {
+                    const resultado = await newReceta(formData);
+                    await Swal.fire({ icon: "success", title: resultado});
+                    navigate("/recetas/listado")
+                } catch (err) {
+                    Swal.fire({icon:"error", title: err.response.data});
+                }
             }
         }
     }
@@ -51,12 +35,7 @@ const RegisterReceta = () => {
             <h5 className="mb-0">Nueva receta</h5>
         </div>
         <div className="card-body">
-            {error && <span className="bs-danger">{error}</span>}
-            {loading ? (<div className="spinner-border" role="status">
-                <span className="visually-hidden">Cargando...</span>
-            </div>) :
-                (<FormReceta ins={insumos} onSubmit={handleSubmitReceta}/>)
-            }
+            <FormReceta ins={insumos} onSubmit={handleSubmitReceta}/>
         </div>
     </>
 }

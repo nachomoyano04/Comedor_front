@@ -1,3 +1,6 @@
+import {Link} from "react-router-dom"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faPencil } from "@fortawesome/free-solid-svg-icons"
 const ListaRecetas = ({ recetas, onClickStateButton}) => {
     return <div className="row row-cols-1 row-cols-md-2 g-4">
         {recetas.map(r => {
@@ -5,9 +8,14 @@ const ListaRecetas = ({ recetas, onClickStateButton}) => {
                 <div className={`card shadow-sm border-0 h-100 ${r.estado == 1 ? "bg-body text-dark" : "bg-danger-subtle text-dark"}`}>
                     <div className="card-header border-0 d-flex justify-content-between align-items-center">
                         <h5 className="mb-0 fw-semibold">{r.nombre}</h5>
-                        <button onClick={() => onClickStateButton(r.id, r.estado)} className={`btn badge rounded-pill px-3 py-2 fw-normal ${r.estado === 1 ? "btn-success text-ligth" : "btn-danger text-ligth"}`}>
-                            {r.estado === 1 ? "Activa" : "Inactiva"}
-                        </button>
+                        <div>
+                            <button onClick={() => onClickStateButton(r.id, r.estado)} className={`btn badge rounded-pill px-3 py-2 fw-normal ${r.estado === 1 ? "btn-success text-ligth" : "btn-danger text-ligth"}`}>
+                                {r.estado === 1 ? "Activa" : "Inactiva"}
+                            </button>
+                            <Link to={`/recetas/editar/${r.id}`}>
+                                <FontAwesomeIcon icon={faPencil} className="btn btn-warning mx-1"/>    
+                            </Link>
+                        </div>
                     </div>
                     <div className="card-body">
                         <h5 className="card-text text-light-emphasis mb-3">{r.descripcion}</h5>
@@ -24,20 +32,6 @@ const ListaRecetas = ({ recetas, onClickStateButton}) => {
             </div>
         })}
     </div>
-    // return <div className="container text-center">
-    //     <div className="row">
-    //         {recetas.map(r => {
-    //             return <div key={r.id} className={r.estado == 1?"card ms-3 text-bg-primary":"card ms-3 text-bg-danger"} style={{maxWidth: "18rem"}}>
-    //                     <div className="card-header">
-    //                         <h5 className="card-title">{r.nombre}</h5>
-    //                     </div>
-    //                     <div className="card-body">
-    //                         <p className="card-text">{r.descripcion}</p>
-    //                     </div>
-    //                 </div>
-    //         })}
-    //     </div>
-    // </div>
 }
 
 export default ListaRecetas;

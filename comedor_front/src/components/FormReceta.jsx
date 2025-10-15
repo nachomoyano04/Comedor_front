@@ -7,7 +7,7 @@ const FormReceta = ({ re, ins, onSubmit }) => {
     const [formData, setFormData] = useState({
         nombre: re?.nombre || "", descripcion: re?.descripcion || "", insumo: []
     })
-    const [listaInsumos, setListaInsumos] = useState([]);
+    const [listaInsumos, setListaInsumos] = useState(re?.insumo || []);
     const [insumos, setInsumos] = useState(ins);
 
     const isEditing = re != null;
@@ -34,6 +34,10 @@ const FormReceta = ({ re, ins, onSubmit }) => {
         setListaInsumos([...listaInsumos, insumoSeleccionado]);
     }
 
+    const areChanges = () => {
+
+    }
+
     const handleClickBtnListaInsumos = e => { //agregamos el insumo y lo sacamos de la lista de insumos
         setListaInsumos(listaInsumos.filter(lins => lins.value != e.value));
         setInsumos([...insumos, e]);
@@ -56,16 +60,21 @@ const FormReceta = ({ re, ins, onSubmit }) => {
         </div>
         <div className="col-md-4 mb-3">
             <label className="form-label">Insumos</label>
-            <Select name="insumos" options={insumos} onChange={handleSelect} />
+            <Select required name="insumos" options={insumos} onChange={handleSelect} />
         </div>
         <div className="col-md-8 mb-3">
             <label className="form-label fw-semibold">Lista de insumos</label>
-            <ul className="list-group shadow-sm rounded-3">
+            <ul className="list-group shadow-sm rounded-4 overflow-hidden">
                 {listaInsumos.map((l) => (
-                    <li key={l.value} className="list-group-item d-flex justify-content-between align-items-center">
-                        <span>{l.label}</span>
-                        <input type="number" name="insumo" data-id={l.value} onChange={handleChange} className="form-control form-control-sm ms-3" style={{ width: "150px" }} placeholder={"cantidad ("+l.simbolo+")"} required/>
-                        <button type="button" className="btn" onClick={() => handleClickBtnListaInsumos(l)}><FontAwesomeIcon  icon={faTrash} style={{color: "#ff0000",}}/></button>
+                    <li key={l.value} className="list-group-item d-flex justify-content-between align-items-center py-2 px-3">
+                        <div className="d-flex align-items-center flex-grow-1">
+                            <span className="fw-medium">{l.label}</span>
+                        </div>
+                        <div className="d-flex align-items-center ms-3">
+                            <input type="number" name="insumo" data-id={l.value} value={l.cantidad || 0} onChange={handleChange} className="form-control form-control-sm text-end" style={{ width: "150px" }} placeholder={"cantidad ("+l.simbolo+")"} required/>
+                            <small className="ms-2 text-muted">{l.simbolo}</small>
+                        </div>
+                        <button type="button" className="btn btn-sm ms-3 p-1" onClick={() => handleClickBtnListaInsumos(l)}><FontAwesomeIcon  icon={faTrash} className="text-danger" style={{color: "#ff0000",}}/></button>
                     </li>
                 ))}
             </ul>
