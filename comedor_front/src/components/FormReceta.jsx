@@ -2,6 +2,7 @@ import { useState } from "react";
 import Select from "react-select";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import {isEqual} from "lodash";
 
 const FormReceta = ({ re, ins, onSubmit }) => {
     const [formData, setFormData] = useState({
@@ -9,6 +10,7 @@ const FormReceta = ({ re, ins, onSubmit }) => {
     })
     const [listaInsumos, setListaInsumos] = useState(re?.insumo || []);
     const [insumos, setInsumos] = useState(ins);
+    const [areChanges, setAreChanges] = useState(false);
 
     const isEditing = re != null;
 
@@ -22,8 +24,17 @@ const FormReceta = ({ re, ins, onSubmit }) => {
         if(name == "insumo"){ // Para manejar los insumos con sus respectivas cantidades
             const id = e.target.getAttribute("data-id")
             setListaInsumos(prev => prev.map(i => i.value == id? {...i, cantidad: value} : i));
+            if(isEditing){//Esta editando y cambia alguna cantidad en el insumo, habilitamos buttons
+                const listaInsumosUpdated = listaInsumos.map(li => li.value == id? {...li, cantidad: Number(value)} : {...li, cantidad: Number(li.cantidad)});
+                const insumoRecetaOriginalUpdated = re?.insumo.map(i => ({...i, cantidad: Number(i.cantidad)}));
+                setAreChanges(!isEqual(listaInsumosUpdated, insumoRecetaOriginalUpdated));
+            }
         }else{ // Para manejar el nombre y la descripcion...
             setFormData({...formData, [name]: value});
+        }
+        if(isEditing && name != "insumo"){//Esta editando y cambia el nombre o descripcion habilitamos buttons
+            const hayCambios = name == "nombre"? re.nombre != value : re.descripcion != value;
+            setAreChanges(hayCambios);
         }
     }
 
@@ -32,20 +43,30 @@ const FormReceta = ({ re, ins, onSubmit }) => {
         setInsumos(insumos.filter(i => i.value != value));
         insumoSeleccionado.cantidad = 0;
         setListaInsumos([...listaInsumos, insumoSeleccionado]);
-    }
-
-    const areChanges = () => {
-
+        if(isEditing){
+            const hayMatch = re.insumo.find(i => {
+                const i1 = {...i, cantidad: Number(i.cantidad)};
+                const i2 = {...insumoSeleccionado, cantidad: Number(insumoSeleccionado.cantidad)}
+                console.log(i1, i2);
+                return isEqual(i1, i2);
+            });
+            console.log(hayMatch);
+            setAreChanges(!hayMatch);
+        }
     }
 
     const handleClickBtnListaInsumos = e => { //agregamos el insumo y lo sacamos de la lista de insumos
         setListaInsumos(listaInsumos.filter(lins => lins.value != e.value));
         setInsumos([...insumos, e]);
+        if(isEditing){
+            console.log(e)
+            console.log(re.insumo.includes());
+        }
     }
 
     const handleReset = () => {
-        setListaInsumos([]);
-        setFormData({ nombre: re?.nombre || "", descripcion: re?.descripcion || "", insumos: [] });
+        setListaInsumos(re?.insumo || []);
+        setFormData({ nombre: re?.nombre || "", descripcion: re?.descripcion || "", insumo: [] });
         setInsumos(ins);
     }
 
@@ -60,7 +81,7 @@ const FormReceta = ({ re, ins, onSubmit }) => {
         </div>
         <div className="col-md-4 mb-3">
             <label className="form-label">Insumos</label>
-            <Select required name="insumos" options={insumos} onChange={handleSelect} />
+            <Select name="insumos" options={insumos} onChange={handleSelect} />
         </div>
         <div className="col-md-8 mb-3">
             <label className="form-label fw-semibold">Lista de insumos</label>
