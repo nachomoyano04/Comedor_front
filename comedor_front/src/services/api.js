@@ -259,3 +259,12 @@ export const changeStateRecetaById = async (id, estado) => {
         throw error;
     }
 }
+
+export const updateReceta = async (id, receta) => {
+    try {
+        const resultado = await axios.put(`${BASE_URL}/receta/${id}`, receta);
+        return resultado.data;
+    } catch (error) {
+        throw error;
+    }
+}

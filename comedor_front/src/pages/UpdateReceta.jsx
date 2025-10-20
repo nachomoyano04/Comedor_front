@@ -1,7 +1,8 @@
-import { useOutletContext, useParams } from "react-router-dom";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import FormReceta from "../components/FormReceta";
 import { useEffect, useState } from "react";
-import { getRecetaById } from "../services/api";
+import { getRecetaById, updateReceta } from "../services/api";
+import Swal from "sweetalert2";
 
 const UpdateReceta = () => {
     const {id} = useParams();
@@ -10,6 +11,7 @@ const UpdateReceta = () => {
     const [receta, setReceta] = useState(null);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const loadReceta = async () => {
@@ -40,8 +42,14 @@ const UpdateReceta = () => {
         loadReceta();
     }, [id, insumos]);
 
-    const handleSubmitReceta = formData => {
-        console.log(formData);
+    const handleSubmitReceta = async formData => {
+        try {
+            const resultado = await updateReceta(id, formData);
+            await Swal.fire({icon: "success", title: resultado, timer:2000});
+            navigate("/recetas/listado");
+        } catch (err) {
+            await Swal.fire({icon: "error", title: err.response.data, timer:2000});
+        }
     }
 
     return <>
