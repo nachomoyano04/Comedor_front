@@ -11,7 +11,7 @@ const FormReceta = ({ re, ins, onSubmit }) => {
     const [listaInsumos, setListaInsumos] = useState(re?.insumo || []);
     const [insumos, setInsumos] = useState(ins);
     const [areChanges, setAreChanges] = useState(false);
-
+    const insumosOriginales = re?.insumo || null;
     const isEditing = re != null;
 
     const handleSubmit = e => {
@@ -23,51 +23,59 @@ const FormReceta = ({ re, ins, onSubmit }) => {
         const {name, value} = e.target;
         if(name == "insumo"){ // Para manejar los insumos con sus respectivas cantidades
             const id = e.target.getAttribute("data-id")
-            setListaInsumos(prev => prev.map(i => i.value == id? {...i, cantidad: value} : i));
-            if(isEditing){//Esta editando y cambia alguna cantidad en el insumo, habilitamos buttons
-                const listaInsumosUpdated = listaInsumos.map(li => li.value == id? {...li, cantidad: Number(value)} : {...li, cantidad: Number(li.cantidad)});
-                const insumoRecetaOriginalUpdated = re?.insumo.map(i => ({...i, cantidad: Number(i.cantidad)}));
-                setAreChanges(!isEqual(listaInsumosUpdated, insumoRecetaOriginalUpdated));
-            }
+            setListaInsumos(prev =>  {
+                const updated = prev.map(i => i.value == id? {...i, cantidad: value} : i);
+                if(isEditing){//Esta editando y cambia alguna cantidad en el insumo, habilitamos buttons
+                    const listaOrdenada = updated.map(i => ({...i, cantidad: Number(i.cantidad)})).sort((a,b) => a.value - b.value);
+                    const originalOrdenada = re.insumo.map(i => ({...i, cantidad: Number(i.cantidad)})).sort((a,b) => a.value - b.value);
+                    setAreChanges(!isEqual(listaOrdenada, originalOrdenada));
+                }
+                return updated;
+            }); 
         }else{ // Para manejar el nombre y la descripcion...
             setFormData({...formData, [name]: value});
         }
         if(isEditing && name != "insumo"){//Esta editando y cambia el nombre o descripcion habilitamos buttons
-            const hayCambios = name == "nombre"? re.nombre != value : re.descripcion != value;
+            const hayCambios = formData.nombre !== re.nombre || formData.descripcion !== re.descripcion
             setAreChanges(hayCambios);
         }
     }
 
     const handleSelect = (insumoSeleccionado) => { //sacar el insumo de los insumos y agregarlo a listaInsumos...
         const { value } = insumoSeleccionado;
-        setInsumos(insumos.filter(i => i.value != value));
-        insumoSeleccionado.cantidad = 0;
-        setListaInsumos([...listaInsumos, insumoSeleccionado]);
-        if(isEditing){
-            const hayMatch = re.insumo.find(i => {
-                const i1 = {...i, cantidad: Number(i.cantidad)};
-                const i2 = {...insumoSeleccionado, cantidad: Number(insumoSeleccionado.cantidad)}
-                console.log(i1, i2);
-                return isEqual(i1, i2);
-            });
-            console.log(hayMatch);
-            setAreChanges(!hayMatch);
-        }
+        const nuevo = {...insumoSeleccionado, cantidad: 0};
+        setListaInsumos(prev => {
+            const updated = [...prev, nuevo];
+            if(isEditing){
+                const listaOrdenada = updated.sort((a,b) => a.value - b.value);
+                const originalOrdenada = insumosOriginales.sort((a, b) => a.value - b.value);
+                setAreChanges(!isEqual(listaOrdenada, originalOrdenada));
+            }
+            return updated;
+        })
+        setInsumos(prev => prev.filter(i => i.value != value));
     }
 
     const handleClickBtnListaInsumos = e => { //agregamos el insumo y lo sacamos de la lista de insumos
-        setListaInsumos(listaInsumos.filter(lins => lins.value != e.value));
-        setInsumos([...insumos, e]);
-        if(isEditing){
-            console.log(e)
-            console.log(re.insumo.includes());
-        }
+        setListaInsumos(prev => {
+            const updated = prev.filter(i => i.value != e.value);
+            if(isEditing){
+                const listaOrdenada = updated.sort((a,b) => a.value - b.value);
+                const originalOrdenada = insumosOriginales.sort((a,b) => a.value - b.value);
+                setAreChanges(!isEqual(listaOrdenada, originalOrdenada));
+            }
+            return updated;
+        })
+        setInsumos(prev => [...prev, e]);
     }
 
     const handleReset = () => {
         setListaInsumos(re?.insumo || []);
         setFormData({ nombre: re?.nombre || "", descripcion: re?.descripcion || "", insumo: [] });
         setInsumos(ins);
+        if(isEditing){
+            setAreChanges(false);
+        }
     }
 
     return <form className="row g-2" onSubmit={handleSubmit}>
@@ -92,7 +100,7 @@ const FormReceta = ({ re, ins, onSubmit }) => {
                             <span className="fw-medium">{l.label}</span>
                         </div>
                         <div className="d-flex align-items-center ms-3">
-                            <input type="number" name="insumo" data-id={l.value} value={l.cantidad || 0} onChange={handleChange} className="form-control form-control-sm text-end" style={{ width: "150px" }} placeholder={"cantidad ("+l.simbolo+")"} required/>
+                            <input type="number" name="insumo" min={"0"} data-id={l.value} value={l.cantidad || 0} onChange={handleChange} className="form-control form-control-sm text-end" style={{ width: "150px" }} placeholder={"cantidad ("+l.simbolo+")"} required/>
                             <small className="ms-2 text-muted">{l.simbolo}</small>
                         </div>
                         <button type="button" className="btn btn-sm ms-3 p-1" onClick={() => handleClickBtnListaInsumos(l)}><FontAwesomeIcon  icon={faTrash} className="text-danger" style={{color: "#ff0000",}}/></button>

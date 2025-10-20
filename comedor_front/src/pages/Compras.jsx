@@ -2,21 +2,22 @@ import { useCallback, useEffect, useState } from "react";
 import ListaCompras from "../components/ListaCompras";
 import { deleteCompra, getInsumos, getPreciosByInsumo } from "../services/api";
 import Swal from "sweetalert2";
+import { useOutletContext } from "react-router-dom";
 
 const Compras = () => {
+    const {insumos} = useOutletContext();
     const [compras, setCompras] = useState([]);
-    const [insumos, setInsumos] = useState([]);
+    const [ins, setIns] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const loadCompras = async () => {
             try {
-                const i = await getInsumos();
-                const insu = i.map(ins => {return {value: ins.id, label: ins.producto}});
-                setInsumos(insu);
-                if(i.length > 0){
-                    const c = await getPreciosByInsumo(i[0].id); //le pasamos el primer insumo para ver la lista de precios
+                const  i = insumos.map(i => {return {value: i.id, label: i.producto}});
+                setIns(i);
+                if(insumos.length > 0){
+                    const c = await getPreciosByInsumo(insumos[0].id); //le pasamos el primer insumo para ver la lista de precios
                     setCompras(c);
                 }
             } catch (err) {
@@ -64,7 +65,7 @@ const Compras = () => {
             {loading ? (<div className="spinner-border" role="status">
                 <span className="visually-hidden">Cargando...</span>
             </div>) :
-                (<ListaCompras insumos={insumos} onChangeInsumo={handleChangeInsumo} compras={compras} onClickDeleteCompra={handleDeleteCompra}/>)
+                (<ListaCompras insumos={ins} onChangeInsumo={handleChangeInsumo} compras={compras} onClickDeleteCompra={handleDeleteCompra}/>)
             }
         </div>
     </>

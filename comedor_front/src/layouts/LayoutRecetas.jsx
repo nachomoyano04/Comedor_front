@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
-import { getInsumos } from "../services/api";
+import { getInsumosParaReceta } from "../services/api";
 
 const LayoutRecetas = () => {
     const [insumos, setInsumos] = useState([]);
@@ -10,7 +10,7 @@ const LayoutRecetas = () => {
     useEffect(() => {
         const loadInsumos = async () => {
             try {
-                const respuesta = await getInsumos();
+                const respuesta = await getInsumosParaReceta();
                 const ins = respuesta.filter(i => i.estado == 1).map(i => {return {value: i.id, label: i.producto, simbolo: i.simbolo}});
                 setInsumos(ins);
             } catch (err) {

@@ -62,6 +62,15 @@ export const getInsumos = async () => {
     }
 }
 
+export const getInsumosParaReceta = async () => {
+    try {
+        const response = await axios(`${BASE_URL}/insumos/receta`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
 export const getInsumo = async id => {
     try {
         const response = await axios(`${BASE_URL}/insumos/id/${id}`);

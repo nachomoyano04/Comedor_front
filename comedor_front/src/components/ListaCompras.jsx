@@ -15,7 +15,8 @@ const ListaCompras = ({insumos, compras, onClickDeleteCompra, onChangeInsumo}) =
                     <tr>
                         <th scope="col" className="text-center">Insumo</th>
                         <th scope="col" className="text-center">Proveedor</th>
-                        <th scope="col" className="text-center">Precio unitario</th>
+                        <th scope="col" className="text-center">Unitario</th>
+                        <th scope="col" className="text-center">Total</th>
                         <th scope="col" className="text-center">Fecha de compra</th>
                         <th scope="col" className="text-center">Cantidad</th>
                         <th scope="col" className="text-center">Borrar</th>
@@ -33,7 +34,8 @@ const ListaCompras = ({insumos, compras, onClickDeleteCompra, onChangeInsumo}) =
                         <tr key={c.id}>
                             <td className="text-center">{c.producto}</td>
                             <td className="text-center">{c.razon_social}</td>
-                            <td className="text-center">{c.precio_unitario}</td>
+                            <td className="text-center">${(parseFloat(c.precio_unitario)).toFixed(2)}</td>
+                            <td className="text-center">${(parseFloat(c.precio_unitario) * parseFloat(c.cantidad).toFixed(2))}</td>
                             <td className="text-center">{new Date(c.fecha_desde).toLocaleString()}</td>
                             <td className="text-center">{c.cantidad}</td>
                             <td className="text-center">

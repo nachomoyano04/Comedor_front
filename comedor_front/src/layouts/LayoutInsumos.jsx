@@ -1,25 +1,28 @@
 import { Outlet } from "react-router-dom";
 import {useState, useEffect} from "react";
-import { getUdm } from "../services/api";
+import { getInsumos, getUdm } from "../services/api";
 
 const LayoutInsumos = () => {
     const [unidades_de_medida, setUnidades_de_medida] = useState([]);
+    const [insumos, setInsumos] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const loadInsumos = async () => {
+        const loadInsumosAndUdm = async () => {
             try {
-                const answer = await getUdm();
-                setUnidades_de_medida(answer);
+                const answerUdm = await getUdm();
+                setUnidades_de_medida(answerUdm);
+                const answerInsumos = await getInsumos();
+                setInsumos(answerInsumos);
             } catch (err) {
                 console.log(err);
-                setError("Error al obtener unidades de medida");
+                setError("Error al obtener unidades de medida y/o insumos");
             } finally {
                 setLoading(false);
             }
         }
-        loadInsumos();
+        loadInsumosAndUdm();
     }, []);
 
     return(
@@ -40,7 +43,7 @@ const LayoutInsumos = () => {
                 </div>) : 
                 (
                 <div className="card shadow-sm border-0">
-                    <Outlet context={{unidades_de_medida}}/>
+                    <Outlet context={{unidades_de_medida, insumos}}/>
                 </div>
             )}
         </div>) 

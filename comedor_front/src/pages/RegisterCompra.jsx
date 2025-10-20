@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { getInsumos, getProveedores, newCompra } from "../services/api";
 import FormCompra from "../components/FormCompra";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 
 const RegisterCompra = () => {
     const navigate = useNavigate();
-    const [insumos, setInsumos] = useState([]);
+    const {insumos} = useOutletContext();
+    const [ins, setIns] = useState([]);
     const [proveedores, setProveedores] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -14,16 +15,15 @@ const RegisterCompra = () => {
     useEffect(() => {
         const loadInsumosYProveedores = async () => {
             try {
-                const ins = await getInsumos();
                 const provs = await getProveedores();
-                const insu = ins.filter(i => i.estado == 1).map(i => {
-                    return {name: "insumo_id", value: i.id, label: i.producto}
-                }); 
                 const proves = provs.filter(p => p.estado == 1).map(p => {
                     return {name: "proveedor_id", value: p.id, label: p.razon_social}
                 });
-                setInsumos(insu);
+                const i = insumos.filter(i => i.estado == 1).map(i => {
+                    return {name: "insumo_id", value: i.id, label: i.producto}
+                }); 
                 setProveedores(proves);
+                setIns(i);
             } catch (err) {
                 console.log(error);
                 setError("Error al cargar insumos y proveedores");
@@ -45,10 +45,7 @@ const RegisterCompra = () => {
         if(res.isConfirmed){
             const {insumo_nombre, proveedor_razon_social, precio_total, ...compra} = formData;
             const resultado = await newCompra(compra); //Debo registrar la compa y modificar el stock del insumo
-            await Swal.fire({
-                icon: "success",
-                text: resultado       
-            });
+            await Swal.fire({ icon: "success", title: resultado });
             navigate("/insumos/compras");
         }
     }
@@ -62,7 +59,7 @@ const RegisterCompra = () => {
                 {loading ? (<div className="spinner-border" role="status">
                     <span className="visually-hidden">Cargando...</span>
                 </div>) :
-                    (<FormCompra insumos={insumos} proveedores={proveedores} onSubmit={handleSubmit}/>)
+                    (<FormCompra insumos={ins} proveedores={proveedores} onSubmit={handleSubmit}/>)
                 }
             </div>
     </>
