@@ -277,3 +277,13 @@ export const updateReceta = async (id, receta) => {
         throw error;
     }
 }
+
+//Produccion
+export const newProduccion = async produccion => {
+    try {
+        const resultado = await axios.post(`${BASE_URL}/produccion`, produccion);
+        return resultado.data;
+    } catch (error) {
+        throw error;
+    }
+}
