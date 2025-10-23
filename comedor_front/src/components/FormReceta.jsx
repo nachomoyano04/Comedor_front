@@ -100,7 +100,7 @@ const FormReceta = ({ re, ins, onSubmit }) => {
                             <span className="fw-medium">{l.label}</span>
                         </div>
                         <div className="d-flex align-items-center ms-3">
-                            <input type="number" name="insumo" min={"0"} data-id={l.value} value={l.cantidad || 0} onChange={handleChange} className="form-control form-control-sm text-end" style={{ width: "150px" }} placeholder={"cantidad ("+l.simbolo+")"} required/>
+                            <input type="number" name="insumo" data-id={l.value} value={l.cantidad || 0} onChange={handleChange} className="form-control form-control-sm text-end" style={{ width: "150px" }} placeholder={"cantidad ("+l.simbolo+")"} required/>
                             <small className="ms-2 text-muted">{l.simbolo}</small>
                         </div>
                         <button type="button" className="btn btn-sm ms-3 p-1" onClick={() => handleClickBtnListaInsumos(l)}><FontAwesomeIcon  icon={faTrash} className="text-danger" style={{color: "#ff0000",}}/></button>

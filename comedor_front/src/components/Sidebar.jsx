@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { FaUser, FaBox, FaTruck, FaChevronDown, FaChevronRight, FaDollarSign, FaFlask} from "react-icons/fa";
+import { FaUser, FaBox, FaTruck, FaChevronDown, FaChevronRight, FaDollarSign, FaFlask, FaHamburger} from "react-icons/fa";
 
 const Sidebar = () => {
     const [openMenu, setOpenMenu] = useState(null);
@@ -131,6 +131,31 @@ const Sidebar = () => {
                         </li>
                         <li>
                         <NavLink to="/proveedores/registrar" className={({isActive}) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive? "bg-light text-dark fw-semibold": "text-white"}`}>
+                            Registrar
+                        </NavLink>
+                        </li>
+                    </ul>
+                )}
+                {/* Producción */}
+                <button
+                className="btn w-100 text-start text-white d-flex align-items-center justify-content-between mb-1"
+                onClick={() => toggleMenu("produccion")}
+                >
+                <div className="d-flex align-items-center">
+                    <FaHamburger className="me-2" />
+                    {isOpen && <span className="text-truncate">Producción</span>}
+                </div>
+                {isOpen && (openMenu === "produccion" ? <FaChevronDown /> : <FaChevronRight />)}
+                </button>
+                {openMenu === "produccion" && isOpen && (
+                    <ul className="list-unstyled ms-3">
+                        <li>
+                        <NavLink to="/produccion/listado" className={({isActive}) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive? "bg-light text-dark fw-semibold": "text-white"}`}>
+                            Lista
+                        </NavLink>
+                        </li>
+                        <li>
+                        <NavLink to="/produccion/registrar" className={({isActive}) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive? "bg-light text-dark fw-semibold": "text-white"}`}>
                             Registrar
                         </NavLink>
                         </li>

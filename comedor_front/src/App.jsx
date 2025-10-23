@@ -21,6 +21,9 @@ import LayoutRecetas from "./layouts/LayoutRecetas";
 import RegisterReceta from "./pages/RegisterReceta";
 import Recetas from "./pages/Recetas";
 import UpdateReceta from "./pages/UpdateReceta";
+import LayoutProducciones from "./layouts/LayoutProduccion";
+import Producciones from "./pages/Producciones";
+import RegisterProduccion from "./pages/RegisterProduccion";
 
 function App() {
   return (
@@ -51,6 +54,12 @@ function App() {
             <Route path="listado" element={<Proveedores />} />
             <Route path="registrar" element={<RegisterProve />} />
             <Route path="editar/:id" element={<UpdateProve />} />
+          </Route>
+          {/* Producciones */}
+          <Route path="/produccion" element={<LayoutProducciones />}>
+            <Route path="listado" element={<Producciones />} />
+            <Route path="registrar" element={<RegisterProduccion />} />
+            {/* <Route path="editar/:id" element={<UpdateProve />} /> */}
           </Route>
           {/* Precios */}
           <Route path="/precios" element={<LayoutPrecios />}>
