@@ -1,6 +1,7 @@
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faCircleInfo, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
+import { NavLink } from "react-router-dom";
 import Select from "react-select";
 
 const FormProduccion = ({recetas, onSubmit}) => {
@@ -17,7 +18,7 @@ const FormProduccion = ({recetas, onSubmit}) => {
         e.preventDefault(); 
         onSubmit({...formData, receta_id: receta.value, turno: turno.value, insumos});
     }
-    
+
     const handleSelectReceta = e => {
         setReceta(e);
         setInsumos(e?.insumos || []);
@@ -63,7 +64,15 @@ const FormProduccion = ({recetas, onSubmit}) => {
                 <Select isClearable name="receta_id" value={receta} options={recetas} onChange={handleSelectReceta} required/>
             </div>
             <div className="col-md-8 mb-3">
-                <label className="form-label fw-semibold">Lista de insumos</label>
+                <div className="d-flex justify-content-between">
+                    <label className="form-label fw-semibold">Lista de insumos</label>
+                    {receta && (
+                        <NavLink to={`/recetas/editar/${receta.value}`} className="btn btn-sm btn-outline-secondary mb-1 d-flex align-items-center gap-2" title="Para agregar o eliminar insumos debe editar la receta">
+                            <FontAwesomeIcon icon={faCircleInfo} />
+                            <span>Editar receta</span>
+                        </NavLink>
+                    )}
+                </div>
                 <ul className="list-group shadow-sm rounded-4 overflow-hidden">
                     {insumos.map((l) => (
                         <li key={l.value} className="list-group-item d-flex justify-content-between align-items-center py-2 px-3">

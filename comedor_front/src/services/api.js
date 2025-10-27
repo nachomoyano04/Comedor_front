@@ -296,3 +296,12 @@ export const getProducciones = async () => {
         throw error;
     }
 }
+
+export const getProduccionById = async id => {
+    try {
+        const resultado = await axios(`${BASE_URL}/produccion/${id}`);
+        return resultado.data;
+    } catch (error) {
+        throw error;
+    }
+}

@@ -24,6 +24,7 @@ import UpdateReceta from "./pages/UpdateReceta";
 import LayoutProducciones from "./layouts/LayoutProduccion";
 import Producciones from "./pages/Producciones";
 import RegisterProduccion from "./pages/RegisterProduccion";
+import UpdateProduccion from "./pages/UpdateProduccion";
 
 function App() {
   return (
@@ -59,7 +60,7 @@ function App() {
           <Route path="/produccion" element={<LayoutProducciones />}>
             <Route path="listado" element={<Producciones />} />
             <Route path="registrar" element={<RegisterProduccion />} />
-            {/* <Route path="editar/:id" element={<UpdateProve />} /> */}
+            <Route path="editar/:id" element={<UpdateProduccion />} />
           </Route>
           {/* Precios */}
           <Route path="/precios" element={<LayoutPrecios />}>

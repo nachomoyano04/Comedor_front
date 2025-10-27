@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import ListaProducciones from "../components/ListaProducciones";
 import { getProducciones } from "../services/api";
 
@@ -10,9 +10,20 @@ const Producciones = () => {
     useEffect(() => {
         const loadProducciones = async () => {
             try {
-                const resultado = await getProducciones(); 
-                setProducciones(resultado);
+                const resultado = await getProducciones();
+                const fixed = resultado.reduce((acc, e) => {
+                    if(!acc[e.id]){
+                        const produ = {id: e.id, fecha: e.fecha, estado: e.estado, nombre: e.nombre, descripcion: e.descripcion, turno: e.turno, cantidad_comensales: e.cantidad_comensales, cantidad_producida: e.cantidad_producida, costo_primo_total: e.costo_primo_total, insumos: []};
+                        acc[e.id] = produ;
+                    }
+                    acc[e.id].insumos.push({insumo_id: e.insumo_id, producto: e.producto, simbolo: e.simbolo, cantidad_usada: e.cantidad_usada});
+                    return acc;
+                }, {});
+                //Las ordenamos por fecha mas reciente de produccion...
+                const p = Object.values(fixed).sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+                setProducciones(p);
             } catch (err) {
+                console.log(err);
                 setError("Error al obtener producciones");
             } finally {
                 setLoading(false);
