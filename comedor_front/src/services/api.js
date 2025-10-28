@@ -288,6 +288,15 @@ export const newProduccion = async produccion => {
     }
 }
 
+export const updateProduccion = async (id, produccion) => {
+    try {
+        const resultado = await axios.put(`${BASE_URL}/produccion/${id}`, produccion);
+        return resultado.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
 export const getProducciones = async () => {
     try {
         const resultado = await axios(`${BASE_URL}/produccion`);

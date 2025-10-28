@@ -1,39 +1,14 @@
-import { useEffect, useState } from "react";
 import FormProduccion from "../components/FormProduccion";
-import { getRecetas, newProduccion } from "../services/api";
+import { newProduccion } from "../services/api";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 
 const RegisterProduccion = () => {
     const navigate = useNavigate();
-    const [recetas, setRecetas] = useState([]);
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        const loadRecetas = async () => {
-            try {
-                const resultado = await getRecetas();
-                let recipes = resultado.reduce((acc, el) => {
-                    if(!acc[el.id]){
-                        acc[el.id] = {value: el.id, label:el.nombre, estado: el.estado, insumos: []}
-                    }
-                    acc[el.id].insumos.push({label: el.producto, cantidad: el.cantidad, simbolo: el.simbolo, value: el.insumo_id}); 
-                    return acc;
-                }, {});
-                recipes = Object.values(recipes);
-                setRecetas(recipes.filter(r => r.estado == 1));
-            } catch (err) {
-                console.log(err);
-                setError("Error al cargar recetas");
-            } finally {
-                setLoading(false);
-            }
-        }
-        loadRecetas();
-    }, []);
+    const {recetas} = useOutletContext();
 
     const handleSubmitProduccion = async formData => {
+        console.log(formData);
         const res = await Swal.fire({
             title: "Seguro desea registrar la produccion?",
             icon: "warning", 
@@ -58,13 +33,7 @@ const RegisterProduccion = () => {
             <h5 className="mb-0">Registrar Producción</h5>
         </div>
         <div className="card-body">
-            {error && <span className="bs-danger">{error}</span>}
-                {loading ? (<div className="spinner-border" role="status">
-                    <span className="visually-hidden">Cargando...</span>
-                </div>) :
-                    (<FormProduccion recetas={recetas} onSubmit={handleSubmitProduccion}/>)
-                }
-            
+            <FormProduccion recetas={recetas} onSubmit={handleSubmitProduccion}/>
         </div>
     </>
 }

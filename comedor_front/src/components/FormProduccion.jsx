@@ -4,22 +4,28 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import Select from "react-select";
 
-const FormProduccion = ({recetas, onSubmit}) => {
-    const [formData, setFormData] = useState({receta_id: "", cantidad_producida: "", turno: "", cantidad_comensales: "", insumos: []});
-    const [insumos, setInsumos] = useState([]); 
-    const [insumosBase, setInsumosBase] = useState([]);
-    const [cantidadInsumoEditable, setCantidadInsumoEditable] = useState(false);
-    const [receta, setReceta] = useState(null);
-    const [turno, setTurno] = useState(null);
+const FormProduccion = ({recetas, produccion = null, onSubmit}) => {
+    const isEditing = produccion != null;
+    const [formData, setFormData] = useState({receta_id: "", cantidad_producida: "", turno: "", cantidad_comensales: produccion?.cantidad_comensales || "", insumos: []});
+    const [receta, setReceta] = useState(isEditing?recetas.find(r => r.value == produccion.receta_id):null);
+    const [cantidadReceta, setCantidadReceta] = useState(produccion?.cantidad_producida || 1);
+    const [insumos, setInsumos] = useState(isEditing?produccion?.insumos:[]); 
+    const [insumosBase, setInsumosBase] = useState(isEditing?produccion?.insumos:[]);
     const opcionesTurno = [{value: "mañana", label: "Mañana"}, {value: "tarde", label: "Tarde"}, {value: "noche", label: "Noche"}];
-    const isEditing = false; // Por el momento hasta que hagamos la logica de editar la produccion...
-    
+    const [turno, setTurno] = useState(isEditing?opcionesTurno.find(ot => ot.value == produccion.turno) : null);
+    const [fecha, setFecha] = useState(isEditing? new Date(produccion?.fecha).toISOString().slice(0,16) : null);
+
     const handleSubmit = e => {
         e.preventDefault(); 
-        onSubmit({...formData, receta_id: receta.value, turno: turno.value, insumos});
+        if(isEditing){ //Si esta editando mandamos la fecha y tambien si hubieron cambios en los insumos
+            onSubmit({...formData, fecha, receta_id: receta.value, turno: turno.value, cantidad_producida: cantidadReceta, insumos});
+        }else{
+            onSubmit({...formData, receta_id: receta.value, turno: turno.value, cantidad_producida: cantidadReceta, insumos});
+        }
     }
 
     const handleSelectReceta = e => {
+        setCantidadReceta(1)
         setReceta(e);
         setInsumos(e?.insumos || []);
         setInsumosBase(e?.insumos || []);
@@ -31,11 +37,10 @@ const FormProduccion = ({recetas, onSubmit}) => {
             setFormData({...formData, [name]:value});
             if(name == "cantidad_producida" && insumos.length > 0 && receta){ //acá hacemos el producto entre la cantidad de produccion y la cantidad en cada insumo
                 if(value && parseFloat(value) > 0){
-                    setCantidadInsumoEditable(true);
+                    setCantidadReceta(value);
                     const cantidadReceta = parseFloat(value);
                     setInsumos(insumosBase.map(insumo => ({...insumo, cantidad: (parseFloat(insumo.cantidad) * cantidadReceta).toFixed(2)})));
                 }else{
-                    setCantidadInsumoEditable(false); //desactivamos la cantidad en insumos
                     setInsumos(insumosBase); //volvemos a los insumos originales
                 }
             }
@@ -43,6 +48,9 @@ const FormProduccion = ({recetas, onSubmit}) => {
         if(name == "insumo"){
             const insumo_id = e.target.getAttribute("data-id");
             setInsumos(insumos.map(i => i.value == insumo_id? {...i, cantidad: value}:i));
+        }
+        if(name == "fecha"){
+            setFecha(value);
         }
     }
 
@@ -52,8 +60,13 @@ const FormProduccion = ({recetas, onSubmit}) => {
         setReceta(null);
         setInsumos([]);
         setInsumosBase([]);
-        setCantidadInsumoEditable(false);
     }
+
+    const areChanges = () => {
+
+    }
+
+    const handleClickBtnListaInsumos = i => setInsumos(insumos.filter(ins => ins.value != i.value));
 
     const handleSelectTurno = e => setTurno(e)
 
@@ -79,11 +92,12 @@ const FormProduccion = ({recetas, onSubmit}) => {
                             <div className="d-flex align-items-center flex-grow-1">
                                 <span className="fw-medium">{l.label}</span>
                             </div>
-                            <div className="d-flex align-items-center ms-3 input-cantidad-insumo">
-                                <input disabled={!cantidadInsumoEditable} type="number" name="insumo" data-id={l.value} value={l.cantidad || 0} onChange={handleChange} className="form-control form-control-sm text-end" style={{ width: "150px" }} placeholder={"cantidad ("+l.simbolo+")"} required/>
-                                <small className="ms-2 text-muted">{l.simbolo}</small>
+                            <div className="d-flex align-items-center gap-2 ms-3">
+                                {cantidadReceta && (<small className="text-muted">x{cantidadReceta}</small>)}
+                                <input type="number" name="insumo" data-id={l.value} value={l.cantidad || 0} onChange={handleChange} className="form-control form-control-sm text-end" style={{ width: "150px" }} placeholder={"cantidad ("+l.simbolo+")"} required/>
+                                <small className="text-muted">{l.simbolo}</small>
                             </div>
-                            <button type="button" className="btn btn-sm ms-3 p-1" onClick={() => handleClickBtnListaInsumos(l)}><FontAwesomeIcon icon={faTrash} className="text-danger" style={{color: "#ff0000",}}/></button>
+                            {isEditing && (<button type="button" className="btn btn-sm ms-3 p-1" onClick={() => handleClickBtnListaInsumos(l)}><FontAwesomeIcon icon={faTrash} className="text-danger" style={{color: "#ff0000",}}/></button>)}
                         </li>
                     ))}
                 </ul>
@@ -92,7 +106,7 @@ const FormProduccion = ({recetas, onSubmit}) => {
         <div className="row">
             <div className="col-md-4 mb-3">
                 <label className="form-label">Cantidad de receta</label>
-                <input name="cantidad_producida" autoComplete="off" onChange={handleChange} type="number" min={"0"} className="form-control" value={formData.cantidad_producida} required />
+                <input name="cantidad_producida" autoComplete="off" onChange={handleChange} type="number" min={"0"} className="form-control" value={cantidadReceta} required />
             </div>
             <div className="col-md-4 mb-3">
                 <label className="form-label">Turno</label>
@@ -102,6 +116,12 @@ const FormProduccion = ({recetas, onSubmit}) => {
                 <label className="form-label">Cantidad comensales</label>
                 <input name="cantidad_comensales" autoComplete="off" onChange={handleChange} type="number" min={"1"} className="form-control" value={formData.cantidad_comensales} required />
             </div>
+            {produccion && (
+                <div className="col-md-4 mb-3">
+                    <label className="form-label">Fecha</label>
+                    <input name="fecha" onChange={handleChange} type="datetime-local" className="form-control" value={fecha} required />
+                </div>
+            )}
         </div>
         <div className="col-12 d-flex justify-content-end gap-2 mt-3">
             <button className="btn btn-primary" type="submit" disabled={!isEditing ? false : isEditing && areChanges ? false : true}>{isEditing ? "Guardar cambios" : "Registrar"}</button>
