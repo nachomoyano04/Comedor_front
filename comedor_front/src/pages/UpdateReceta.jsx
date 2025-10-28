@@ -53,7 +53,7 @@ const UpdateReceta = () => {
     }
 
     return <>
-        <div className="card-header bg-primary text-white">
+        <div className="card-header bg-warning">
             <h5 className="mb-0">Editar receta</h5>
         </div>
         <div className="card-body">

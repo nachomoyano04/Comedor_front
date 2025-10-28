@@ -8,7 +8,6 @@ const RegisterProduccion = () => {
     const {recetas} = useOutletContext();
 
     const handleSubmitProduccion = async formData => {
-        console.log(formData);
         const res = await Swal.fire({
             title: "Seguro desea registrar la produccion?",
             icon: "warning", 

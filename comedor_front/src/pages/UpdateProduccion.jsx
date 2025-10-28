@@ -35,7 +35,6 @@ const UpdateProduccion = () => {
     }, []);
 
     const handleSubmitProduccion = async formData => {
-        console.log(formData);
         try {
             const res = await updateProduccion(id, formData);
             await Swal.fire({icon: "success", title: res, timer: 2000});
