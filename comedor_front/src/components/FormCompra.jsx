@@ -1,9 +1,19 @@
 import { useState } from "react";
 import Select from "react-select"
 
-const FormCompra = ({onSubmit, insumos, proveedores}) => {
-    const [formData, setFormData] = useState({insumo_id: "", proveedor_id: "", insumo_nombre: "", proveedor_razon_social: "", precio_unitario: "", fecha_desde: "", cantidad: 1, precio_total: 0});
-    
+const FormCompra = ({onSubmit, udm, insumos, proveedores}) => {
+    const [formData, setFormData] = useState({
+        insumo_id: "", 
+        proveedor_id: "", 
+        insumo_nombre: "", 
+        proveedor_razon_social: "", 
+        precio_unitario: "", 
+        fecha_desde: "", 
+        cantidad: 1, 
+        precio_total: 0
+    });
+    const [udmInsumoActual, setUdmInsumoActual] = useState("");
+
     const handleChange = e => {
         if(e.target){
             const {name, value} = e.target;
@@ -18,12 +28,16 @@ const FormCompra = ({onSubmit, insumos, proveedores}) => {
             })
         }else{
             const {name, value ,label} = e;
+            if(name == "insumo_id"){ //Seteamos la unidad de medida del insumo seleccionado...
+                setUdmInsumoActual(udm.find(u => u.id == e.id_udm));
+            }
             setFormData({...formData, [name]: value, [name == "insumo_id"? "insumo_nombre": "proveedor_razon_social"] : label });
         }
     }
 
     const handleReset = () => {
         setFormData({insumo_id: "", proveedor_id: "", insumo_nombre: "", proveedor_razon_social: "", precio_unitario: "", fecha_desde: "", cantidad: 1, precio_total: 0})
+        setUdmInsumoActual("");
     }
 
     const handleSubmit = e => {
@@ -42,7 +56,7 @@ const FormCompra = ({onSubmit, insumos, proveedores}) => {
                 <Select required name="proveedor_id" onChange={handleChange} value={{value: formData.proveedor_id, label: formData.proveedor_razon_social }} options={proveedores}></Select>
             </div>
             <div className="col-md-6">
-                <label className="form-label">Precio unitario</label>
+                <label className="form-label">Precio unitario {udmInsumoActual && `(${udmInsumoActual.nombre}/ ${udmInsumoActual.simbolo})`}</label>
                 <input name="precio_unitario" onChange={handleChange} value={formData.precio_unitario} type="text" className="form-control" required/>
             </div>
             <div className="col-md-6">

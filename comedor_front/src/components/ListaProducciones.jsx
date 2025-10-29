@@ -6,7 +6,7 @@ const ListaProducciones = ({producciones, onClickStateButton}) => {
     return <div className="row row-cols-1 row-cols-md-2 g-4">
         {producciones.map(p => {
             return <div key={p.id} className="col">
-                <div className={`card shadow-sm border-0 h-100 ${p.estado == 1 ? "bg-body text-dark" : "bg-danger-subtle text-dark"}`}>
+                <div className={`card h-100 border-start border-4 shadow-sm ${p.estado == 1 ? "border-success-subtle bg-white" : "border-danger-subtle bg-danger-subtle"}`} style={{borderRadius: "1rem"}}>
                     <div className="card-header border-0 d-flex justify-content-between align-items-center">
                         <div>
                             <h5 className="mb-0 fw-semibold">{p.nombre}</h5>

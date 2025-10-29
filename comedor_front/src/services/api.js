@@ -314,3 +314,12 @@ export const getProduccionById = async id => {
         throw error;
     }
 }
+
+export const changeStateProduccionById = async (id, state) => {
+    try {
+        const resultado = await axios.patch(`${BASE_URL}/produccion/${id}/estado/${state}`);
+        return resultado.data;
+    } catch (error) {
+        throw error;
+    }
+}

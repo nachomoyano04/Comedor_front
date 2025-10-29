@@ -14,6 +14,7 @@ const Insumos = () => {
         const loadInsumos = async () => {
             try {
                 const respuesta = await getInsumos();
+                console.log(respuesta);
                 setInsumos(respuesta);
             } catch (err) {
                 console.log(err);

@@ -7,6 +7,7 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 const RegisterCompra = () => {
     const navigate = useNavigate();
     const {insumos} = useOutletContext();
+    const {unidades_de_medida} = useOutletContext();
     const [ins, setIns] = useState([]);
     const [proveedores, setProveedores] = useState([]);
     const [error, setError] = useState(null);
@@ -20,7 +21,7 @@ const RegisterCompra = () => {
                     return {name: "proveedor_id", value: p.id, label: p.razon_social}
                 });
                 const i = insumos.filter(i => i.estado == 1).map(i => {
-                    return {name: "insumo_id", value: i.id, label: i.producto}
+                    return {name: "insumo_id", value: i.id, label: i.producto, id_udm: i.id_unidad_de_medida}
                 }); 
                 setProveedores(proves);
                 setIns(i);
@@ -59,7 +60,7 @@ const RegisterCompra = () => {
                 {loading ? (<div className="spinner-border" role="status">
                     <span className="visually-hidden">Cargando...</span>
                 </div>) :
-                    (<FormCompra insumos={ins} proveedores={proveedores} onSubmit={handleSubmit}/>)
+                    (<FormCompra insumos={ins} udm={unidades_de_medida} proveedores={proveedores} onSubmit={handleSubmit}/>)
                 }
             </div>
     </>

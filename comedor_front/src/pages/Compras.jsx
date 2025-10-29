@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import ListaCompras from "../components/ListaCompras";
-import { deleteCompra, getInsumos, getPreciosByInsumo } from "../services/api";
+import { deleteCompra, getPreciosByInsumo } from "../services/api";
 import Swal from "sweetalert2";
 import { useOutletContext } from "react-router-dom";
 

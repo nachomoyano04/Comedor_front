@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import ListaProducciones from "../components/ListaProducciones";
-import { getProducciones } from "../services/api";
+import { changeStateProduccionById, getProducciones } from "../services/api";
+import Swal from "sweetalert2"
 
 const Producciones = () => {
     const [producciones, setProducciones] = useState([]);
@@ -22,6 +23,7 @@ const Producciones = () => {
                 //Las ordenamos por fecha mas reciente de produccion...
                 const p = Object.values(fixed).sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
                 setProducciones(p);
+                console.log(p)
             } catch (err) {
                 console.log(err);
                 setError("Error al obtener producciones");
@@ -32,8 +34,29 @@ const Producciones = () => {
         loadProducciones();
     }, []);
 
-    const handleChangeState = (id, state) => {
-
+    const handleChangeState = async (id, state) => {
+        const res = await Swal.fire({
+            icon: "warning",
+            title: `Seguro desea ${state == 1 ? "dar de baja": "dar de alta"} la produccion?`,
+            showCancelButton: true,
+            cancelButtonText: "Cancelar",
+            confirmButtonText: "Si"
+        });
+        if(res.isConfirmed){
+            try {
+                const respuesta = await changeStateProduccionById(id, state);
+                await Swal.fire({icon:"success", title: respuesta, timer: 2000});
+                setProducciones(producciones.map(p => {
+                    if(p.id == id){
+                        return {...p, estado: state == 1? 0 : 1}
+                    }
+                    return p;
+                }));
+                //Modificar producciones... cambiar estado a la de id: id
+            } catch (error) {
+                Swal.fire({icon:"error", title: error.response.data.error, timer:2000});                
+            }
+        }
     }
 
     return <>
