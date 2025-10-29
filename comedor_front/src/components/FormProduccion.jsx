@@ -9,23 +9,22 @@ const FormProduccion = ({ recetas, produccion = null, onSubmit }) => {
     const isEditing = produccion != null;
     const horaActual = new Date().toLocaleString('sv', { hour12: false }).slice(0,16);
     const [formData, setFormData] = useState({
-        cantidad_comensales: produccion?.cantidad_comensales || "",
-        cantidad_producida: produccion?.cantidad_producida || "",
-        receta_id: produccion?.receta_id || "",
-        turno: produccion?.turno || "",
-        insumos: produccion?.insumos.map(i => ({...i, cantidad: Number(i.cantidad)})) || [],
-        fecha: isEditing? new Date(produccion?.fecha).toISOString().slice(0, 16) : horaActual
+        cantidad_comensales: isEditing? produccion.cantidad_comensales : "",
+        cantidad_producida: isEditing? produccion.cantidad_producida : "",
+        receta_id: isEditing? produccion.receta_id : "",
+        turno: isEditing? produccion.turno : "",
+        insumos: isEditing? produccion.insumos.map(i => ({...i, cantidad: Number(i.cantidad)})) : [],
+        fecha: isEditing? new Date(produccion.fecha).toISOString().slice(0, 16) : horaActual
     });
     const [receta, setReceta] = useState(isEditing ? recetas.find(r => r.value == produccion.receta_id) : null);
     const opcionesTurno = [{ value: "mañana", label: "Mañana" }, { value: "tarde", label: "Tarde" }, { value: "noche", label: "Noche" }];
     const [turno, setTurno] = useState(isEditing ? opcionesTurno.find(ot => ot.value == produccion.turno) : null);
     const [areChanges, setAreChanges] = useState(false);
-    
+
     let restProduccion;
     if(produccion){
         let { id, costo_primo_total, descripcion, estado, nombre, fecha, insumos, ...rest } = produccion;
-        restProduccion = { ...rest, fecha: new Date(fecha).toISOString().slice(0, 16) }
-        restProduccion = { ...rest, insumos: insumos.map(i => ({ ...i, cantidad: Number(i.cantidad) })) };
+        restProduccion = { ...rest, fecha: new Date(fecha).toISOString().slice(0, 16), insumos: insumos.map(i => ({ ...i, cantidad: Number(i.cantidad) })) }
     }
 
     const handleSubmit = e => {
@@ -48,39 +47,46 @@ const FormProduccion = ({ recetas, produccion = null, onSubmit }) => {
         }else{
             formActualizado = {...formData, cantidad_producida: restProduccion.cantidad_producida, insumos: restProduccion.insumos, cantidad_comensales: restProduccion.cantidad_comensales, fecha: restProduccion.fecha};
         }
-        setAreChanges(!isEqual(restProduccion, formActualizado));
+        isEditing && setAreChanges(!isEqual(restProduccion, formActualizado));
         setFormData(formActualizado);
+    }
+
+    const cambiarCantInsumos = (insumos, cantidad) => {
+        const cantidadOriginalInsumo = parseFloat(isEditing ? restProduccion.cantidad_producida : 1);
+        return insumos.map(i => {
+            const cantidadBase = parseFloat(i.cantidad) / cantidadOriginalInsumo;
+            return {...i, cantidad: Number((cantidadBase * cantidad).toFixed(2))};
+        });
     }
 
     const handleChange = e => {
         const { name, value } = e.target;
-        if ((name == "cantidad_producida" || name == "cantidad_comensales")) {
-            console.log(name);
+        if (name == "cantidad_producida" && formData.insumos.length > 0 && receta && value < 1001 && value.length < 5) {
             let newFormData;
-            if (name == "cantidad_producida" && formData.insumos.length > 0 && receta && value < 1001 && value.length < 5) {
-                console.log("dasd")
-                if (value && parseFloat(value) > 0) { //acá hacemos el producto entre la cantidad de produccion y la cantidad en cada insumo
-                    const cantidad = parseFloat(value);
-                    newFormData = {...formData, cantidad_producida: Number(value.replace(/[^0-9]/g, '')), insumos: restProduccion.insumos.map(i => ({...i, cantidad: (parseFloat(i.cantidad) * cantidad).toFixed(2)}))};
-                } else {
-                    newFormData = {...formData, cantidad_producida: Number(value.replace(/[^0-9]/g, '')), insumos: restProduccion.insumos};
-                }
-                console.log(newFormData);
-            }else{
-                newFormData = {...formData, cantidad_comensales: Number(value.replace(/[^0-9]/g, ''))};
+            if (value && parseFloat(value) > 0) { //acá hacemos el producto entre la cantidad de produccion y la cantidad en cada insumo
+                const cantidad = parseFloat(value);
+                const insumosConCantidad = isEditing? cambiarCantInsumos(restProduccion.insumos, cantidad) : cambiarCantInsumos(receta.insumos, cantidad);
+                newFormData = {...formData, cantidad_producida: Number(value.replace(/[^0-9]/g, '')), insumos: insumosConCantidad};
+            } else {
+                newFormData = {...formData, cantidad_producida: Number(value.replace(/[^0-9]/g, '')), insumos: isEditing? restProduccion.insumos: receta.insumos};
             }
-            setAreChanges(!isEqual(newFormData, restProduccion));
+            isEditing && setAreChanges(!isEqual(newFormData, restProduccion) && value > 0);
+            setFormData(newFormData)
+        }
+        if(name == "cantidad_comensales" && value <= 10000 && value.length < 6){
+            const newFormData = {...formData, cantidad_comensales: Number(value.replace(/[^0-9]/g, ''))}
+            isEditing && setAreChanges(!isEqual(newFormData, restProduccion) && value > 0);
             setFormData(newFormData)
         }
         if (name == "insumo") {
             const insumo_id = e.target.getAttribute("data-id");
             const newFormData = {...formData, insumos: formData.insumos.map(i => i.value == insumo_id? {...i, cantidad: Number(value)}:i)}
-            setAreChanges(!isEqual(newFormData, restProduccion));
+            isEditing && setAreChanges(!isEqual(newFormData, restProduccion) && newFormData.cantidad_comensales > 0 && newFormData.cantidad_producida > 0);
             setFormData(newFormData);
         }
         if (name == "fecha") {
             const newFormData = {...formData, fecha: value};
-            setAreChanges(!isEqual(newFormData, restProduccion));
+            isEditing && setAreChanges(!isEqual(newFormData, restProduccion) && newFormData.cantidad_comensales > 0 && newFormData.cantidad_producida > 0);
             setFormData(newFormData);
         }
     }
@@ -96,12 +102,12 @@ const FormProduccion = ({ recetas, produccion = null, onSubmit }) => {
         });
         setTurno(isEditing ? opcionesTurno.find(ot => ot.value == produccion.turno) : null);
         setReceta(isEditing ? recetas.find(r => r.value == produccion.receta_id) : null);
-        setAreChanges(false);
+        isEditing && setAreChanges(false);
     }
 
     const handleClickBtnListaInsumos = i => {
-        const newFormData = {...formData, insumos: restProduccion.insumos.filter(ins => ins.value != i.value)};
-        setAreChanges(!isEqual(newFormData, restProduccion));
+        const newFormData = {...formData, insumos: formData.insumos.filter(ins => ins.value != i.value)};
+        isEditing && setAreChanges(!isEqual(newFormData, restProduccion) && newFormData.cantidad_comensales > 0 && newFormData.cantidad_producida > 0);
         setFormData(newFormData);
     }
 
@@ -109,7 +115,7 @@ const FormProduccion = ({ recetas, produccion = null, onSubmit }) => {
         setTurno(e);
         if(!e) return;
         const newFormData = {...formData, turno: e.value};
-        setAreChanges(!isEqual(newFormData, restProduccion));
+        isEditing && setAreChanges(!isEqual(newFormData, restProduccion) && newFormData.cantidad_comensales > 0 && newFormData.cantidad_producida > 0);
         setFormData(newFormData);
     }
 
@@ -149,7 +155,7 @@ const FormProduccion = ({ recetas, produccion = null, onSubmit }) => {
         <div className="row">
             <div className="col-md-4 mb-3">
                 <label className="form-label">Cantidad de receta</label>
-                <input name="cantidad_producida" autoComplete="off" onChange={handleChange} type="text" inputMode="numeric" pattern="[0-9]*" min={"1"} className="form-control" value={formData.cantidad_producida} required />
+                <input name="cantidad_producida" autoComplete="off" onChange={handleChange} type="text" inputMode="numeric" pattern="[0-9]*" min={"1"} className={`form-control ${formData.cantidad_producida <= 0? `border border-danger`: ``}`} value={formData.cantidad_producida} required />
             </div>
             <div className="col-md-4 mb-3">
                 <label className="form-label">Turno</label>
@@ -157,7 +163,7 @@ const FormProduccion = ({ recetas, produccion = null, onSubmit }) => {
             </div>
             <div className="col-md-4 mb-3">
                 <label className="form-label">Cantidad comensales</label>
-                <input name="cantidad_comensales" autoComplete="off" onChange={handleChange} type="number" min={"1"} className="form-control" value={formData.cantidad_comensales} required />
+                <input name="cantidad_comensales" autoComplete="off" onChange={handleChange} type="text" inputMode="numeric" pattern="[0-9]*" min={"1"} className={`form-control ${formData.cantidad_comensales <= 0? `border border-danger`: ``}`} value={formData.cantidad_comensales} required />
             </div>
             {produccion && (
                 <div className="col-md-4 mb-3">
@@ -167,8 +173,8 @@ const FormProduccion = ({ recetas, produccion = null, onSubmit }) => {
             )}
         </div>
         <div className="col-12 d-flex justify-content-end gap-2 mt-3">
-            <button className="btn btn-primary" type="submit" disabled={!isEditing ? false : isEditing && areChanges ? false : true}>{isEditing ? "Guardar cambios" : "Registrar"}</button>
-            <input className="btn btn-secondary" type="button" disabled={!isEditing ? false : isEditing && areChanges ? false : true} onClick={handleReset} value={"Cancelar"} />
+            <button className="btn btn-primary" type="submit" disabled={isEditing && !areChanges}>{isEditing ? "Guardar cambios" : "Registrar"}</button>
+            <input className="btn btn-secondary" type="button" disabled={isEditing && !areChanges} onClick={handleReset} value={"Cancelar"} />
         </div>
     </form>
 }
