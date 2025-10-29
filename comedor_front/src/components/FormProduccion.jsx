@@ -5,91 +5,112 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import Select from "react-select";
 
-const FormProduccion = ({recetas, produccion = null, onSubmit}) => {
+const FormProduccion = ({ recetas, produccion = null, onSubmit }) => {
     const isEditing = produccion != null;
-    const [formData, setFormData] = useState({ cantidad_comensales: produccion?.cantidad_comensales || "",  cantidad_producida: produccion?.cantidad_producida || "", fecha: produccion?.fecha || null, receta_id: produccion?.receta_id || "", turno: produccion?.turno || "", insumos: produccion?.insumos || []});
-    const [receta, setReceta] = useState(isEditing?recetas.find(r => r.value == produccion.receta_id):null);
-    const [cantidadReceta, setCantidadReceta] = useState(isEditing?produccion?.cantidad_producida : "");
-    const [insumos, setInsumos] = useState(isEditing?produccion?.insumos:[]); 
-    const [insumosBase, setInsumosBase] = useState(isEditing?produccion?.insumos:[]);
-    const opcionesTurno = [{value: "mañana", label: "Mañana"}, {value: "tarde", label: "Tarde"}, {value: "noche", label: "Noche"}];
-    const [turno, setTurno] = useState(isEditing?opcionesTurno.find(ot => ot.value == produccion.turno) : null);
-    const [fecha, setFecha] = useState(isEditing? new Date(produccion?.fecha).toISOString().slice(0,16) : null);
+    const horaActual = new Date().toLocaleString('sv', { hour12: false }).slice(0,16);
+    const [formData, setFormData] = useState({
+        cantidad_comensales: produccion?.cantidad_comensales || "",
+        cantidad_producida: produccion?.cantidad_producida || "",
+        receta_id: produccion?.receta_id || "",
+        turno: produccion?.turno || "",
+        insumos: produccion?.insumos.map(i => ({...i, cantidad: Number(i.cantidad)})) || [],
+        fecha: isEditing? new Date(produccion?.fecha).toISOString().slice(0, 16) : horaActual
+    });
+    const [receta, setReceta] = useState(isEditing ? recetas.find(r => r.value == produccion.receta_id) : null);
+    const opcionesTurno = [{ value: "mañana", label: "Mañana" }, { value: "tarde", label: "Tarde" }, { value: "noche", label: "Noche" }];
+    const [turno, setTurno] = useState(isEditing ? opcionesTurno.find(ot => ot.value == produccion.turno) : null);
     const [areChanges, setAreChanges] = useState(false);
-    const {id, costo_primo_total, descripcion, estado, nombre, ...restProduccion} = produccion;
+    
+    let restProduccion;
+    if(produccion){
+        let { id, costo_primo_total, descripcion, estado, nombre, fecha, insumos, ...rest } = produccion;
+        restProduccion = { ...rest, fecha: new Date(fecha).toISOString().slice(0, 16) }
+        restProduccion = { ...rest, insumos: insumos.map(i => ({ ...i, cantidad: Number(i.cantidad) })) };
+    }
 
     const handleSubmit = e => {
-        e.preventDefault(); 
-        if(isEditing){ //Si esta editando mandamos la fecha y tambien si hubieron cambios en los insumos
-            onSubmit({...formData, fecha, receta_id: receta.value, turno: turno.value, cantidad_producida: cantidadReceta, insumos});
-        }else{
-            const sinFechaFormData = {fecha, ...formData};
-            onSubmit({...formData, receta_id: receta.value, turno: turno.value, cantidad_producida: cantidadReceta, insumos});
+        e.preventDefault();
+        if (isEditing) { //Si esta editando mandamos la fecha y tambien si hubieron cambios en los insumos
+            onSubmit(formData);
+        } else {
+            const {fecha, ...restFormData} = formData;
+            onSubmit(restFormData);
         }
     }
 
     const handleSelectReceta = e => {
-        setCantidadReceta(isEditing?produccion?.cantidad_producida : "")
         setReceta(e);
-        setInsumos(e?.insumos || []);
-        setInsumosBase(e?.insumos || []);
+        if(!e) return;
+        const recetaDiferente = !produccion || produccion.receta_id != e.value 
+        let formActualizado;
+        if(recetaDiferente){
+            formActualizado = {...formData, cantidad_producida: "", insumos: e.insumos, cantidad_comensales: "", turno: "", receta_id: e.value, fecha: horaActual};
+        }else{
+            formActualizado = {...formData, cantidad_producida: restProduccion.cantidad_producida, insumos: restProduccion.insumos, cantidad_comensales: restProduccion.cantidad_comensales, fecha: restProduccion.fecha};
+        }
+        setAreChanges(!isEqual(restProduccion, formActualizado));
+        setFormData(formActualizado);
     }
 
     const handleChange = e => {
-        const {name, value} = e.target;
-        if((name == "cantidad_producida" || name == "cantidad_comensales")){
-            setFormData(prev => {
-                const actualizado = {...prev, [name]: Number(value.replace(/[^0-9]/g, ''))};
-                setAreChanges(!isEqual(restProduccion, actualizado));
-                return actualizado;
-            });
-            if(name == "cantidad_producida" && insumos.length > 0 && receta && value < 1001 && value.length < 5){ 
-                setAreChanges(value != produccion?.cantidad_producida);
-                setCantidadReceta(value);
-                if(value && parseFloat(value) > 0){ //acá hacemos el producto entre la cantidad de produccion y la cantidad en cada insumo
+        const { name, value } = e.target;
+        if ((name == "cantidad_producida" || name == "cantidad_comensales")) {
+            console.log(name);
+            let newFormData;
+            if (name == "cantidad_producida" && formData.insumos.length > 0 && receta && value < 1001 && value.length < 5) {
+                console.log("dasd")
+                if (value && parseFloat(value) > 0) { //acá hacemos el producto entre la cantidad de produccion y la cantidad en cada insumo
                     const cantidad = parseFloat(value);
-                    setInsumos(insumosBase.map(insumo => ({...insumo, cantidad: (parseFloat(insumo.cantidad) * cantidad).toFixed(2)})));
-                }else{
-                    setInsumos(insumosBase); //volvemos a los insumos originales
+                    newFormData = {...formData, cantidad_producida: Number(value.replace(/[^0-9]/g, '')), insumos: restProduccion.insumos.map(i => ({...i, cantidad: (parseFloat(i.cantidad) * cantidad).toFixed(2)}))};
+                } else {
+                    newFormData = {...formData, cantidad_producida: Number(value.replace(/[^0-9]/g, '')), insumos: restProduccion.insumos};
                 }
+                console.log(newFormData);
+            }else{
+                newFormData = {...formData, cantidad_comensales: Number(value.replace(/[^0-9]/g, ''))};
             }
+            setAreChanges(!isEqual(newFormData, restProduccion));
+            setFormData(newFormData)
         }
-        if(name == "insumo"){
+        if (name == "insumo") {
             const insumo_id = e.target.getAttribute("data-id");
-            setInsumos(insumos.map(i => i.value == insumo_id? {...i, cantidad: value}:i));
+            const newFormData = {...formData, insumos: formData.insumos.map(i => i.value == insumo_id? {...i, cantidad: Number(value)}:i)}
+            setAreChanges(!isEqual(newFormData, restProduccion));
+            setFormData(newFormData);
         }
-        if(name == "fecha"){
-            setFecha(value);
-            value && setFormData(prev => {
-                const updated = {...prev, ["fecha"]: new Date(value).toISOString()}; //Corregir que le agrega 3 horas más...
-                console.log(updated);
-                console.log(restProduccion);
-                setAreChanges(!isEqual(updated, restProduccion));
-                return prev;
-            })
+        if (name == "fecha") {
+            const newFormData = {...formData, fecha: value};
+            setAreChanges(!isEqual(newFormData, restProduccion));
+            setFormData(newFormData);
         }
     }
 
     const handleReset = () => {
-        setFormData({receta_id: "", cantidad_producida: "", turno: "", cantidad_comensales: produccion?.cantidad_comensales || "", insumos: []});
-        setTurno(isEditing?opcionesTurno.find(ot => ot.value == produccion.turno) : null);
-        setCantidadReceta(produccion?.cantidad_producida || "")
-        setReceta(isEditing?recetas.find(r => r.value == produccion.receta_id):null);
-        setInsumos(isEditing?produccion?.insumos:[]);
-        setInsumosBase(isEditing?produccion?.insumos:[]);
-        setFecha(isEditing? new Date(produccion?.fecha).toISOString().slice(0,16) : null);
+        setFormData({
+            cantidad_comensales: produccion?.cantidad_comensales || "",
+            cantidad_producida: produccion?.cantidad_producida || "",
+            receta_id: produccion?.receta_id || "",
+            turno: produccion?.turno || "",
+            insumos: produccion?.insumos.map(i => ({...i, cantidad: Number(i.cantidad)})) || [],
+            fecha: new Date(produccion?.fecha).toISOString().slice(0, 16) || horaActual
+        });
+        setTurno(isEditing ? opcionesTurno.find(ot => ot.value == produccion.turno) : null);
+        setReceta(isEditing ? recetas.find(r => r.value == produccion.receta_id) : null);
         setAreChanges(false);
     }
 
-    const handleClickBtnListaInsumos = i => setInsumos(insumos.filter(ins => ins.value != i.value));
+    const handleClickBtnListaInsumos = i => {
+        const newFormData = {...formData, insumos: restProduccion.insumos.filter(ins => ins.value != i.value)};
+        setAreChanges(!isEqual(newFormData, restProduccion));
+        setFormData(newFormData);
+    }
 
     const handleSelectTurno = e => {
         setTurno(e);
-        e && setFormData(prev => {
-                const updated = {...prev, ["turno"]: e.value};
-                setAreChanges(!isEqual(updated, restProduccion))
-                return updated;
-            })
+        if(!e) return;
+        const newFormData = {...formData, turno: e.value};
+        setAreChanges(!isEqual(newFormData, restProduccion));
+        setFormData(newFormData);
     }
 
     return <form className="row g-2" onSubmit={handleSubmit}>
@@ -109,17 +130,17 @@ const FormProduccion = ({recetas, produccion = null, onSubmit}) => {
                     )}
                 </div>
                 <ul className="list-group shadow-sm rounded-4 overflow-hidden">
-                    {insumos.map((l) => (
+                    {formData.insumos.map((l) => (
                         <li key={l.value} className="list-group-item d-flex justify-content-between align-items-center py-2 px-3">
                             <div className="d-flex align-items-center flex-grow-1">
                                 <span className="fw-medium">{l.label}</span>
                             </div>
                             <div className="d-flex align-items-center gap-2 ms-3">
-                                {cantidadReceta && (<small className="text-muted">x{cantidadReceta}</small>)}
-                                <input type="number" name="insumo" data-id={l.value} value={l.cantidad || 0} onChange={handleChange} className="form-control form-control-sm text-end" style={{ width: "150px" }} placeholder={"cantidad ("+l.simbolo+")"} required/>
+                                {formData.cantidad_producida > 0 && (<small className="text-muted">x{formData.cantidad_producida}</small>)}
+                                <input type="number" name="insumo" data-id={l.value} value={l.cantidad || 0} onChange={handleChange} className="form-control form-control-sm text-end" style={{ width: "150px" }} placeholder={"cantidad (" + l.simbolo + ")"} required />
                                 <small className="text-muted">{l.simbolo}</small>
                             </div>
-                            {isEditing && (<button type="button" className="btn btn-sm ms-3 p-1" onClick={() => handleClickBtnListaInsumos(l)}><FontAwesomeIcon icon={faTrash} className="text-danger" style={{color: "#ff0000",}}/></button>)}
+                            {isEditing && (<button type="button" className="btn btn-sm ms-3 p-1" onClick={() => handleClickBtnListaInsumos(l)}><FontAwesomeIcon icon={faTrash} className="text-danger" style={{ color: "#ff0000", }} /></button>)}
                         </li>
                     ))}
                 </ul>
@@ -128,11 +149,11 @@ const FormProduccion = ({recetas, produccion = null, onSubmit}) => {
         <div className="row">
             <div className="col-md-4 mb-3">
                 <label className="form-label">Cantidad de receta</label>
-                <input name="cantidad_producida" autoComplete="off" onChange={handleChange} type="text" inputMode="numeric" pattern="[0-9]*" min={"1"} className="form-control" value={cantidadReceta} required />
+                <input name="cantidad_producida" autoComplete="off" onChange={handleChange} type="text" inputMode="numeric" pattern="[0-9]*" min={"1"} className="form-control" value={formData.cantidad_producida} required />
             </div>
             <div className="col-md-4 mb-3">
                 <label className="form-label">Turno</label>
-                <Select isClearable name="turno" options={opcionesTurno} value={turno} onChange={handleSelectTurno} required/>
+                <Select isClearable name="turno" options={opcionesTurno} value={turno} onChange={handleSelectTurno} required />
             </div>
             <div className="col-md-4 mb-3">
                 <label className="form-label">Cantidad comensales</label>
@@ -141,7 +162,7 @@ const FormProduccion = ({recetas, produccion = null, onSubmit}) => {
             {produccion && (
                 <div className="col-md-4 mb-3">
                     <label className="form-label">Fecha</label>
-                    <input name="fecha" onChange={handleChange} type="datetime-local" className="form-control" value={fecha} required />
+                    <input name="fecha" onChange={handleChange} type="datetime-local" className="form-control" value={formData.fecha} required />
                 </div>
             )}
         </div>
