@@ -8,18 +8,22 @@ const UpdateUser = () => {
     const navigate = useNavigate();
     const {roles} = useOutletContext();
     const [usuario, setUsuario] = useState(null); 
-    const [rolesUser, setRolesUser] = useState([]); 
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     const {dni} = useParams();
     useEffect(() => {
         const loadUser = async () => {
             try {
-                const respuestaUsuario = await getUsuarioByDni(dni);
-                let respuestaRolesUser = await getRolesByUser(respuestaUsuario.id);
-                respuestaRolesUser = respuestaRolesUser.map(e => e.id); // Armamos un arreglo con solo los id's de los roles
-                setUsuario(respuestaUsuario);
-                setRolesUser(respuestaRolesUser);
+                const resUser = await getUsuarioByDni(dni);
+                let user = resUser.reduce((acc, u) => {
+                    if(acc.length == 0){
+                        acc = {id:u.id, nombre:u.nombre, apellido:u.apellido, dni:u.dni, cuil:u.cuil, telefono:u.telefono, estado:u.estado, rol: []}
+                    }
+                    acc.rol.push(u.rol_id);
+                    return acc;
+                }, []);
+                user = {...user, rol: user.rol?.sort((a,b) => a-b)}
+                setUsuario(user);
             } catch (err) {
                 console.log(err);
                 setError("Error al obtener el usuario");
@@ -32,19 +36,15 @@ const UpdateUser = () => {
 
     const handleSubmitForm = async formData => {
         try {
+            if(formData.rol.length == 0){
+                throw Error("Debe asignar un rol")
+            }
             const answer = await updateUsuario(formData, usuario.id);
-            await Swal.fire({
-                title: answer,
-                icon: "success",
-                timer: 2000,
-            });
+            await Swal.fire({ title: answer, icon: "success", timer: 2000});
             navigate("/usuario/listado");
         } catch (err) {
-            Swal.fire({
-                title: "Error",
-                icon: "error",
-                text: err.response.data
-            })
+            console.log(err);
+            Swal.fire({title: err, icon: "error"})
         }
     }
 
@@ -65,7 +65,7 @@ const UpdateUser = () => {
                 ) : (
                     <div className="card-body d-flex justify-content-center">
                         <div style={{width: "100%", maxWidth: "800px"}}>
-                            <FormUsuario usuario={usuario} rolesUser={rolesUser} roles={roles} onSubmit={handleSubmitForm}/>
+                            <FormUsuario usuario={usuario} roles={roles} onSubmit={handleSubmitForm}/>
                         </div>
                     </div>
                 )}

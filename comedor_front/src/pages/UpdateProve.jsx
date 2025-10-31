@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getProveedor, updateProveedor } from "../services/api";
+import { deleteContactoProveedor, getProveedor, newContactoProveedor, updateProveedor } from "../services/api";
 import FormProveedor from "../components/FormProveedor"
 import Swal from "sweetalert2";
 
@@ -15,7 +15,14 @@ const UpdateProve = () => {
         const loadProv = async () => {
             try {
                 const resultado = await getProveedor(id);
-                setProveedor(resultado);
+                let p = resultado.reduce((acc, e) => {
+                    if(acc.length == 0){
+                        acc = {id: e.id, codigo: e.codigo, cuit: e.cuit, domicilio: e.domicilio, email: e.email, estado: e.estado, horarios_atencion: e.horarios_atencion, localidad: e.localidad, nombre_fantasia: e.nombre_fantasia, razon_social: e.razon_social, contactos: []};
+                    }
+                    e.id_contacto && acc.contactos.push({id_contacto: e.id_contacto, proveedor_id: e.proveedor_id, email_contacto: e.email_contacto, nombre_contacto: e.nombre_contacto, telefono_contacto: e.telefono_contacto, es_principal: false});
+                    return acc;
+                }, []);
+                setProveedor(p);
             } catch (err) {
                 console.log(err);
                 setError("Error al obtener el proveedor");
@@ -26,21 +33,39 @@ const UpdateProve = () => {
         loadProv();
     }, [])
 
+    const handleBorrarContacto = async id_contacto => {
+        const res = await Swal.fire({icon:"warning",title:"Seguro desea borrar el contacto?",showCancelButton:true, confirmButtonText:"Si"})
+        if(res.isConfirmed){
+            const respuesta = await deleteContactoProveedor(id_contacto);
+            setProveedor({...proveedor, contactos: proveedor.contactos?.filter(c => c.id_contacto != id_contacto)});
+            Swal.fire({icon:"success", title: respuesta, timer: 2000})
+        }
+    }
+ 
     const handleSubmitForm = async formData => {
+        const {tipo, ...restFormData} = formData;
         try {
-            const response = await updateProveedor(id, formData);
-            await Swal.fire({
-                icon:"success",
-                title: "Proveedor editado",
-                text: response
-            })
-            navigate("/proveedores/listado");
+            if(tipo == "proveedor"){
+                const response = await updateProveedor(id, restFormData);
+                await Swal.fire({
+                    icon:"success",
+                    title: response,
+                    timer: 2000
+                })
+                navigate("/proveedores/listado");
+            }else{ // registrar el contacto...
+                const {tipo, ...restForm} = formData;
+                const {id_contacto} = await newContactoProveedor(restFormData);
+                const contacto = {...restForm, id_contacto};
+                setProveedor({...proveedor, contactos: [...proveedor.contactos, contacto]});
+                Swal.fire({icon: "success", title: "Contacto creado con exito", timer: 2000});
+            }
         } catch (err) {
             console.log(err);
             Swal.fire({
                 icon: "error",
                 title: "Error",
-                text: err.response.data
+                text: err.response.data.error
             })
         }
     }
@@ -62,7 +87,7 @@ const UpdateProve = () => {
             ) : (
                 <div className="card-body d-flex justify-content-center">
                     <div style={{width: "100%", maxWidth: "800px"}}>
-                        <FormProveedor proveedor={proveedor} onSubmit={handleSubmitForm} />
+                        <FormProveedor proveedor={proveedor} onSubmit={handleSubmitForm} onClickBtnBorrarContacto={handleBorrarContacto}/>
                     </div>
                 </div>
             )}

@@ -33,7 +33,7 @@ export const updateUsuario = async (usuario, id) => {
 export const getUsuarioByDni = async dni => {
     try {
         const response = await axios.get(`${BASE_URL}/usuario/dni/${dni}`);
-        return response.data[0];
+        return response.data;
     } catch (error) {
         throw error;
     }
@@ -153,7 +153,7 @@ export const getProveedores = async () => {
 export const getProveedor = async id => {
     try {
         const resultado = await axios(`${BASE_URL}/proveedor/${id}`);
-        return resultado.data[0];
+        return resultado.data;
     } catch (error) {
         throw error;
     }
@@ -186,6 +186,25 @@ export const changeStateProveeById = async (id, estado) => {
             const resultado = await axios.patch(`${BASE_URL}/proveedor/alt/${id}`);
             return resultado.data;
         }
+    } catch (error) {
+        throw error;
+    }
+}
+
+//Contacto Proveedor
+export const newContactoProveedor = async contacto_proveedor => {
+    try {
+        const resultado = await axios.post(`${BASE_URL}/proveedor/contacto`, contacto_proveedor);
+        return resultado.data;
+    } catch (error) {
+        throw error;
+    }
+} 
+
+export const deleteContactoProveedor = async id_contacto => {
+    try {
+        const resultado = await axios.delete(`${BASE_URL}/proveedor/contacto/${id_contacto}`);
+        return resultado.data;
     } catch (error) {
         throw error;
     }
