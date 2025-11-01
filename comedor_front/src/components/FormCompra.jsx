@@ -65,13 +65,13 @@ const FormCompra = ({onSubmit, udm, insumos, proveedores}) => {
             </div>
             <div className="col-md-6">
                 <label className="form-label">Cantidad</label>
-                <input name="cantidad" onChange={handleChange} value={formData.cantidad} type="number" className="form-control" required/>
+                <input name="cantidad" onChange={handleChange} value={formData.cantidad} type="number" min={"0"} className="form-control" required/>
             </div>
             <div className="col-md-6">
                 <label className="form-label">Precio total</label>
                 <input name="precio_total" onChange={handleChange} value={formData.precio_total} type="number" disabled={formData.precio_unitario.length>0?"":"disabled"} className="form-control" required/>
             </div>
-            <div className="col-12">
+            <div className="col-12 d-flex justify-content-end gap-2">
                 <button className="btn btn-primary" type="submit">Guardar</button>
                 <input className="btn btn-secondary ms-2" type="button" onClick={handleReset} value={"Cancelar"}/>
             </div>

@@ -1,16 +1,18 @@
 import { Outlet } from "react-router-dom";
-import { getRecetas } from "../services/api";
+import { getInsumos, getInsumosParaReceta, getRecetas } from "../services/api";
 import { useEffect, useState } from "react";
 
 const LayoutProducciones = () => {
     const [recetas, setRecetas] = useState([]);
+    const [insumos, setInsumos] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const loadRecetas = async () => {
+        const loadRecetasEInsumos = async () => {
             try {
                 const resultado = await getRecetas();
+                const i = await getInsumosParaReceta();
                 let recipes = resultado.reduce((acc, el) => {
                     if(!acc[el.id]){
                         acc[el.id] = {value: el.id, label:el.nombre, estado: el.estado, insumos: []}
@@ -20,6 +22,7 @@ const LayoutProducciones = () => {
                 }, {});
                 recipes = Object.values(recipes);
                 setRecetas(recipes.filter(r => r.estado == 1));
+                setInsumos(i.map(ins => ({value: ins.id, label: ins.producto, simbolo: ins.simbolo})));
             } catch (err) {
                 console.log(err);
                 setError("Error al cargar recetas");
@@ -27,7 +30,7 @@ const LayoutProducciones = () => {
                 setLoading(false);
             }
         }
-        loadRecetas();
+        loadRecetasEInsumos();
     }, []);
     return (
             <div className="bg-light rounded shadow-sm p-4">
@@ -46,7 +49,7 @@ const LayoutProducciones = () => {
                 </div>) : 
                 (
                 <div className="card shadow-sm border-0">
-                    <Outlet context={{recetas}}/>
+                    <Outlet context={{recetas, insumos}}/>
                 </div>
             )}
         </div>)

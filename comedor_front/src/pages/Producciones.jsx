@@ -23,7 +23,6 @@ const Producciones = () => {
                 //Las ordenamos por fecha mas reciente de produccion...
                 const p = Object.values(fixed).sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
                 setProducciones(p);
-                console.log(p)
             } catch (err) {
                 console.log(err);
                 setError("Error al obtener producciones");

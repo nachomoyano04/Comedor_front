@@ -1,4 +1,6 @@
-import { useEffect, useState } from "react"
+import { useState } from "react";
+import { isEqualWith } from "lodash";
+import { trimer } from "../services/globalFunctions";
 
 const FormInsumo = ({insumo = null, unidades_de_medida, onSubmit}) => {
     const [formData, setFormData] = useState({
@@ -7,17 +9,6 @@ const FormInsumo = ({insumo = null, unidades_de_medida, onSubmit}) => {
         marca: insumo?.marca || "",
         id_unidad_de_medida: insumo?.id_unidad_de_medida || unidades_de_medida[0].id
     });
-    useEffect(() => {
-        if(insumo){
-            setFormData({
-                codigo: insumo?.codigo || "",
-                producto: insumo?.producto || "",
-                marca: insumo?.marca || "",
-                id_unidad_de_medida: insumo?.id_unidad_de_medida || unidades_de_medida[0].id
-            });
-            setAreChanges(false);
-        }
-    }, [insumo]);
 
     const isEditing = insumo !== null;
     const [areChanges, setAreChanges] = useState(false);
@@ -29,34 +20,24 @@ const FormInsumo = ({insumo = null, unidades_de_medida, onSubmit}) => {
 
     const handleChange = e => {
         const {name, value} = e.target;
-        const newFormData = {...formData, [name]: value};    
+        const newFormData = {...formData, [name]: name == "id_unidad_de_medida"? Number(value) : value};    
         setFormData(newFormData);
-        if(isEditing && insumo){
-            const {id, estado, ...restInsumo} = insumo;
-            const areEqual = (a, b) => {
-                return Object.keys(a).every(key => String(a[key]) === String(b[key]));
-            }
-            setAreChanges(!areEqual(restInsumo, newFormData));
+        if(isEditing){
+            let {id, estado, stock, ...restInsumo} = insumo;
+            console.log(newFormData);
+            console.log(restInsumo)
+            setAreChanges(!isEqualWith(newFormData, restInsumo, trimer));
         }
     }
 
     const handleReset = () => {
-        if(insumo){
             setFormData({
-                codigo: insumo.codigo || "",
-                producto: insumo.producto || "",
-                marca: insumo.marca || "",
-                id_unidad_de_medida: insumo.id_unidad_de_medida || unidades_de_medida[0].id
+                codigo: insumo?.codigo || "0",
+                producto: insumo?.producto || "",
+                marca: insumo?.marca || "",
+                id_unidad_de_medida: insumo?.id_unidad_de_medida || unidades_de_medida[0].id
             })
-            setAreChanges(false);
-        }else{
-            setFormData({
-                codigo: "",
-                producto: "",
-                marca: "",
-                id_unidad_de_medida: unidades_de_medida[0].id
-            })
-        }
+            isEditing && setAreChanges(false);
     }
 
     return <>
@@ -81,10 +62,15 @@ const FormInsumo = ({insumo = null, unidades_de_medida, onSubmit}) => {
                         })}
                     </select>
                 </div>
-                <div className="col-12">
-                    <button className="btn btn-primary" type="submit" disabled={!isEditing? false:isEditing && areChanges? false : true}>{isEditing?"Guardar cambios":"Registrar"}</button>
-                    <input className="btn btn-secondary" type="button" disabled={!isEditing? false:isEditing && areChanges? false : true} onClick={handleReset} value={"Cancelar"}/>
+                <div className="col-12 d-flex justify-content-end gap-2">
+                    <button className="btn btn-primary" type="submit" disabled={isEditing && !areChanges}>{isEditing?"Guardar cambios":"Registrar"}</button>
+                    <input className="btn btn-secondary" type="button" disabled={isEditing && !areChanges} onClick={handleReset} value={"Cancelar"}/>
                 </div>
+                {isEditing && !areChanges && (
+                    <div className="text-end">
+                        <small style={{ color: "#555555", fontStyle: "italic" }}>No hay cambios aún</small>
+                    </div>
+                )}
             </form>
     </>
 }

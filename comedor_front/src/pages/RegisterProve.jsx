@@ -7,6 +7,7 @@ const RegisterProve = () => {
     const navigate = useNavigate();
 
     const handleSubmitForm = async formData => {
+        console.log(formData);
         const res = await Swal.fire({
             title: "Esta seguro que desea registrar el proveedor?",
             icon: "warning",
@@ -17,18 +18,10 @@ const RegisterProve = () => {
         if(res.isConfirmed){
             try {
                 const respuesta = await createProveedor(formData);
-                await Swal.fire({
-                    title: "Proveedor registrado",
-                    icon: "success",
-                    text: respuesta.data
-                })
+                await Swal.fire({ title: respuesta, icon: "success"})
                 navigate("/proveedores/listado");
             } catch (err) {
-                Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: err.response.data
-                })
+                Swal.fire({ icon: "error", title: "Error", text: err.response.data.error})
             }
         }
     }

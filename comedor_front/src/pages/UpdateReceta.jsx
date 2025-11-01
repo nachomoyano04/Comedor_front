@@ -19,9 +19,9 @@ const UpdateReceta = () => {
                 const resultado = await getRecetaById(id);
                 let recipe = resultado.reduce((acc, el) => {
                     if(!acc){
-                        acc = {id: el.id, nombre: el.nombre, descripcion: el.descripcion, estado: el.estado, insumo: []};
+                        acc = {nombre: el.nombre, descripcion: el.descripcion, insumo: []};
                     }
-                    acc.insumo.push({value: el.insumo_id, simbolo: el.simbolo, label: el.producto, cantidad: el.cantidad});
+                    acc.insumo.push({value: el.insumo_id, simbolo: el.simbolo, label: el.producto, cantidad: Number(el.cantidad)});
                     return acc;
                 }, null);
                 let idsInsumos = resultado.reduce((acc, el) => {
@@ -44,6 +44,7 @@ const UpdateReceta = () => {
 
     const handleSubmitReceta = async formData => {
         try {
+            console.log(formData);
             const resultado = await updateReceta(id, formData);
             await Swal.fire({icon: "success", title: resultado, timer:2000});
             navigate("/recetas/listado");
@@ -61,7 +62,7 @@ const UpdateReceta = () => {
             {loading ? (<div className="spinner-border" role="status">
                 <span className="visually-hidden">Cargando...</span>
             </div>) :
-                (<FormReceta ins={ins} re={receta} onSubmit={handleSubmitReceta}/>)
+                (<FormReceta ins={ins} receta={receta} onSubmit={handleSubmitReceta}/>)
             }
         </div>
     </>

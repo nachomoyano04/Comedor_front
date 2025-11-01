@@ -1,5 +1,6 @@
 import { useState } from "react";
-import {isEqual, isEqualWith} from "lodash";
+import { isEqualWith } from "lodash";
+import { trimer } from "../services/globalFunctions";
 
 const FormUsuario = ({ usuario = null, roles, onSubmit }) => {
     const [formData, setFormData] = useState({

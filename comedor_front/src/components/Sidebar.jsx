@@ -10,8 +10,7 @@ const Sidebar = () => {
     };
 
     return (
-        <div className="d-flex flex-column bg-dark text-white p-3 min-vh-100"
-            style={{ width: isOpen ? "260px" : "70px", transition: "0.3s" }}>
+        <div className="d-flex flex-column bg-dark text-white p-3 min-vh-100" style={{ width: isOpen ? "260px" : "70px", transition: "0.3s" }}>
             {/* Toggle sidebar */}
             <button className="btn btn-sm btn-outline-light mb-3 w-100" onClick={() => setIsOpen(!isOpen)}>
                 {isOpen ? "<<" : ">>"}
@@ -23,15 +22,12 @@ const Sidebar = () => {
             {/* Menús */}
             <div>
                 {/* Usuarios */}
-                <button
-                className="btn w-100 text-start text-white d-flex align-items-center justify-content-between mb-1"
-                onClick={() => toggleMenu("usuarios")}
-                >
-                <div className="d-flex align-items-center">
-                    <FaUser className="me-2" />
-                    {isOpen && <span className="text-truncate">Usuarios</span>}
-                </div>
-                {isOpen && (openMenu === "usuarios" ? <FaChevronDown /> : <FaChevronRight />)}
+                <button className="btn w-100 text-start text-white d-flex align-items-center justify-content-between mb-1" onClick={() => toggleMenu("usuarios")}>
+                    <div className="d-flex align-items-center">
+                        <FaUser className="me-2" />
+                        {isOpen && <span className="text-truncate">Usuarios</span>}
+                    </div>
+                    {isOpen && (openMenu === "usuarios" ? <FaChevronDown /> : <FaChevronRight />)}
                 </button>
                 {openMenu === "usuarios" && isOpen && (
                     <ul className="list-unstyled ms-3">
@@ -51,8 +47,7 @@ const Sidebar = () => {
                 )}
 
                 {/* Insumos */}
-                <button className="btn w-100 text-start text-white d-flex align-items-center justify-content-between mb-1"
-                    onClick={() => toggleMenu("insumos")}>
+                <button className="btn w-100 text-start text-white d-flex align-items-center justify-content-between mb-1" onClick={() => toggleMenu("insumos")}>
                     <div className="d-flex align-items-center">
                         <FaBox className="me-2" />
                         {isOpen && <span className="text-truncate">Insumos</span>}
@@ -87,8 +82,7 @@ const Sidebar = () => {
                     </li>
                 </ul>)}
                 {/* Recetas */}
-                <button className="btn w-100 text-start text-white d-flex align-items-center justify-content-between mb-1"
-                    onClick={() => toggleMenu("recetas")}>
+                <button className="btn w-100 text-start text-white d-flex align-items-center justify-content-between mb-1" onClick={() => toggleMenu("recetas")}>
                     <div className="d-flex align-items-center">
                         <FaFlask className="me-2" />
                         {isOpen && <span className="text-truncate">Recetas</span>}
@@ -113,9 +107,7 @@ const Sidebar = () => {
 
                 {/* Proveedores */}
                 <button
-                className="btn w-100 text-start text-white d-flex align-items-center justify-content-between mb-1"
-                onClick={() => toggleMenu("proveedores")}
-                >
+                className="btn w-100 text-start text-white d-flex align-items-center justify-content-between mb-1" onClick={() => toggleMenu("proveedores")}>
                 <div className="d-flex align-items-center">
                     <FaTruck className="me-2" />
                     {isOpen && <span className="text-truncate">Proveedores</span>}
@@ -137,15 +129,12 @@ const Sidebar = () => {
                     </ul>
                 )}
                 {/* Producción */}
-                <button
-                className="btn w-100 text-start text-white d-flex align-items-center justify-content-between mb-1"
-                onClick={() => toggleMenu("produccion")}
-                >
-                <div className="d-flex align-items-center">
-                    <FaHamburger className="me-2" />
-                    {isOpen && <span className="text-truncate">Producción</span>}
-                </div>
-                {isOpen && (openMenu === "produccion" ? <FaChevronDown /> : <FaChevronRight />)}
+                <button className="btn w-100 text-start text-white d-flex align-items-center justify-content-between mb-1" onClick={() => toggleMenu("produccion")}>
+                    <div className="d-flex align-items-center">
+                        <FaHamburger className="me-2" />
+                        {isOpen && <span className="text-truncate">Producción</span>}
+                    </div>
+                    {isOpen && (openMenu === "produccion" ? <FaChevronDown /> : <FaChevronRight />)}
                 </button>
                 {openMenu === "produccion" && isOpen && (
                     <ul className="list-unstyled ms-3">
@@ -162,15 +151,12 @@ const Sidebar = () => {
                     </ul>
                 )}
                 {/* Precios */}
-                <button
-                className="btn w-100 text-start text-white d-flex align-items-center justify-content-between mb-1"
-                onClick={() => toggleMenu("precios")}
-                >
-                <div className="d-flex align-items-center">
-                    <FaDollarSign className="me-2" />
-                    {isOpen && <span className="text-truncate">Precios</span>}
-                </div>
-                {isOpen && (openMenu === "precios" ? <FaChevronDown /> : <FaChevronRight />)}
+                <button className="btn w-100 text-start text-white d-flex align-items-center justify-content-between mb-1" onClick={() => toggleMenu("precios")} >
+                    <div className="d-flex align-items-center">
+                        <FaDollarSign className="me-2" />
+                        {isOpen && <span className="text-truncate">Precios</span>}
+                    </div>
+                    {isOpen && (openMenu === "precios" ? <FaChevronDown /> : <FaChevronRight />)}
                 </button>
                 {openMenu === "precios" && isOpen && (
                     <ul className="list-unstyled ms-3">

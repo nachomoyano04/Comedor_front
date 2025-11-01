@@ -1,7 +1,8 @@
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
-import { isEqual } from "lodash";
+import { isEqualWith } from "lodash";
+import { trimer } from "../services/globalFunctions";
 
 const FormProveedor = ({ proveedor = null, onSubmit, onClickBtnBorrarContacto }) => {
     const [formData, setFormData] = useState({ tipo: "proveedor", codigo: proveedor?.codigo || "", razon_social: proveedor?.razon_social || "", nombre_fantasia: proveedor?.nombre_fantasia || "", cuit: proveedor?.cuit || "", horarios_atencion: proveedor?.horarios_atencion || "", domicilio: proveedor?.domicilio || "", localidad: proveedor?.localidad || "", email: proveedor?.email || "", contactos: proveedor?.contactos || [] });
@@ -23,7 +24,7 @@ const FormProveedor = ({ proveedor = null, onSubmit, onClickBtnBorrarContacto })
         if (isEditing && proveedor) {
             const { id, estado, ...restProveedor } = proveedor;
             const { tipo, ...restFormData } = newFormData;
-            setAreChanges(!isEqual(restProveedor, restFormData))
+            setAreChanges(!isEqualWith(restProveedor, restFormData, trimer))
         }
     }
 
@@ -92,6 +93,11 @@ const FormProveedor = ({ proveedor = null, onSubmit, onClickBtnBorrarContacto })
                 <button className="btn btn-primary" type="submit" disabled={!isEditing ? false : isEditing && areChanges ? false : true}>{isEditing ? "Guardar cambios" : "Registrar"}</button>
                 <input className="btn btn-secondary" type="button" disabled={!isEditing ? false : isEditing && areChanges ? false : true} onClick={() => handleReset(1)} value={"Cancelar"} />
             </div>
+            {isEditing && !areChanges && (
+                <div className="text-end">
+                    <small style={{ color: "#555555", fontStyle: "italic" }}>No hay cambios aún</small>
+                </div>
+            )}
         </form>
         <hr />
         {isEditing && (<>
