@@ -7,7 +7,7 @@ import Swal from "sweetalert2"
 const UpdateProduccion = () => {
     const {id} = useParams();
     const navigate = useNavigate();
-    const {recetas} = useOutletContext();
+    const {recetas, insumos} = useOutletContext();
     const [produccion, setProduccion] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -53,7 +53,7 @@ const UpdateProduccion = () => {
                 {loading ? (<div className="spinner-border" role="status">
                     <span className="visually-hidden">Cargando...</span>
                 </div>) :
-                    (<FormProduccion recetas={recetas} produccion={produccion} onSubmit={handleSubmitProduccion}/>)
+                    (<FormProduccion recetas={recetas} insumosBD={insumos} produccion={produccion} onSubmit={handleSubmitProduccion}/>)
                 }
         </div>
     </>
