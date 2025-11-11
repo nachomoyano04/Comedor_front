@@ -3,10 +3,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { NavLink } from "react-router-dom";
 import Select from "react-select";
 import ModalAddInsumo from "./ProduccionHelpers/ModalAddInsumo";
-import { UseFormProduccion } from "./ProduccionHelpers/UseFormProduccion";
+import { useFormProduccion } from "./ProduccionHelpers/UseFormProduccion";
 
 const FormProduccion = ({ recetas, insumosBD, produccion = null, onSubmit }) => {
-    const { receta, handleSelectReceta, isEditing, formData, handleChangeModalInsumo, handleClickModal, insAAgregar, insumosDisponibles, handleChange, opcionesTurno, turno, handleSelectTurno, areChanges, handleReset, handleClickBtnListaInsumos } = UseFormProduccion({ produccion, recetas, insumosBD });
+    const { receta, handleSelectReceta, isEditing, formData, handleChangeModalInsumo, handleClickModal, insAAgregar, insumosDisponibles, handleChange, opcionesTurno, turno, handleSelectTurno, areChanges, handleReset, handleClickBtnListaInsumos } = useFormProduccion({ produccion, recetas, insumosBD });
     
     const handleSubmit = e => {
         e.preventDefault();
@@ -58,7 +58,7 @@ const FormProduccion = ({ recetas, insumosBD, produccion = null, onSubmit }) => 
         </div>
         <div className="row">
             <div className="col-md-4 mb-3">
-                <label className="form-label">Cantidad de receta</label>
+                <label className="form-label">Cantidad de {receta? `"${receta.label}"`:"---"}</label>
                 <input name="cantidad_producida" autoComplete="off" onChange={handleChange} type="text" inputMode="numeric" pattern="[0-9]*" min={"0"} className={`form-control ${formData.cantidad_producida <= 0 && receta? `border border-danger`: ``}`} value={formData.cantidad_producida || ""} required />
             </div>
             <div className="col-md-4 mb-3">

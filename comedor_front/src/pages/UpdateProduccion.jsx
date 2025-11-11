@@ -18,9 +18,9 @@ const UpdateProduccion = () => {
                 let resultado = await getProduccionById(id);
                 resultado = resultado.reduce((acc, e) => {
                     if(acc.length == 0){
-                        acc = {id: e.id, cantidad_comensales: e.cantidad_comensales, cantidad_producida: e.cantidad_producida, costo_primo_total: e.costo_primo_total, descripcion: e.descripcion, estado: e.estado, fecha: e.fecha, nombre: e.nombre, receta_id: e.receta_id, turno: e.turno, insumos: []};
+                        acc = {id: e.id, cantidad_comensales: e.cantidad_comensales, cantidad_producida: e.cantidad_producida, costo_primo_total: e.costo_primo_total, descripcion: e.descripcion, estado: e.estado, fecha: new Date(e.fecha).toISOString().slice(0, 16), nombre: e.nombre, receta_id: e.receta_id, turno: e.turno, insumos: []};
                     }
-                    acc.insumos.push({value: e.insumo_id, cantidad: e.cantidad_usada, label: e.producto, simbolo: e.simbolo})
+                    acc.insumos.push({value: e.insumo_id, cantidad: Number(e.cantidad_usada), label: e.producto, simbolo: e.simbolo})
                     return acc;
                 }, [])
                 setProduccion(resultado);
