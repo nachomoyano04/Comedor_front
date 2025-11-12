@@ -20,8 +20,8 @@ const LayoutProducciones = () => {
                     acc[el.id].insumos.push({label: el.producto, cantidad: el.cantidad, simbolo: el.simbolo, value: el.insumo_id}); 
                     return acc;
                 }, {});
-                recipes = Object.values(recipes);
-                setRecetas(recipes.filter(r => r.estado == 1));
+                recipes = Object.values(recipes).filter(r => r.estado == 1).map(r => ({...r, insumos: r.insumos.sort((a,b) => a.value - b.value)}));
+                setRecetas(recipes);
                 setInsumos(i.map(ins => ({value: ins.id, label: ins.producto, simbolo: ins.simbolo})));
             } catch (err) {
                 console.log(err);
