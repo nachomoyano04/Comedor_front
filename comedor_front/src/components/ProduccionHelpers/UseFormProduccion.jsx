@@ -27,22 +27,8 @@ export const useFormProduccion = ({ produccion, recetas, insumosBD }) => {
 
     const handleSelectReceta = e => {
         setReceta(e);
-        if (!e) {
-            setFormData({ fecha: "", cantidad_comensales: "", cantidad_producida: "", insumos: [], turno: null, receta_id: "" })
-            setTurno(null);
-            return;
-        };
-        const recetaDiferente = !produccion || produccion.receta_id != e.value
-        let formActualizado;
-        if (recetaDiferente) {
-            setTurno(null);
-            formActualizado = { ...formData, cantidad_producida: "", insumos: e.insumos, cantidad_comensales: "", turno: "", receta_id: e.value, fecha: horaActual };
-        } else {
-            setTurno(opcionesTurno.find(ot => ot.value == produccionOriginal.turno) || null);
-            formActualizado = { ...formData, receta_id: produccionOriginal.receta_id, cantidad_producida: produccionOriginal.cantidad_producida, turno: produccionOriginal.turno, insumos: produccionOriginal.insumos, cantidad_comensales: produccionOriginal.cantidad_comensales, fecha: produccionOriginal.fecha };
-        }
-        isEditing && setAreChanges(!isEqual(restProduccion, formActualizado));
-        setFormData(formActualizado);
+        setFormData({...formData, fecha: e? horaActual:"", insumos: e? e.insumos: [], receta_id: e? e.value : "", turno: ""});
+        setTurno(null);
     }
 
     const cambiarCantInsumos = (insumos, cantidad) => {
@@ -126,8 +112,7 @@ export const useFormProduccion = ({ produccion, recetas, insumosBD }) => {
     const handleChangeModalInsumo = e => {
         if (e.target) { //esta cambiando la cantidad
             const cantidad_insumo = Number(e.target.value);
-            const newInsumo = {value: insAAgregar.value, cantidad: cantidad_insumo, label: insAAgregar.label, simbolo: insAAgregar.simbolo};
-            setInsAAgregar(newInsumo);
+            setInsAAgregar({value: insAAgregar.value, cantidad: cantidad_insumo, label: insAAgregar.label, simbolo: insAAgregar.simbolo});
         } else { //esta eligiendo insumo
             setInsAAgregar(e);
         }
