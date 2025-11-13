@@ -25,41 +25,42 @@ const Insumos = () => {
         loadInsumos();
     }, []);
 
-    const handleStateInsumo = (id, state) => {
-        Swal.fire({
+    const handleStateInsumo = async (id, state) => {
+        const res = await Swal.fire({
             title: "Esta seguro que quiere dar de baja el insumo?",
             icon: "warning",
             showCancelButton: true,
             cancelButtonText: "Cancelar",
             confirmButtonText: "Si"
-        }).then(async res => {
-            if (res.isConfirmed) {
+        });
+        if (res.isConfirmed) {
+            try {
                 const resultado = await changeStateInsumoById(id, state);
-                await Swal.fire({
-                    title: resultado, icon: "success", timer: 1500
-                });
+                await Swal.fire({ title: resultado, icon: "success", timer: 1500 });
                 setInsumos(insumos.map(i => {
                     if (i.id == id) {
                         return { ...i, estado: state == 1 ? 0 : 1 };
                     }
                     return i;
                 }))
+            } catch (err) {
+                await Swal.fire({ title: err.response.data.error, icon: "error" });
             }
-        })
+        }
     }
 
     return <>
-            <div className="card-header bg-primary text-white">
-                <h5 className="mb-0">Lista de insumos</h5>
-            </div>
-            <div className="card-body">
-                {error && <span className="bs-danger">{error}</span>}
-                {loading ? (<div className="spinner-border" role="status">
-                    <span className="visually-hidden">Cargando...</span>
-                </div>) :
-                    (<ListaInsumos insumos={insumos} unidades_de_medida={unidades_de_medida} onClickChangeStateInsumo={handleStateInsumo} />)
-                }
-            </div>
+        <div className="card-header bg-primary text-white">
+            <h5 className="mb-0">Lista de insumos</h5>
+        </div>
+        <div className="card-body">
+            {error && <span className="bs-danger">{error}</span>}
+            {loading ? (<div className="spinner-border" role="status">
+                <span className="visually-hidden">Cargando...</span>
+            </div>) :
+                (<ListaInsumos insumos={insumos} unidades_de_medida={unidades_de_medida} onClickChangeStateInsumo={handleStateInsumo} />)
+            }
+        </div>
     </>
 }
 

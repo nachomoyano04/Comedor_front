@@ -20,28 +20,28 @@ const Users = () => {
         loadUsers();
     }, []);
 
-    const handleStateUser = (id, state) => {
-        Swal.fire({
+    const handleStateUser = async (id, state) => {
+        const res = await Swal.fire({
             title: `Esta seguro que desea dar de ${state === 1 ? "baja" : "alta"} al usuario?`,
             icon: "warning",
             showCancelButton: true,
             cancelButtonText: "Cancelar",
             confirmButtonText: "Si"
-        }).then(async res => {
-            if (res.isConfirmed) {
+        });
+        if (res.isConfirmed) {
+            try {
                 const answer = await changeStateUsuarioById(id, state);
-                await Swal.fire({
-                    title: answer,
-                    icon: "success"
-                });
+                await Swal.fire({ title: answer, icon: "success" });
                 setUsuarios(usuarios.map(u => {
                     if (u.id === id) {
                         return { ...u, estado: state === 1 ? 0 : 1 }; //Luego de cambiar el estado cambiamos el useState(usuario)
                     }
                     return u;
                 }));
+            } catch (err) {
+                await Swal.fire({icon: "error", title: err.response.data.error})
             }
-        });
+        }
     }
 
     return <>

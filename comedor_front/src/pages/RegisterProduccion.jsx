@@ -21,8 +21,7 @@ const RegisterProduccion = () => {
                 Swal.fire({title: r, icon: "success", timer: 2000});
                 navigate("/produccion/listado");
             } catch (err) {
-                const {error} = err.response.data;
-                Swal.fire({title: error, icon: "error"});
+                Swal.fire({title: err.response.data.error, icon: "error"});
             }
         }
     }

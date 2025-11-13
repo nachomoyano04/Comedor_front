@@ -1,6 +1,7 @@
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
+import { parsearHoraDateTime } from "../services/globalFunctions";
 
 const ListaPrecios = ({precios}) => {
     return <>
@@ -31,7 +32,7 @@ const ListaPrecios = ({precios}) => {
                             <td className="text-center">{p.producto}</td>
                             <td className="text-center">{p.unidad_de_medida}</td>
                             <td className="text-center">${p.precio_unitario}</td>
-                            <td className="text-center">{new Date(p.fecha_desde).toLocaleString()}</td>
+                            <td className="text-center">{parsearHoraDateTime(p.fecha_desde)}</td>
                             <td className="text-center">{p.razon_social}</td>
                             <td className="text-center">
                                 <Link className="btn btn-warning" to={`/precios/listado/${p.id}`}>

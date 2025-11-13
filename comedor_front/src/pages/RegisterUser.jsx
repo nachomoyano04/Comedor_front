@@ -17,14 +17,13 @@ const RegisterUser = () => {
         if(res.isConfirmed){
             try {
                 if(formData.rol.length == 0){
-                    console.log("raw");
                     throw Error("Debe asignar un rol");
                 }
                 const respuesta = await createUsuario(formData);
                 await Swal.fire({title: respuesta, icon: "success"});
                 navigate("/usuario/listado")
             } catch (err) {
-                Swal.fire({icon: "error", title: err.response? err.response.data : err});
+                Swal.fire({icon: "error", title: err.response? err.response.data.error : err});
             }
         }
     }

@@ -34,13 +34,7 @@ const Producciones = () => {
     }, []);
 
     const handleChangeState = async (id, state) => {
-        const res = await Swal.fire({
-            icon: "warning",
-            title: `Seguro desea ${state == 1 ? "dar de baja": "dar de alta"} la produccion?`,
-            showCancelButton: true,
-            cancelButtonText: "Cancelar",
-            confirmButtonText: "Si"
-        });
+        const res = await Swal.fire({ icon: "warning", title: `Seguro desea ${state == 1 ? "dar de baja": "dar de alta"} la produccion?`, showCancelButton: true, cancelButtonText: "Cancelar", confirmButtonText: "Si" });
         if(res.isConfirmed){
             try {
                 const respuesta = await changeStateProduccionById(id, state);

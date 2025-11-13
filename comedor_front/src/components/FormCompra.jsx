@@ -61,7 +61,7 @@ const FormCompra = ({onSubmit, udm, insumos, proveedores}) => {
             </div>
             <div className="col-md-6">
                 <label className="form-label">Fecha</label>
-                <input name="fecha_desde" onChange={handleChange} value={formData.fecha_desde} type="date" className="form-control" required/>
+                <input name="fecha_desde" onChange={handleChange} value={formData.fecha_desde} type="datetime-local" className="form-control" required/>
             </div>
             <div className="col-md-6">
                 <label className="form-label">Cantidad</label>

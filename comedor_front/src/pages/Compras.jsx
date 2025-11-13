@@ -41,18 +41,15 @@ const Compras = () => {
     }, []); 
 
     const handleDeleteCompra = async id => {
-        const res = await Swal.fire({
-            icon: "warning",
-            title: `Seguro desea eliminar la compra?`
-        });
+        const res = await Swal.fire({ icon: "warning", title: `Seguro desea eliminar la compra?` });
         if(res.isConfirmed){
-            const resultado = await deleteCompra(id);
-            await Swal.fire({
-                icon: "success",
-                title: resultado,
-                timer: 2000
-            });
-            setCompras(compras.filter(c => c.id != id));
+            try {
+                const resultado = await deleteCompra(id);
+                await Swal.fire({ icon: "success", title: resultado, timer: 2000 });
+                setCompras(compras.filter(c => c.id != id));
+            } catch (err) {
+                await Swal.fire({icon: "error", title: err.response.data.error});
+            }   
         }
     }
 

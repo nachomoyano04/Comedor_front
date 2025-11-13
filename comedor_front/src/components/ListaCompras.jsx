@@ -1,12 +1,13 @@
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Select from "react-select";
+import { parsearHoraDateTime } from "../services/globalFunctions";
 
-const ListaCompras = ({insumos, compras, onClickDeleteCompra, onChangeInsumo}) => {
+const ListaCompras = ({ insumos, compras, onClickDeleteCompra, onChangeInsumo }) => {
     return <>
         <div className="my-2 d-flex justify-content-end">
             <div className="w-50">
-                <Select options={insumos} onChange={e => onChangeInsumo(e)}/>
+                <Select options={insumos} onChange={e => onChangeInsumo(e)} />
             </div>
         </div>
         <div className="table-responsive">
@@ -35,20 +36,20 @@ const ListaCompras = ({insumos, compras, onClickDeleteCompra, onChangeInsumo}) =
                             <td className="text-center">{c.producto}</td>
                             <td className="text-center">{c.razon_social}</td>
                             <td className="text-center">${(parseFloat(c.precio_unitario)).toFixed(2)}</td>
-                            <td className="text-center">${(parseFloat(c.precio_unitario) * parseFloat(c.cantidad).toFixed(2))}</td>
-                            <td className="text-center">{new Date(c.fecha_desde).toLocaleString()}</td>
+                            <td className="text-center">${((parseFloat(c.precio_unitario) * parseFloat(c.cantidad)).toFixed(2))}</td>
+                            <td className="text-center">{parsearHoraDateTime(c.fecha_desde)}</td>
                             <td className="text-center">{c.cantidad}</td>
                             <td className="text-center">
-                                    <button className="btn" onClick={() => onClickDeleteCompra(c.id)}>
-                                        <FontAwesomeIcon icon={faTrash} style={{color: "#f40101"}} />
-                                    </button>
+                                <button className="btn" onClick={() => onClickDeleteCompra(c.id)}>
+                                    <FontAwesomeIcon icon={faTrash} style={{ color: "#f40101" }} />
+                                </button>
                             </td>
                         </tr>
                     ))}
                 </tbody>
             </table>
         </div>
-    </> 
+    </>
 
 }
 

@@ -61,12 +61,7 @@ const UpdateProve = () => {
                 Swal.fire({icon: "success", title: "Contacto creado con exito", timer: 2000});
             }
         } catch (err) {
-            console.log(err);
-            Swal.fire({
-                icon: "error",
-                title: "Error",
-                text: err.response.data.error
-            })
+            Swal.fire({ icon: "error", title: err.response.data.error })
         }
     }
 

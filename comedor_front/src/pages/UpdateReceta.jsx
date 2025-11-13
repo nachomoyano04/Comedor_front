@@ -44,12 +44,11 @@ const UpdateReceta = () => {
 
     const handleSubmitReceta = async formData => {
         try {
-            console.log(formData);
             const resultado = await updateReceta(id, formData);
             await Swal.fire({icon: "success", title: resultado, timer:2000});
             navigate("/recetas/listado");
         } catch (err) {
-            await Swal.fire({icon: "error", title: err.response.data, timer:2000});
+            await Swal.fire({icon: "error", title: err.response.data.error, timer: 2000});
         }
     }
 

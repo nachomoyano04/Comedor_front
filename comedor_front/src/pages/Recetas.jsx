@@ -32,7 +32,7 @@ const Recetas = () => {
     }, [])
 
     const handleChangeState = async (id, state) => {
-        const res = await Swal.fire({icon:"warning", title: `Seguro desea darla de ${state==1?"baja":"alta"}`, showCancelButton:true, cancelButtonText:"Cancelar", confirmButtonText:"Si"});
+        const res = await Swal.fire({ icon:"warning", title: `Seguro desea darla de ${state==1?"baja":"alta"}`, showCancelButton:true, cancelButtonText:"Cancelar", confirmButtonText:"Si" });
         if(res.isConfirmed){
             try {
                 const resultado = await changeStateRecetaById(id, state);
@@ -44,7 +44,7 @@ const Recetas = () => {
                     return r;
                 }));
             } catch (err) {
-                await Swal.fire({icon:"error", title: err.response.data});
+                await Swal.fire({ icon:"error", title: err.response.data.error });
             }
         }
     }

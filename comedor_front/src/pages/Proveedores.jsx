@@ -24,22 +24,20 @@ const Proveedores = () => {
     }, []);
 
     const handleStateProv = async (id, state) => {
-        const res = await Swal.fire({
-            title: `Esta seguro que desea dar de ${state == 1? "Baja":"Alta"} el proveedor?`,
-            icon: "warning",
-            confirmButtonText: "Si",
-            cancelButtonText: "Cancelar",
-            showCancelButton: true
-        })
+        const res = await Swal.fire({ title: `Esta seguro que desea dar de ${state == 1? "Baja":"Alta"} el proveedor?`, icon: "warning", confirmButtonText: "Si", cancelButtonText: "Cancelar", showCancelButton: true })
         if(res.isConfirmed){
-            const respuesta = await changeStateProveeById(id, state);
-            await Swal.fire({icon: "success", title: respuesta});
-            setProveedores(proveedores.map(p => {
-                if(p.id == id){
-                    return {...p, estado: state == 1 ? 0 : 1}; 
-                }
-                return p;
-            }));
+            try {
+                const respuesta = await changeStateProveeById(id, state);
+                await Swal.fire({icon: "success", title: respuesta});
+                setProveedores(proveedores.map(p => {
+                    if(p.id == id){
+                        return {...p, estado: state == 1 ? 0 : 1}; 
+                    }
+                    return p;
+                }));
+            } catch (err) {
+                await Swal.fire({ icon: "error", title: err.response.data.error });   
+            }
         }
     }
 

@@ -7,7 +7,7 @@ const ModalAddInsumo = ({insumosBD, handleChangeModalInsumo, cantidad_producida,
         <button type="button" className="btn btn-sm border bg-success  mb-1 d-flex align-items-center gap-2" title="Agregar insumo" data-bs-toggle="modal" data-bs-target="#modalAddInsumo">
             <FontAwesomeIcon icon={faAdd} style={{ color: "white" }}></FontAwesomeIcon>
         </button>
-        <div className="modal fade" id="modalAddInsumo" aria-hidden="true">
+        <div className="modal fade" id="modalAddInsumo" aria-hidden="false">
             <div className="modal-dialog">
                 <div className="modal-content">
                     <div className="modal-body">

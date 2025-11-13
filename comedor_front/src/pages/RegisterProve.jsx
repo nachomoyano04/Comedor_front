@@ -21,7 +21,7 @@ const RegisterProve = () => {
                 await Swal.fire({ title: respuesta, icon: "success"})
                 navigate("/proveedores/listado");
             } catch (err) {
-                Swal.fire({ icon: "error", title: "Error", text: err.response.data.error})
+                Swal.fire({ icon: "error", title: err.response.data.error})
             }
         }
     }
