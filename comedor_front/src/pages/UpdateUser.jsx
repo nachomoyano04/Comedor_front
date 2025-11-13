@@ -43,8 +43,7 @@ const UpdateUser = () => {
             await Swal.fire({ title: answer, icon: "success", timer: 2000});
             navigate("/usuario/listado");
         } catch (err) {
-            console.log(err);
-            Swal.fire({title: err, icon: "error"})
+            Swal.fire({title: err.response? err.response.data.error : err, icon: "error"})
         }
     }
 

@@ -24,7 +24,7 @@ const RegisterReceta = () => {
                     await Swal.fire({ icon: "success", title: resultado});
                     navigate("/recetas/listado")
                 } catch (err) {
-                    Swal.fire({icon:"error", title: err.response.data});
+                    Swal.fire({icon:"error", title: err.response.data.error});
                 }
             }
         }

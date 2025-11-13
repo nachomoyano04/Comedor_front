@@ -3,3 +3,7 @@ export const trimer = (a, b) => {
         return a.trim() == b.trim();
     }
 }
+
+export const parsearHoraDateTime = hora => {
+    return new Date(new Date(hora).getTime() + new Date().getTimezoneOffset() * 60000).toLocaleString("es-AR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false })
+}

@@ -44,10 +44,14 @@ const RegisterCompra = () => {
             confirmButtonText: "Si"
         });
         if(res.isConfirmed){
-            const {insumo_nombre, proveedor_razon_social, precio_total, ...compra} = formData;
-            const resultado = await newCompra(compra); //Debo registrar la compa y modificar el stock del insumo
-            await Swal.fire({ icon: "success", title: resultado });
-            navigate("/insumos/compras");
+            try {
+                const {insumo_nombre, proveedor_razon_social, precio_total, ...compra} = formData;
+                const resultado = await newCompra(compra); //Debo registrar la compra y modificar el stock del insumo
+                await Swal.fire({ icon: "success", title: resultado });
+                navigate("/insumos/compras");
+            } catch (err) {
+                await Swal.fire({icon: "error", title: err.response.data.error});                
+            }
         }
     }
 

@@ -10,18 +10,10 @@ const RegisterInsumo = () => {
     const handleSubmitForm = async formData => {
         try {
             const resultado = await createInsumo(formData);
-            await Swal.fire({
-                title: resultado,
-                icon: "success",
-                timer: 4000
-            });
+            await Swal.fire({ title: resultado, icon: "success", timer: 4000 });
             navigate("/insumos/listado");
         } catch (err) {
-            Swal.fire({
-                title: "Error",
-                icon: "error",
-                text: err.response.data
-            })
+            Swal.fire({ title: err.response.data.error, icon: "error"})
         }
     }
 
