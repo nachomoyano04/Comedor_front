@@ -3,6 +3,15 @@ import axios from "axios";
 const BASE_URL = "http://localhost:6970";
 
 //Usuario
+export const loginUser = async loginData => {
+    try {
+        const response = await axios.post(`${BASE_URL}/usuario/login`, loginData);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
 export const getUsuarios = async () => {
     try {
         const response = await axios(`${BASE_URL}/usuario`);
