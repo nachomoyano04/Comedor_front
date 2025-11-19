@@ -9,6 +9,7 @@ const FormCompra = ({onSubmit, udm, insumos, proveedores}) => {
         proveedor_razon_social: "", 
         precio_unitario: "", 
         fecha_desde: "", 
+        fecha_vencimiento: "", 
         cantidad: 1, 
         precio_total: 0
     });
@@ -36,7 +37,7 @@ const FormCompra = ({onSubmit, udm, insumos, proveedores}) => {
     }
 
     const handleReset = () => {
-        setFormData({insumo_id: "", proveedor_id: "", insumo_nombre: "", proveedor_razon_social: "", precio_unitario: "", fecha_desde: "", cantidad: 1, precio_total: 0})
+        setFormData({insumo_id: "", proveedor_id: "", insumo_nombre: "", proveedor_razon_social: "", precio_unitario: "", fecha_desde: "", fecha_vencimiento: "", cantidad: 1, precio_total: 0})
         setUdmInsumoActual("");
     }
 
@@ -55,13 +56,17 @@ const FormCompra = ({onSubmit, udm, insumos, proveedores}) => {
                 <label className="form-label">Proveedor</label>
                 <Select required name="proveedor_id" onChange={handleChange} value={{value: formData.proveedor_id, label: formData.proveedor_razon_social }} options={proveedores}></Select>
             </div>
-            <div className="col-md-6">
+            <div className="col-md-4">
                 <label className="form-label">Precio unitario {udmInsumoActual && `(${udmInsumoActual.nombre}/ ${udmInsumoActual.simbolo})`}</label>
                 <input name="precio_unitario" onChange={handleChange} value={formData.precio_unitario} type="text" className="form-control" required/>
             </div>
-            <div className="col-md-6">
+            <div className="col-md-4">
                 <label className="form-label">Fecha</label>
                 <input name="fecha_desde" onChange={handleChange} value={formData.fecha_desde} type="datetime-local" className="form-control" required/>
+            </div>
+            <div className="col-md-4">
+                <label className="form-label">Vencimiento</label>
+                <input name="fecha_vencimiento" onChange={handleChange} value={formData.fecha_vencimiento} type="date" className="form-control" required/>
             </div>
             <div className="col-md-6">
                 <label className="form-label">Cantidad</label>

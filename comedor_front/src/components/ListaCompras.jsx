@@ -1,7 +1,7 @@
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Select from "react-select";
-import { parsearHoraDateTime } from "../services/globalFunctions";
+import { parsearFechaDate, parsearHoraDateTime } from "../services/globalFunctions";
 
 const ListaCompras = ({ insumos, compras, onClickDeleteCompra, onChangeInsumo }) => {
     return <>
@@ -20,6 +20,7 @@ const ListaCompras = ({ insumos, compras, onClickDeleteCompra, onChangeInsumo })
                         <th scope="col" className="text-center">Total</th>
                         <th scope="col" className="text-center">Fecha de compra</th>
                         <th scope="col" className="text-center">Cantidad</th>
+                        <th scope="col" className="text-center">Vencimiento</th>
                         <th scope="col" className="text-center">Borrar</th>
                     </tr>
                 </thead>
@@ -39,6 +40,7 @@ const ListaCompras = ({ insumos, compras, onClickDeleteCompra, onChangeInsumo })
                             <td className="text-center">${((parseFloat(c.precio_unitario) * parseFloat(c.cantidad)).toFixed(2))}</td>
                             <td className="text-center">{parsearHoraDateTime(c.fecha_desde)}</td>
                             <td className="text-center">{c.cantidad}</td>
+                            <td className="text-center">{c.fecha_vencimiento? parsearFechaDate(c.fecha_vencimiento): "---"}</td>
                             <td className="text-center">
                                 <button className="btn" onClick={() => onClickDeleteCompra(c.id)}>
                                     <FontAwesomeIcon icon={faTrash} style={{ color: "#f40101" }} />

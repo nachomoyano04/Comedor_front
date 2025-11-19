@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 const ListaProducciones = ({producciones, onClickStateButton}) => {
     return <div className="row row-cols-1 row-cols-md-2 g-4">
         {producciones.map(p => {
+            const costo_primo_total = p.costo_primo_total.replace(".",",");
+            const costo_primo_unitario = Number(parseFloat(p.costo_primo_total) / parseFloat(p.cantidad_comensales > 0? p.cantidad_comensales : 1)).toFixed(2).replace(".", ",");
             return <div key={p.id} className="col">
                 <div className={`card h-100 border-start border-4 shadow-sm ${p.estado == 1 ? "border-success-subtle bg-white" : "border-danger-subtle bg-danger-subtle"}`} style={{borderRadius: "1rem"}}>
                     <div className="card-header border-0 d-flex justify-content-between align-items-center">
@@ -25,9 +27,12 @@ const ListaProducciones = ({producciones, onClickStateButton}) => {
                     </div>
                     <div className="card-body">
                         <p className="card-text text-body-secondary mb-3 text-center">{p.descripcion}</p>
-                        <div className="d-flex justify-content-around mb-3  ">
+                        <div className="d-flex justify-content-around mb-3">
                             <h6 className="text-body">
-                                Costo primo total: ${p.costo_primo_total.replace(".",",")}
+                                Costo primo total: ${costo_primo_total}
+                            </h6>
+                            <h6 className="text-body">
+                                Costo primo unitario: ${costo_primo_unitario}
                             </h6>
                         </div>
                         <div className="d-flex justify-content-between text-secondary">
