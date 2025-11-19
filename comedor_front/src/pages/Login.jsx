@@ -9,7 +9,6 @@ const Login = () => {
         e.preventDefault();
         try {
             const resultado = await loginUser(formData);
-            console.log(resultado);
             Swal.fire({icon: "success", title: resultado});
         } catch (error) {
             console.log(error);

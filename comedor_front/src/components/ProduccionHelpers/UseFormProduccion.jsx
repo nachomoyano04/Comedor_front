@@ -52,7 +52,7 @@ export const useFormProduccion = ({ produccion, recetas, insumosBD }) => {
             } else {
                 newFormData = {...formData, cantidad_producida: "", insumos: isEditing ? formData.insumos : receta.insumos };
             }
-            isEditing && setAreChanges(!isEqual(newFormData, restProduccion));
+            isEditing && setAreChanges(!isEqual(newFormData, restProduccion) && newFormData.cantidad_comensales > 0);
             setFormData(newFormData)
         }
         if (name == "cantidad_comensales" && value <= 10000 && value.length < 6) {

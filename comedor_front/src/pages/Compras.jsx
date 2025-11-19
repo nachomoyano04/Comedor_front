@@ -18,6 +18,7 @@ const Compras = () => {
                 setIns(i);
                 if(insumos.length > 0){
                     const c = await getPreciosByInsumo(insumos[0].id); //le pasamos el primer insumo para ver la lista de precios
+                    console.log(c);
                     setCompras(c);
                 }
             } catch (err) {
