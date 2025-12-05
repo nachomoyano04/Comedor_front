@@ -17,9 +17,10 @@ const UpdateReceta = () => {
         const loadReceta = async () => {
             try {
                 const resultado = await getRecetaById(id);
+                console.log(resultado)
                 let recipe = resultado.reduce((acc, el) => {
                     if(!acc){
-                        acc = {nombre: el.nombre, descripcion: el.descripcion, insumo: []};
+                        acc = {nombre: el.nombre, cuantos_comen: el.cuantos_comen, descripcion: el.descripcion, insumo: []};
                     }
                     acc.insumo.push({value: el.insumo_id, simbolo: el.simbolo, label: el.producto, cantidad: Number(el.cantidad)});
                     return acc;

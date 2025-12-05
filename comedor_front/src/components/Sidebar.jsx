@@ -80,6 +80,12 @@ const Sidebar = () => {
                             Compras
                         </NavLink>
                     </li>
+                    <li className="mb-1">
+                        <NavLink to="/insumos/calculadora_compras" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${
+                            isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
+                            Calculadora
+                        </NavLink>
+                    </li>
                 </ul>)}
                 {/* Recetas */}
                 <button className="btn w-100 text-start text-white d-flex align-items-center justify-content-between mb-1" onClick={() => toggleMenu("recetas")}>

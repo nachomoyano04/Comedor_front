@@ -7,7 +7,7 @@ import { trimer } from "../services/globalFunctions";
 
 const FormReceta = ({ receta, ins, onSubmit }) => {
     const [formData, setFormData] = useState({
-        nombre: receta?.nombre || "", descripcion: receta?.descripcion || "", insumo: receta?.insumo || []
+        nombre: receta?.nombre || "", cuantos_comen: receta?.cuantos_comen || 1, descripcion: receta?.descripcion || "", insumo: receta?.insumo || []
     })
     const [insumos, setInsumos] = useState(ins);
     const [areChanges, setAreChanges] = useState(false);
@@ -26,7 +26,7 @@ const FormReceta = ({ receta, ins, onSubmit }) => {
             newFormData = {...formData, insumo: formData.insumo.map(i => i.value == insumo_id? {...i, cantidad: Number(value)} : i).sort((a,b) => a.value-b.value)};
             setFormData(newFormData)
         }else{ // Para manejar el nombre y la descripcion...
-            newFormData = {...formData, [name]: value};
+            newFormData = {...formData, [name]: name == "cuantos_comen"? Number(value) : value};
         }
         isEditing && setAreChanges(!isEqualWith(newFormData, receta, trimer));
         setFormData(newFormData);
@@ -47,20 +47,26 @@ const FormReceta = ({ receta, ins, onSubmit }) => {
     }
 
     const handleReset = () => {
-        setFormData({ nombre: receta?.nombre || "", descripcion: receta?.descripcion || "", insumo: receta?.insumo || [] });
+        setFormData({ nombre: receta?.nombre || "", cuantos_comen: receta?.cuantos_comen || 1, descripcion: receta?.descripcion || "", insumo: receta?.insumo || [] });
         setInsumos(ins);
         isEditing && setAreChanges(false);
     }
 
     return <form className="row g-2" onSubmit={handleSubmit}>
-        <div className="col-md-4 mb-3">
+        <div className="col-md-7 mb-3">
             <label className="form-label">Nombre</label>
             <input name="nombre" autoComplete="off" onChange={handleChange} type="text" className="form-control" value={formData.nombre} required />
         </div>
-        <div className="col-md-8 mb-3">
+        <div className="col-md-2 mb-3"></div>
+        <div className="col-md-3 mb-3">
+            <label className="form-label">Cuantos comen</label>
+            <input name="cuantos_comen" autoComplete="off" onChange={handleChange} type="number" className="form-control" value={formData.cuantos_comen} required />
+        </div>
+        <div className="col-md-7 mb-3">
             <label className="form-label">Descripción</label>
             <input name="descripcion" autoComplete="off" onChange={handleChange} type="text" className="form-control" value={formData.descripcion} required />
         </div>
+        <div className="col-md-3 mb-3"></div>
         <div className="col-md-4 mb-3">
             <label className="form-label">Insumos</label>
             <Select name="insumos" options={insumos} onChange={handleSelect} />
