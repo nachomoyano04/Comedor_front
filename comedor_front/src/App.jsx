@@ -26,6 +26,7 @@ import Producciones from "./pages/Producciones";
 import RegisterProduccion from "./pages/RegisterProduccion";
 import UpdateProduccion from "./pages/UpdateProduccion";
 import Login from "./pages/Login";
+import CompraCalculator from "./pages/CompraCalculator";
 
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
           <Route path="editar/:id" element={<UpdateInsumo />} />
           <Route path="nueva_compra" element={<RegisterCompra />} />
           <Route path="compras" element={<Compras />} />
+          <Route path="calculadora_compras" element={<CompraCalculator />} />
         </Route>
         {/* Recetas */}
         <Route path="/recetas" element={<LayoutRecetas />}>
