@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { changeStateInsumoById, getInsumos } from "../services/api";
+import { changeStateInsumoById, getInsumos } from "../services/api_endpoints";
 import ListaInsumos from "../components/ListaInsumos";
 import { useOutletContext } from "react-router-dom";
 import Swal from "sweetalert2";

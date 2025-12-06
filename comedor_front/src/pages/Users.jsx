@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import ListaUsuarios from "../components/ListaUsuarios";
-import { changeStateUsuarioById, getUsuarios } from "../services/api";
+import { changeStateUsuarioById, getUsuarios } from "../services/api_endpoints";
 import Swal from "sweetalert2";
 const Users = () => {
     const [usuarios, setUsuarios] = useState([]);

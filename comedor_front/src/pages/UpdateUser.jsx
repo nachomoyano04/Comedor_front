@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
-import { getRolesByUser, getUsuarioByDni, updateUsuario } from "../services/api";
+import { getRolesByUser, getUsuarioByDni, updateUsuario } from "../services/api_endpoints";
 import FormUsuario from "../components/FormUsuario";
 import Swal from "sweetalert2";
 

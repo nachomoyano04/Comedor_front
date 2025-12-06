@@ -1,7 +1,7 @@
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import FormReceta from "../components/FormReceta";
 import { useEffect, useState } from "react";
-import { getRecetaById, updateReceta } from "../services/api";
+import { getRecetaById, updateReceta } from "../services/api_endpoints";
 import Swal from "sweetalert2";
 
 const UpdateReceta = () => {

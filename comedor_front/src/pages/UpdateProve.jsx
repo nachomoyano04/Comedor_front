@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { deleteContactoProveedor, getProveedor, newContactoProveedor, updateProveedor } from "../services/api";
+import { deleteContactoProveedor, getProveedor, newContactoProveedor, updateProveedor } from "../services/api_endpoints";
 import FormProveedor from "../components/FormProveedor"
 import Swal from "sweetalert2";
 

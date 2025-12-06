@@ -1,15 +1,24 @@
-import { useState } from "react";
-import { loginUser } from "../services/api";
+import { useEffect, useState } from "react";
+import { loginUser } from "../services/api_endpoints";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({dni: "", password: "", remember: false});
+
+    useEffect(() => {
+        localStorage.removeItem("token");
+    }, []);
 
     const handleSubmitForm = async e => {
         e.preventDefault();
         try {
-            const resultado = await loginUser(formData);
-            Swal.fire({icon: "success", title: resultado});
+            const data = await loginUser(formData);
+            const {access_token, refresh_token, mensaje} = data;
+            await Swal.fire({icon: "success", title: mensaje, timer: 3000});
+            localStorage.setItem("token", access_token);
+            navigate("/produccion/listado")
         } catch (error) {
             console.log(error);
             if(error.status == 401){

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
-import { getRoles } from "../services/api";
+import { getRoles } from "../services/api_endpoints";
 
 const LayoutUsers = () => {
     const [roles, setRoles] = useState([]);

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
-import { getInsumosParaReceta } from "../services/api";
+import { getInsumosParaReceta } from "../services/api_endpoints";
 
 const LayoutRecetas = () => {
     const [insumos, setInsumos] = useState([]);

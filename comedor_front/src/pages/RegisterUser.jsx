@@ -1,4 +1,4 @@
-import { createUsuario, getRoles } from "../services/api";
+import { createUsuario, getRoles } from "../services/api_endpoints";
 import FormUsuario from "../components/FormUsuario"
 import Swal from "sweetalert2"
 import { useNavigate, useOutletContext } from "react-router-dom";
