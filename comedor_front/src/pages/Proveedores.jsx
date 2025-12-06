@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { changeStateProveeById, getProveedores } from "../services/api";
+import { changeStateProveeById, getProveedores } from "../services/api_endpoints";
 import ListaProveedores from "../components/ListaProveedores";
 import Swal from "sweetalert2";
 

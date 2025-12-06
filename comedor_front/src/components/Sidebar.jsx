@@ -1,23 +1,51 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
-import { FaUser, FaBox, FaTruck, FaChevronDown, FaChevronRight, FaDollarSign, FaFlask, FaHamburger} from "react-icons/fa";
+import { FaUser, FaBox, FaTruck, FaChevronDown, FaChevronRight, FaDollarSign, FaFlask, FaHamburger, FaArrowAltCircleDown, FaArrowRight } from "react-icons/fa";
+import { AuthContext } from "../services/AuthProvider";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 
-const Sidebar = () => {
+const Sidebar = ({onToggle}) => {
+    const { user } = useContext(AuthContext);
     const [openMenu, setOpenMenu] = useState(null);
     const [isOpen, setIsOpen] = useState(true);
+
+    const handleToggle = () => {
+        setIsOpen(!isOpen);
+        onToggle(!isOpen);
+    }
+
     const toggleMenu = (menu) => {
         setOpenMenu(openMenu === menu ? null : menu);
     };
 
     return (
-        <div className="d-flex flex-column bg-dark text-white p-3 min-vh-100" style={{ width: isOpen ? "260px" : "70px", transition: "0.3s" }}>
+        <div className="d-flex flex-column bg-dark text-white p-3 min-vh-100" style={{ width: isOpen ? "260px" : "70px", transition: "0.3s", position: "fixed", top: 0, left: 0, height: "100vh", overflowY: "auto", overflowX: "hidden", zIndex: 1000 }}>
             {/* Toggle sidebar */}
-            <button className="btn btn-sm btn-outline-light mb-3 w-100" onClick={() => setIsOpen(!isOpen)}>
+            <button className="btn btn-sm btn-outline-light mb-3 w-100" onClick={handleToggle}>
                 {isOpen ? "<<" : ">>"}
             </button>
 
             {/* Logo */}
             {isOpen && <h4 className="text-center mb-4">Comedor</h4>}
+
+            {user && (
+                <div className="d-flex align-items-center bg-secondary rounded p-2 mb-4" style={{ transition: "0.3s", overflow: "hidden" }}>
+                    <div className="bg-light text-dark rounded-circle d-flex justify-content-center align-items-center" style={{ width: "20px", height: "20px", minWidth: "20px", fontSize: "1rem", fontWeight: "bold", }}>
+                        {user.nombre?.charAt(0).toUpperCase()}
+                    </div>
+                    {isOpen && (
+                        <div className="ms-2" style={{ whiteSpace: "nowrap" }}>
+                            <div className="fw-semibold text-white text-truncate">
+                                {user.nombre}
+                            </div>
+                            <div className="text-light text-truncate" style={{ fontSize: "0.85rem" }}>
+                                {user.nombre_rol}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            )}
 
             {/* Menús */}
             <div>
@@ -32,14 +60,12 @@ const Sidebar = () => {
                 {openMenu === "usuarios" && isOpen && (
                     <ul className="list-unstyled ms-3">
                         <li className="mb-1">
-                            <NavLink to="/usuario/listado" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${
-                                isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
+                            <NavLink to="/usuario/listado" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
                                 Lista
                             </NavLink>
                         </li>
                         <li className="mb-1">
-                            <NavLink to="/usuario/registrar" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${
-                                isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
+                            <NavLink to="/usuario/registrar" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
                                 Registrar
                             </NavLink>
                         </li>
@@ -55,38 +81,33 @@ const Sidebar = () => {
                     {isOpen && (openMenu === "insumos" ? <FaChevronDown /> : <FaChevronRight />)}
                 </button>
                 {openMenu === "insumos" && isOpen && (
-                <ul className="list-unstyled ms-3">
-                    <li className="mb-1">
-                        <NavLink to="/insumos/nuevo" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${
-                            isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
-                            Registrar
-                        </NavLink>
-                    </li>
-                    <li className="mb-1">
-                        <NavLink to="/insumos/listado" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${
-                            isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
-                            Listado
-                        </NavLink>
-                    </li>
-                    <li className="mb-1">
-                        <NavLink to="/insumos/nueva_compra" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${
-                            isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
-                            Comprar
-                        </NavLink>
-                    </li>
-                    <li className="mb-1">
-                        <NavLink to="/insumos/compras" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${
-                            isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
-                            Compras
-                        </NavLink>
-                    </li>
-                    <li className="mb-1">
-                        <NavLink to="/insumos/calculadora_compras" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${
-                            isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
-                            Calculadora
-                        </NavLink>
-                    </li>
-                </ul>)}
+                    <ul className="list-unstyled ms-3">
+                        <li className="mb-1">
+                            <NavLink to="/insumos/nuevo" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
+                                Registrar
+                            </NavLink>
+                        </li>
+                        <li className="mb-1">
+                            <NavLink to="/insumos/listado" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
+                                Listado
+                            </NavLink>
+                        </li>
+                        <li className="mb-1">
+                            <NavLink to="/insumos/nueva_compra" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
+                                Comprar
+                            </NavLink>
+                        </li>
+                        <li className="mb-1">
+                            <NavLink to="/insumos/compras" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
+                                Compras
+                            </NavLink>
+                        </li>
+                        <li className="mb-1">
+                            <NavLink to="/insumos/calculadora_compras" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
+                                Calculadora
+                            </NavLink>
+                        </li>
+                    </ul>)}
                 {/* Recetas */}
                 <button className="btn w-100 text-start text-white d-flex align-items-center justify-content-between mb-1" onClick={() => toggleMenu("recetas")}>
                     <div className="d-flex align-items-center">
@@ -96,41 +117,39 @@ const Sidebar = () => {
                     {isOpen && (openMenu === "recetas" ? <FaChevronDown /> : <FaChevronRight />)}
                 </button>
                 {openMenu === "recetas" && isOpen && (
-                <ul className="list-unstyled ms-3">
-                    <li className="mb-1">
-                        <NavLink to="/recetas/listado" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${
-                            isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
-                            Listado
-                        </NavLink>
-                    </li>
-                    <li className="mb-1">
-                        <NavLink to="/recetas/nueva" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${
-                            isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
-                            Nueva
-                        </NavLink>
-                    </li>
-                </ul>)}
+                    <ul className="list-unstyled ms-3">
+                        <li className="mb-1">
+                            <NavLink to="/recetas/listado" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
+                                Listado
+                            </NavLink>
+                        </li>
+                        <li className="mb-1">
+                            <NavLink to="/recetas/nueva" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
+                                Nueva
+                            </NavLink>
+                        </li>
+                    </ul>)}
 
                 {/* Proveedores */}
                 <button
-                className="btn w-100 text-start text-white d-flex align-items-center justify-content-between mb-1" onClick={() => toggleMenu("proveedores")}>
-                <div className="d-flex align-items-center">
-                    <FaTruck className="me-2" />
-                    {isOpen && <span className="text-truncate">Proveedores</span>}
-                </div>
-                {isOpen && (openMenu === "proveedores" ? <FaChevronDown /> : <FaChevronRight />)}
+                    className="btn w-100 text-start text-white d-flex align-items-center justify-content-between mb-1" onClick={() => toggleMenu("proveedores")}>
+                    <div className="d-flex align-items-center">
+                        <FaTruck className="me-2" />
+                        {isOpen && <span className="text-truncate">Proveedores</span>}
+                    </div>
+                    {isOpen && (openMenu === "proveedores" ? <FaChevronDown /> : <FaChevronRight />)}
                 </button>
                 {openMenu === "proveedores" && isOpen && (
                     <ul className="list-unstyled ms-3">
                         <li>
-                        <NavLink to="/proveedores/listado" className={({isActive}) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive? "bg-light text-dark fw-semibold": "text-white"}`}>
-                            Lista
-                        </NavLink>
+                            <NavLink to="/proveedores/listado" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
+                                Lista
+                            </NavLink>
                         </li>
                         <li>
-                        <NavLink to="/proveedores/registrar" className={({isActive}) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive? "bg-light text-dark fw-semibold": "text-white"}`}>
-                            Registrar
-                        </NavLink>
+                            <NavLink to="/proveedores/registrar" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
+                                Registrar
+                            </NavLink>
                         </li>
                     </ul>
                 )}
@@ -145,14 +164,14 @@ const Sidebar = () => {
                 {openMenu === "produccion" && isOpen && (
                     <ul className="list-unstyled ms-3">
                         <li>
-                        <NavLink to="/produccion/listado" className={({isActive}) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive? "bg-light text-dark fw-semibold": "text-white"}`}>
-                            Lista
-                        </NavLink>
+                            <NavLink to="/produccion/listado" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
+                                Lista
+                            </NavLink>
                         </li>
                         <li>
-                        <NavLink to="/produccion/registrar" className={({isActive}) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive? "bg-light text-dark fw-semibold": "text-white"}`}>
-                            Registrar
-                        </NavLink>
+                            <NavLink to="/produccion/registrar" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
+                                Registrar
+                            </NavLink>
                         </li>
                     </ul>
                 )}
@@ -167,13 +186,27 @@ const Sidebar = () => {
                 {openMenu === "precios" && isOpen && (
                     <ul className="list-unstyled ms-3">
                         <li>
-                        <NavLink to="/precios/listado" className={({isActive}) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive? "bg-light text-dark fw-semibold": "text-white"}`}>
-                            Listado
-                        </NavLink>
+                            <NavLink to="/precios/listado" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
+                                Listado
+                            </NavLink>
                         </li>
                     </ul>
                 )}
             </div>
+            {user && (
+                <div className="d-flex align-items-center bg-secondary rounded p-2 my-4 mb-4" style={{ transition: "0.3s", overflow: "hidden" }}>
+                    <div className="rounded-circle d-flex justify-content-center align-items-center" style={{ width: "20px", height: "20px", minWidth: "20px", fontSize: "1rem", fontWeight: "bold", }}>
+                        <FontAwesomeIcon icon={faArrowRightFromBracket} />
+                    </div>
+                    {isOpen && (
+                        <div className="ms-2" style={{ whiteSpace: "nowrap" }}>
+                            <div className="fw-semibold text-white text-truncate">
+                                Logout
+                            </div>
+                        </div>
+                    )}
+                </div>
+            )}
         </div>
     );
 };

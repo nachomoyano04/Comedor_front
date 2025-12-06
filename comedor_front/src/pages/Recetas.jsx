@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { changeStateRecetaById, getRecetas } from "../services/api";
+import { changeStateRecetaById, getRecetas } from "../services/api_endpoints";
 import ListaRecetas from "../components/ListaRecetas";
 import Swal from "sweetalert2";
 

@@ -16,6 +16,7 @@
     "apexcharts": "^5.3.5",
     "axios": "^1.12.2",
     "bootstrap": "^5.3.8",
+    "jwt-decode": "^4.0.0",
     "lodash": "^4.17.21",
     "react": "^19.1.1",
     "react-apexcharts": "^1.8.0",

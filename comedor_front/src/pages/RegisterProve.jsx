@@ -1,5 +1,5 @@
 import Swal from "sweetalert2";
-import { createProveedor } from "../services/api";
+import { createProveedor } from "../services/api_endpoints";
 import { useNavigate } from "react-router-dom";
 import FormProveedor from "../components/FormProveedor";
 

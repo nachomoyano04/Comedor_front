@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import FormCalculadora from "../components/FormCalculadora";
-import { getRecetas } from "../services/api";
+import { getRecetas } from "../services/api_endpoints";
 
 const CompraCalculator = () => {
     const [recetas, setRecetas] = useState([]);

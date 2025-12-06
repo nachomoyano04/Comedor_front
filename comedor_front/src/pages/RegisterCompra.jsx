@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getInsumos, getProveedores, newCompra } from "../services/api";
+import { getInsumos, getProveedores, newCompra } from "../services/api_endpoints";
 import FormCompra from "../components/FormCompra";
 import Swal from "sweetalert2";
 import { useNavigate, useOutletContext } from "react-router-dom";

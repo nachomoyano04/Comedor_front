@@ -1,5 +1,5 @@
 import FormReceta from "../components/FormReceta";
-import { newReceta } from "../services/api";
+import { newReceta } from "../services/api_endpoints";
 import Swal from "sweetalert2"
 import { useNavigate, useOutletContext } from "react-router-dom";
 

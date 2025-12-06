@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import ListaProducciones from "../components/ListaProducciones";
-import { changeStateProduccionById, getProducciones } from "../services/api";
+import { changeStateProduccionById, getProducciones } from "../services/api_endpoints";
 import Swal from "sweetalert2"
 
 const Producciones = () => {

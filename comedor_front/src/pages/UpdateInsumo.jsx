@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
-import { getInsumo, updateInsumo } from "../services/api";
+import { getInsumo, updateInsumo } from "../services/api_endpoints";
 import FormInsumo from "../components/FormInsumo";
 import Swal from "sweetalert2";
 

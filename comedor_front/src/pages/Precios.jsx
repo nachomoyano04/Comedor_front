@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getPrecios, getPreciosByInsumo } from "../services/api";
+import { getPrecios, getPreciosByInsumo } from "../services/api_endpoints";
 import ListaPrecios from "../components/ListaPrecios";
 import { useParams } from "react-router-dom";
 import ListaPreciosInsumo from "../components/ListaPreciosInsumo";

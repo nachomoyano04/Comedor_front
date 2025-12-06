@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 import {useState, useEffect} from "react";
-import { getInsumos, getUdm } from "../services/api";
+import { getInsumos, getUdm } from "../services/api_endpoints";
 
 const LayoutInsumos = () => {
     const [unidades_de_medida, setUnidades_de_medida] = useState([]);

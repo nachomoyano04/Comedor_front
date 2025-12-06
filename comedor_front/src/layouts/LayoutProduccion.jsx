@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import { getInsumos, getInsumosParaReceta, getRecetas } from "../services/api";
+import { getInsumosParaReceta, getRecetas } from "../services/api_endpoints";
 import { useEffect, useState } from "react";
 
 const LayoutProducciones = () => {

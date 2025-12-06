@@ -1,5 +1,5 @@
 import FormProduccion from "../components/FormProduccion";
-import { newProduccion } from "../services/api";
+import { newProduccion } from "../services/api_endpoints";
 import Swal from "sweetalert2";
 import { useNavigate, useOutletContext } from "react-router-dom";
 

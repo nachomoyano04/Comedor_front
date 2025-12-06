@@ -1,6 +1,6 @@
 import FormInsumo from "../components/FormInsumo";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { createInsumo } from "../services/api";
+import { createInsumo } from "../services/api_endpoints";
 import Swal from "sweetalert2"
 
 const RegisterInsumo = () => {
