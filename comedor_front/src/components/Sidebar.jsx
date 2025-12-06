@@ -1,14 +1,25 @@
 import { useContext, useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { FaUser, FaBox, FaTruck, FaChevronDown, FaChevronRight, FaDollarSign, FaFlask, FaHamburger, FaArrowAltCircleDown, FaArrowRight } from "react-icons/fa";
 import { AuthContext } from "../services/AuthProvider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
+import Swal from "sweetalert2";
+import api from "../services/api";
 
 const Sidebar = ({onToggle}) => {
-    const { user } = useContext(AuthContext);
+    const { user, setUser } = useContext(AuthContext);
+    const navigate = useNavigate();
     const [openMenu, setOpenMenu] = useState(null);
     const [isOpen, setIsOpen] = useState(true);
+
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if(!token){
+            navigate("/login");
+        }
+    }, [])
 
     const handleToggle = () => {
         setIsOpen(!isOpen);
@@ -18,6 +29,17 @@ const Sidebar = ({onToggle}) => {
     const toggleMenu = (menu) => {
         setOpenMenu(openMenu === menu ? null : menu);
     };
+
+    const handleBtnCerrarSesion = async () => {
+        const res = await Swal.fire({title: "Seguro desea cerrar sesión?", showCancelButton:true, confirmButtonText:"Sí"});
+        if(res.isConfirmed){
+            await Swal.fire({title:"Sesión cerrada", timer: 1500});
+            localStorage.removeItem("token");
+            await api.post("/usuario/auth/logout"); //Borramos el refresh_token del httpOnly
+            setUser(null);
+            navigate("/login");
+        }
+    }
 
     return (
         <div className="d-flex flex-column bg-dark text-white p-3 min-vh-100" style={{ width: isOpen ? "260px" : "70px", transition: "0.3s", position: "fixed", top: 0, left: 0, height: "100vh", overflowY: "auto", overflowX: "hidden", zIndex: 1000 }}>
@@ -194,18 +216,18 @@ const Sidebar = ({onToggle}) => {
                 )}
             </div>
             {user && (
-                <div className="d-flex align-items-center bg-secondary rounded p-2 my-4 mb-4" style={{ transition: "0.3s", overflow: "hidden" }}>
+                <button className="btn d-flex align-items-center bg-secondary rounded p-2 my-4 mb-4" style={{ transition: "0.3s", overflow: "hidden" }} onClick={handleBtnCerrarSesion}>
                     <div className="rounded-circle d-flex justify-content-center align-items-center" style={{ width: "20px", height: "20px", minWidth: "20px", fontSize: "1rem", fontWeight: "bold", }}>
                         <FontAwesomeIcon icon={faArrowRightFromBracket} />
                     </div>
                     {isOpen && (
-                        <div className="ms-2" style={{ whiteSpace: "nowrap" }}>
-                            <div className="fw-semibold text-white text-truncate">
-                                Logout
+                        <div className="ms-2">
+                            <div className="fw-semibold text-truncate">
+                                Cerrar sesión
                             </div>
                         </div>
                     )}
-                </div>
+                </button>
             )}
         </div>
     );

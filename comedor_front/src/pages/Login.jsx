@@ -1,15 +1,14 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { loginUser } from "../services/api_endpoints";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../services/AuthProvider";
+import { jwtDecode } from "jwt-decode";
 
 const Login = () => {
+    const {setUser} = useContext(AuthContext);
     const navigate = useNavigate();
     const [formData, setFormData] = useState({dni: "", password: "", remember: false});
-
-    useEffect(() => {
-        localStorage.removeItem("token");
-    }, []);
 
     const handleSubmitForm = async e => {
         e.preventDefault();
@@ -17,7 +16,11 @@ const Login = () => {
             const data = await loginUser(formData);
             const {access_token, refresh_token, mensaje} = data;
             await Swal.fire({icon: "success", title: mensaje, timer: 3000});
-            localStorage.setItem("token", access_token);
+            
+            localStorage.setItem("token", access_token); // guardamos token en localstorage
+            const payload = jwtDecode(access_token);
+            setUser(payload); // seteamos el usuario logueado en el authContext
+            
             navigate("/produccion/listado")
         } catch (error) {
             console.log(error);
