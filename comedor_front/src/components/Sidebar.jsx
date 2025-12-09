@@ -7,7 +7,7 @@ import { faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import Swal from "sweetalert2";
 import api from "../services/api";
 
-const Sidebar = ({onToggle}) => {
+const Sidebar = ({ onToggle }) => {
     const { user, setUser } = useContext(AuthContext);
     const navigate = useNavigate();
     const [openMenu, setOpenMenu] = useState(null);
@@ -16,7 +16,7 @@ const Sidebar = ({onToggle}) => {
 
     useEffect(() => {
         const token = localStorage.getItem("token");
-        if(!token){
+        if (!token) {
             navigate("/login");
         }
     }, [])
@@ -31,13 +31,19 @@ const Sidebar = ({onToggle}) => {
     };
 
     const handleBtnCerrarSesion = async () => {
-        const res = await Swal.fire({title: "Seguro desea cerrar sesión?", showCancelButton:true, confirmButtonText:"Sí"});
-        if(res.isConfirmed){
-            await Swal.fire({title:"Sesión cerrada", timer: 1500});
+        const res = await Swal.fire({ title: "Seguro desea cerrar sesión?", showCancelButton: true, confirmButtonText: "Sí" });
+        if (!res.isConfirmed) {
+            return;
+        }
+        try {
             localStorage.removeItem("token");
-            await api.post("/usuario/auth/logout"); //Borramos el refresh_token del httpOnly
+            await api.post("/usuario/auth/logout", {}, { withCredentials: true }); //Borramos el refresh_token del httpOnly
             setUser(null);
             navigate("/login");
+            await Swal.fire({ title: "Sesión cerrada", timer: 1200 });
+        } catch (err) {
+            console.log(err);
+            await Swal.fire({ icon: "error", title: "Error al cerrar sesión" });
         }
     }
 
