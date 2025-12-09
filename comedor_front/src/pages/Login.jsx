@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { loginUser } from "../services/api_endpoints";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
@@ -27,7 +27,7 @@ const Login = () => {
             if(error.status == 401){
                 Swal.fire({icon: "warning", title: error.response.data});
             }else{
-                Swal.fire({icon: "error", title: error.response.data.error});
+                Swal.fire({icon: "error", title: error.response});
             }
         }
     }
