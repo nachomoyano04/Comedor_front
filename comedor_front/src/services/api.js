@@ -18,9 +18,11 @@ let pendingRequests = [];
 api.interceptors.response.use(res => res, async error => {
     const status = error.response?.status;
     if (status === 401 && !error.config._retry) {
-        console.log(error.config?.url);
+        if(!localStorage.getItem("token")){
+            return Promise.reject(error);
+        }
+
         if (error.config?.url?.includes("/auth/logout")) {
-            console.log("raw")
             return Promise.reject(error);
         }
         const original = error.config;
