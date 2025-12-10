@@ -5,7 +5,7 @@ import { AuthContext } from "../services/AuthProvider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import Swal from "sweetalert2";
-import api from "../services/api";
+import axios from "axios";
 
 const Sidebar = ({ onToggle }) => {
     const { user, setUser } = useContext(AuthContext);
@@ -37,7 +37,7 @@ const Sidebar = ({ onToggle }) => {
         }
         try {
             localStorage.removeItem("token");
-            await api.post("/usuario/auth/logout", {}, { withCredentials: true }); //Borramos el refresh_token del httpOnly
+            await axios.post("http://localhost:6970/usuario/auth/logout", null, { withCredentials: true }); //Borramos el refresh_token del httpOnly
             setUser(null);
             navigate("/login");
             await Swal.fire({ title: "Sesión cerrada", timer: 1200 });
