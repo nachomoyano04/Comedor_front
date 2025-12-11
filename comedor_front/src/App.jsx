@@ -35,13 +35,13 @@ function App() {
       <Route path="/login" element={<Login />}></Route>
       <Route path="/" element={<LayoutGeneral />}>
         {/* Usuarios */}
-        <Route path="/usuario" element={<LayoutUsers />}>
+        <Route path="usuario" element={<LayoutUsers />}>
           <Route path="listado" element={<Users />} />
           <Route path="registrar" element={<RegisterUser />} />
           <Route path="editar/:dni" element={<UpdateUser />} />
         </Route>
         {/* Insumos */}
-        <Route path="/insumos" element={<LayoutInsumos />}>
+        <Route path="insumos" element={<LayoutInsumos />}>
           <Route path="listado" element={<Insumos />} />
           <Route path="nuevo" element={<RegisterInsumo />} />
           <Route path="editar/:id" element={<UpdateInsumo />} />
@@ -50,25 +50,25 @@ function App() {
           <Route path="calculadora_compras" element={<CompraCalculator />} />
         </Route>
         {/* Recetas */}
-        <Route path="/recetas" element={<LayoutRecetas />}>
+        <Route path="recetas" element={<LayoutRecetas />}>
           <Route path="listado" element={<Recetas />} />
           <Route path="nueva" element={<RegisterReceta />} />
           <Route path="editar/:id" element={<UpdateReceta />} />
         </Route>
         {/* Proveedores */}
-        <Route path="/proveedores" element={<LayoutProveedores />}>
+        <Route path="proveedores" element={<LayoutProveedores />}>
           <Route path="listado" element={<Proveedores />} />
           <Route path="registrar" element={<RegisterProve />} />
           <Route path="editar/:id" element={<UpdateProve />} />
         </Route>
         {/* Producciones */}
-        <Route path="/produccion" element={<LayoutProducciones />}>
+        <Route path="produccion" element={<LayoutProducciones />}>
           <Route path="listado" element={<Producciones />} />
           <Route path="registrar" element={<RegisterProduccion />} />
           <Route path="editar/:id" element={<UpdateProduccion />} />
         </Route>
         {/* Precios */}
-        <Route path="/precios" element={<LayoutPrecios />}>
+        <Route path="precios" element={<LayoutPrecios />}>
           <Route path="listado" element={<Precios />} />
           <Route path="listado/:id" element={<Precios />} />
         </Route>

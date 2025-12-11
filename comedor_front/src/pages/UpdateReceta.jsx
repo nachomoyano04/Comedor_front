@@ -44,9 +44,13 @@ const UpdateReceta = () => {
 
     const handleSubmitReceta = async formData => {
         try {
-            const resultado = await updateReceta(id, formData);
-            await Swal.fire({icon: "success", title: resultado, timer:2000});
-            navigate("/recetas/listado");
+            if(formData.error || formData.insumo.length == 0){
+                await Swal.fire({icon: "error", title: formData.error ?? "Debe haber por lo menos 1 insumo"});
+            }else{
+                const resultado = await updateReceta(id, formData);
+                await Swal.fire({icon: "success", title: resultado, timer:2000});
+                navigate("/recetas/listado");
+            }
         } catch (err) {
             await Swal.fire({icon: "error", title: err.response.data.error, timer: 2000});
         }

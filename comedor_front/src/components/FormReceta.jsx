@@ -1,8 +1,8 @@
 import { useState } from "react";
 import Select from "react-select";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import {isEqualWith} from "lodash";
+import { isEqualWith } from "lodash";
 import { trimer } from "../services/globalFunctions";
 
 const FormReceta = ({ receta, ins, onSubmit }) => {
@@ -15,32 +15,33 @@ const FormReceta = ({ receta, ins, onSubmit }) => {
 
     const handleSubmit = e => {
         e.preventDefault();
-        onSubmit(formData);
+        const insumosBien = formData.insumo.every(i => i.cantidad > 0);
+        onSubmit(insumosBien ? formData : { error: "Las cantidades de los insumos deben ser mayores a 0" });
     }
 
     const handleChange = (e) => {
-        const {name, value} = e.target;
+        const { name, value } = e.target;
         let newFormData;
-        if(name == "insumo"){ // Para manejar los insumos con sus respectivas cantidades
+        if (name == "insumo") { // Para manejar los insumos con sus respectivas cantidades
             const insumo_id = e.target.getAttribute("data-id")
-            newFormData = {...formData, insumo: formData.insumo.map(i => i.value == insumo_id? {...i, cantidad: Number(value)} : i).sort((a,b) => a.value-b.value)};
+            newFormData = { ...formData, insumo: formData.insumo.map(i => i.value == insumo_id ? { ...i, cantidad: Number(value) } : i).sort((a, b) => a.value - b.value) };
             setFormData(newFormData)
-        }else{ // Para manejar el nombre y la descripcion...
-            newFormData = {...formData, [name]: name == "cuantos_comen"? Number(value) : value};
+        } else { // Para manejar el nombre y la descripcion...
+            newFormData = { ...formData, [name]: name == "cuantos_comen" ? Number(value) : value };
         }
         isEditing && setAreChanges(!isEqualWith(newFormData, receta, trimer));
         setFormData(newFormData);
     }
 
     const handleSelect = (insumoSeleccionado) => { //sacar el insumo de los insumos y agregarlo a listaInsumos...
-        const nuevo = {...insumoSeleccionado, cantidad: 0};
-        const newFormData = {...formData, insumo: [...formData.insumo, nuevo]}; 
+        const nuevo = { ...insumoSeleccionado, cantidad: 0 };
+        const newFormData = { ...formData, insumo: [...formData.insumo, nuevo] };
         setFormData(newFormData)
         setInsumos(prev => prev.filter(i => i.value != insumoSeleccionado.value));
     }
 
-    const handleClickBtnListaInsumos = e => { //agregamos el insumo y lo sacamos de la lista de insumos
-        const newFormData = {...formData, insumo: formData.insumo.filter(i => i.value != e.value)};
+    const handleClickBtnListaInsumos = e => { //agregamos el insumo a los insumos y lo sacamos de la listaInsumos
+        const newFormData = { ...formData, insumo: formData.insumo.filter(i => i.value != e.value) };
         isEditing && setAreChanges(!isEqualWith(newFormData, receta, trimer));
         setFormData(newFormData);
         setInsumos(prev => [...prev, e]);
@@ -80,10 +81,10 @@ const FormReceta = ({ receta, ins, onSubmit }) => {
                             <span className="fw-medium">{l.label}</span>
                         </div>
                         <div className="d-flex align-items-center ms-3">
-                            <input type="number" name="insumo" data-id={l.value} value={l.cantidad || 0} onChange={handleChange} className="form-control form-control-sm text-end" style={{ width: "150px" }} placeholder={"cantidad ("+l.simbolo+")"} required/>
+                            <input type="number" name="insumo" data-id={l.value} value={l.cantidad || 0} onChange={handleChange} className="form-control form-control-sm text-end" style={{ width: "150px" }} placeholder={"cantidad (" + l.simbolo + ")"} required />
                             <small className="ms-2 text-muted">{l.simbolo}</small>
                         </div>
-                        <button type="button" className="btn btn-sm ms-3 p-1" onClick={() => handleClickBtnListaInsumos(l)}><FontAwesomeIcon  icon={faTrash} className="text-danger" style={{color: "#ff0000",}}/></button>
+                        <button type="button" className="btn btn-sm ms-3 p-1" onClick={() => handleClickBtnListaInsumos(l)}><FontAwesomeIcon icon={faTrash} className="text-danger" style={{ color: "#ff0000", }} /></button>
                     </li>
                 ))}
             </ul>

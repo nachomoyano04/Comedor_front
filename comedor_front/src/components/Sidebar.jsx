@@ -3,7 +3,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { FaUser, FaBox, FaTruck, FaChevronDown, FaChevronRight, FaDollarSign, FaFlask, FaHamburger, FaArrowAltCircleDown, FaArrowRight } from "react-icons/fa";
 import { AuthContext } from "../services/AuthProvider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
+import { faArrowRightFromBracket, faKey } from "@fortawesome/free-solid-svg-icons";
 import Swal from "sweetalert2";
 import axios from "axios";
 
@@ -58,15 +58,13 @@ const Sidebar = ({ onToggle }) => {
             {isOpen && <h4 className="text-center mb-4">Comedor</h4>}
 
             {user && (
-                <div className="d-flex align-items-center bg-secondary rounded p-2 mb-4" style={{ transition: "0.3s", overflow: "hidden" }}>
-                    <div className="bg-light text-dark rounded-circle d-flex justify-content-center align-items-center" style={{ width: "20px", height: "20px", minWidth: "20px", fontSize: "1rem", fontWeight: "bold", }}>
+                <div className={`d-flex align-items-center p-2 rounded mb-4 shadow-sm ${isOpen ? "bg-secondary" : "bg-transparent"}`} style={{ transition: "0.3s", border: isOpen ? "1px solid rgba(255,255,255,0.15)" : "none", }}>
+                    <div className="bg-light text-dark rounded-circle d-flex justify-content-center align-items-center" style={{ width: isOpen ? "40px" : "20px", height: isOpen ? "40px" : "20px", fontSize: isOpen ? "1.1rem" : "1rem", fontWeight: "bold", transition: "0.3s", }}>
                         {user.nombre?.charAt(0).toUpperCase()}
                     </div>
                     {isOpen && (
-                        <div className="ms-2" style={{ whiteSpace: "nowrap" }}>
-                            <div className="fw-semibold text-white text-truncate">
-                                {user.nombre}
-                            </div>
+                        <div className="ms-3" style={{ overflow: "hidden" }}>
+                            <div className="fw-semibold text-white text-truncate">{user.nombre}</div>
                             <div className="text-light text-truncate" style={{ fontSize: "0.85rem" }}>
                                 {user.nombre_rol}
                             </div>
@@ -221,19 +219,26 @@ const Sidebar = ({ onToggle }) => {
                     </ul>
                 )}
             </div>
-            {user && (
-                <button className="btn d-flex align-items-center bg-secondary rounded p-2 my-4 mb-4" style={{ transition: "0.3s", overflow: "hidden" }} onClick={handleBtnCerrarSesion}>
+            {user && (<>
+                <NavLink to={"/usuario/editar/pass"} className={`d-flex text-decoration-none align-items-center rounded mb-3 my-3 px-3 py-2  ${isOpen ? "bg-primary-subtle" : "bg-primary-subtle justify-content-center"}`} style={{ transition: "0.3s", cursor: "pointer", border: "1px solid rgba(255,255,255,0.15)", }}>
                     <div className="rounded-circle d-flex justify-content-center align-items-center" style={{ width: "20px", height: "20px", minWidth: "20px", fontSize: "1rem", fontWeight: "bold", }}>
-                        <FontAwesomeIcon icon={faArrowRightFromBracket} />
+                        <FontAwesomeIcon icon={faKey} className="text-primary" />
                     </div>
                     {isOpen && (
-                        <div className="ms-2">
-                            <div className="fw-semibold text-truncate">
-                                Cerrar sesión
-                            </div>
-                        </div>
+                        <span className="ms-3 fw-semibold text-truncate" style={{ color: "#0d6efd" }}>
+                            Contraseña
+                        </span>
+                    )}
+                </NavLink>
+                <button className={`d-flex align-items-center rounded mt-auto px-3 py-2 w-100 ${isOpen ? "bg-danger-subtle" : "bg-danger-subtle justify-content-center"}`} style={{ transition: "0.3s", border: "1px solid rgba(255,255,255,0.15)", cursor: "pointer", }} onClick={handleBtnCerrarSesion}>
+                    <FontAwesomeIcon icon={faArrowRightFromBracket} className="text-danger" />
+                    {isOpen && (
+                        <span className="ms-3 fw-semibold text-danger text-truncate">
+                            Cerrar sesión
+                        </span>
                     )}
                 </button>
+            </>
             )}
         </div>
     );
