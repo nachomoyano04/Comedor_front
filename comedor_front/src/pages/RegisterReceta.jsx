@@ -5,12 +5,12 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 
 const RegisterReceta = () => {
     const navigate = useNavigate();
-    const {insumos} = useOutletContext();
+    const { insumos } = useOutletContext();
 
     const handleSubmitReceta = async formData => {
-        if(formData.insumo.length == 0){ // si no seleccionó ningun insumo para la receta...
-            Swal.fire({icon:"error", title: "Debe seleccionar al menos un insumo"});
-        }else{
+        if (formData.error || formData.insumo.length == 0) { // si no seleccionó ningun insumo para la receta...
+            Swal.fire({ icon: "error", title: formData.error ?? "Debe seleccionar al menos un insumo" });
+        } else {
             const res = await Swal.fire({
                 icon: "warning",
                 title: "Seguro desea registrar la receta?",
@@ -18,13 +18,13 @@ const RegisterReceta = () => {
                 cancelButtonText: "Cancelar",
                 confirmButtonText: "Sí"
             });
-            if(res.isConfirmed){
+            if (res.isConfirmed) {
                 try {
                     const resultado = await newReceta(formData);
-                    await Swal.fire({ icon: "success", title: resultado});
+                    await Swal.fire({ icon: "success", title: resultado });
                     navigate("/recetas/listado")
                 } catch (err) {
-                    Swal.fire({icon:"error", title: err.response.data.error});
+                    Swal.fire({ icon: "error", title: err.response.data.error });
                 }
             }
         }
@@ -35,7 +35,7 @@ const RegisterReceta = () => {
             <h5 className="mb-0">Nueva receta</h5>
         </div>
         <div className="card-body">
-            <FormReceta ins={insumos} onSubmit={handleSubmitReceta}/>
+            <FormReceta ins={insumos} onSubmit={handleSubmitReceta} />
         </div>
     </>
 }
