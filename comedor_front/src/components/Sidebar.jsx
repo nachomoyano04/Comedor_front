@@ -220,7 +220,7 @@ const Sidebar = ({ onToggle }) => {
                 )}
             </div>
             {user && (<>
-                <NavLink to={"/usuario/editar/pass"} className={`d-flex text-decoration-none align-items-center rounded mb-3 my-3 px-3 py-2  ${isOpen ? "bg-primary-subtle" : "bg-primary-subtle justify-content-center"}`} style={{ transition: "0.3s", cursor: "pointer", border: "1px solid rgba(255,255,255,0.15)", }}>
+                <NavLink to={"/usuario/pass"} className={`d-flex text-decoration-none align-items-center rounded mb-3 my-3 px-3 py-2  ${isOpen ? "bg-primary-subtle" : "bg-primary-subtle justify-content-center"}`} style={{ transition: "0.3s", cursor: "pointer", border: "1px solid rgba(255,255,255,0.15)", }}>
                     <div className="rounded-circle d-flex justify-content-center align-items-center" style={{ width: "20px", height: "20px", minWidth: "20px", fontSize: "1rem", fontWeight: "bold", }}>
                         <FontAwesomeIcon icon={faKey} className="text-primary" />
                     </div>

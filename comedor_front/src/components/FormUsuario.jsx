@@ -8,6 +8,7 @@ const FormUsuario = ({ usuario = null, roles, onSubmit }) => {
         apellido: usuario?.apellido || "",
         dni: usuario?.dni || "",
         cuil: usuario?.cuil || "",
+        correo: usuario?.correo || "",
         telefono: usuario?.telefono || "",
         rol: usuario?.rol || []
     });
@@ -41,6 +42,7 @@ const FormUsuario = ({ usuario = null, roles, onSubmit }) => {
             apellido: usuario?.apellido || "",
             dni: usuario?.dni || "",
             cuil: usuario?.cuil || "",
+            correo: usuario?.correo || "",
             telefono: usuario?.telefono || "",
             rol: usuario?.rol || []
         });
@@ -48,13 +50,17 @@ const FormUsuario = ({ usuario = null, roles, onSubmit }) => {
     }
 
     return <form className="row g-2" onSubmit={handleSubmit}>
-        <div className="col-md-6 mb-3">
+        <div className="col-md-4 mb-3">
             <label className="form-label">Nombre</label>
             <input name="nombre" onChange={handleChange} type="text" className="form-control" value={formData.nombre} required />
         </div>
-        <div className="col-md-6 mb-3">
+        <div className="col-md-4 mb-3">
             <label className="form-label">Apellido</label>
             <input name="apellido" onChange={handleChange} type="text" className="form-control" value={formData.apellido} required />
+        </div>
+        <div className="col-md-4 mb-3">
+            <label className="form-label">Correo</label>
+            <input name="correo" onChange={handleChange} type="email" className="form-control" value={formData.correo} required />
         </div>
         <div className="col-md-4 mb-3">
             <label className="form-label">DNI</label>

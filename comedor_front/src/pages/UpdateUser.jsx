@@ -17,7 +17,7 @@ const UpdateUser = () => {
                 const resUser = await getUsuarioByDni(dni);
                 let user = resUser.reduce((acc, u) => {
                     if(acc.length == 0){
-                        acc = {id:u.id, nombre:u.nombre, apellido:u.apellido, dni:u.dni, cuil:u.cuil, telefono:u.telefono, estado:u.estado, rol: []}
+                        acc = {id:u.id, nombre:u.nombre, apellido:u.apellido, dni:u.dni, cuil:u.cuil, correo: u.correo, telefono:u.telefono, estado:u.estado, rol: []}
                     }
                     acc.rol.push(u.rol_id);
                     return acc;

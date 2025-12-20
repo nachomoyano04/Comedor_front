@@ -49,11 +49,10 @@ const Login = () => {
                     <label htmlFor="password" className="form-label">Password</label>
                     <input type="password" autoComplete="off" className="form-control" value={formData.password} onChange={handleChange} id="password" name="password" />
                 </div>
-                <div className="mb-3 form-check">
+                {/* <div className="mb-3 form-check">
                     <input type="checkbox" checked={formData.remember} onChange={handleChange} className="form-check-input" id="remember" name="remember" />
                     <label className="form-check-label" htmlFor="remember">Recordarme</label>
-                </div>
-                <div className="g-signin2" data-onsuccess="onSignIn"></div>
+                </div> */}
                 <button type="submit" className="btn btn-primary w-100 py-2">Ingresar</button>
             </form>
         </div>

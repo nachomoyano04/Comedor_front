@@ -29,6 +29,7 @@ export const createUsuario = async usuario_y_roles => {
 
 export const updateUsuario = async (usuario, id) => {
     try {
+        console.log(usuario);
         const response = await api.put(`/usuario/${id}`, usuario);
         return response.data;
     } catch (error) {
@@ -52,6 +53,15 @@ export const changeStateUsuarioById = async (id, state) => {
             return response.data;
         }
         const response = await api.patch(`/usuario/alt/${id}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const changePasswordUser = async (actual, nueva, id) => {
+    try {
+        const response = await api.patch(`/usuario/pass/${id}`, {actual, nueva});
         return response.data;
     } catch (error) {
         throw error;
