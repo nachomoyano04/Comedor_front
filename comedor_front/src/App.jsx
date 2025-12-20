@@ -27,6 +27,7 @@ import RegisterProduccion from "./pages/RegisterProduccion";
 import UpdateProduccion from "./pages/UpdateProduccion";
 import Login from "./pages/Login";
 import CompraCalculator from "./pages/CompraCalculator";
+import ChangePass from "./pages/ChangePass";
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
           <Route path="listado" element={<Users />} />
           <Route path="registrar" element={<RegisterUser />} />
           <Route path="editar/:dni" element={<UpdateUser />} />
+          <Route path="pass" element={<ChangePass />} />
         </Route>
         {/* Insumos */}
         <Route path="insumos" element={<LayoutInsumos />}>
