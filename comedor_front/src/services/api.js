@@ -55,7 +55,7 @@ api.interceptors.response.use(res => res, async error => {
 
 
     if (status == 403) {
-        window.location.href = "/unauthorized";
+        window.location.href = "/forbidden";
     }
     return Promise.reject(error);
 });

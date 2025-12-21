@@ -29,7 +29,6 @@ export const createUsuario = async usuario_y_roles => {
 
 export const updateUsuario = async (usuario, id) => {
     try {
-        console.log(usuario);
         const response = await api.put(`/usuario/${id}`, usuario);
         return response.data;
     } catch (error) {
