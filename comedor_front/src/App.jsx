@@ -28,6 +28,7 @@ import UpdateProduccion from "./pages/UpdateProduccion";
 import Login from "./pages/Login";
 import CompraCalculator from "./pages/CompraCalculator";
 import ChangePass from "./pages/ChangePass";
+import { Forbidden } from "./pages/Forbidden";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
       <Route path="/login" element={<Login />}></Route>
       <Route path="/" element={<LayoutGeneral />}>
         {/* Usuarios */}
+        <Route path="forbidden" element={<Forbidden />} />
         <Route path="usuario" element={<LayoutUsers />}>
           <Route path="listado" element={<Users />} />
           <Route path="registrar" element={<RegisterUser />} />
