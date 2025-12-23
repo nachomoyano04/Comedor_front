@@ -167,7 +167,7 @@ const Sidebar = ({ onToggle }) => {
                     </div>}
 
                 {/* Proveedores */}
-                {user?.roles.includes(1) && //SOLO ADMIN
+                {user?.roles.some(r => [1, 4].includes(r)) && //SOLO ADMIN
                     <div>
                         <button
                             className="btn w-100 text-start text-white d-flex align-items-center justify-content-between mb-1" onClick={() => toggleMenu("proveedores")}>
@@ -184,11 +184,13 @@ const Sidebar = ({ onToggle }) => {
                                         Lista
                                     </NavLink>
                                 </li>
-                                <li>
-                                    <NavLink to="/proveedores/registrar" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
-                                        Registrar
-                                    </NavLink>
-                                </li>
+                                {user?.roles.includes(1) &&
+                                    <li>
+                                        <NavLink to="/proveedores/registrar" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
+                                            Registrar
+                                        </NavLink>
+                                    </li>
+                                }
                             </ul>
                         )}
                     </div>}
@@ -218,7 +220,7 @@ const Sidebar = ({ onToggle }) => {
                         )}
                     </div>}
                 {/* Precios */}
-                {user?.roles.includes(1) && <div>
+                <div>
                     <button className="btn w-100 text-start text-white d-flex align-items-center justify-content-between mb-1" onClick={() => toggleMenu("precios")} >
                         <div className="d-flex align-items-center">
                             <FaDollarSign className="me-2" />
@@ -235,7 +237,7 @@ const Sidebar = ({ onToggle }) => {
                             </li>
                         </ul>
                     )}
-                </div>}
+                </div>
             </div>
             {user && (<>
                 <NavLink to={"/usuario/pass"} className={`d-flex text-decoration-none align-items-center rounded mb-3 my-3 px-3 py-2  ${isOpen ? "bg-primary-subtle" : "bg-primary-subtle justify-content-center"}`} style={{ transition: "0.3s", cursor: "pointer", border: "1px solid rgba(255,255,255,0.15)", }}>

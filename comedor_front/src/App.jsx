@@ -29,6 +29,8 @@ import Login from "./pages/Login";
 import CompraCalculator from "./pages/CompraCalculator";
 import ChangePass from "./pages/ChangePass";
 import { Forbidden } from "./pages/Forbidden";
+import { RequireRole } from "./components/RequireRole";
+import { ROLES } from "./constants/Roles";
 
 function App() {
   return (
@@ -39,9 +41,9 @@ function App() {
         {/* Usuarios */}
         <Route path="forbidden" element={<Forbidden />} />
         <Route path="usuario" element={<LayoutUsers />}>
-          <Route path="listado" element={<Users />} />
-          <Route path="registrar" element={<RegisterUser />} />
-          <Route path="editar/:dni" element={<UpdateUser />} />
+          <Route path="listado" element={<RequireRole allowedRoles={[ROLES.ADMIN]}><Users /></RequireRole>} />
+          <Route path="registrar" element={<RequireRole allowedRoles={[ROLES.ADMIN]}><RegisterUser /></RequireRole>} />
+          <Route path="editar/:dni" element={<RequireRole allowedRoles={[ROLES.ADMIN]}><UpdateUser /></RequireRole>} />
           <Route path="pass" element={<ChangePass />} />
         </Route>
         {/* Insumos */}
