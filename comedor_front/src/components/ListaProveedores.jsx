@@ -1,8 +1,11 @@
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useContext } from "react";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../services/AuthProvider";
 
-const ListaProveedores = ({proveedores, onClickChangeStateProveedor}) => {
+const ListaProveedores = ({ proveedores, onClickChangeStateProveedor }) => {
+    const { user } = useContext(AuthContext);
     return <>
         <div className="table-responsive">
             <table className="table table-striped table-hover align-middle">
@@ -16,12 +19,14 @@ const ListaProveedores = ({proveedores, onClickChangeStateProveedor}) => {
                         <th scope="col" className="text-center">Domicilio</th>
                         <th scope="col" className="text-center">Localidad</th>
                         <th scope="col" className="text-center">Email</th>
-                        <th scope="col" className="text-center">Editar</th>
-                        <th scope="col" className="text-center">Estado</th>
+                        {user?.roles.includes(1) && <>
+                            <th scope="col" className="text-center">Editar</th>
+                            <th scope="col" className="text-center">Estado</th>
+                        </>}
                     </tr>
                 </thead>
                 <tbody>
-                    {proveedores.map(p => 
+                    {proveedores.map(p =>
                         <tr key={p.id}>
                             <td className="text-center">{p.codigo}</td>
                             <td className="text-center">{p.razon_social}</td>
@@ -31,17 +36,19 @@ const ListaProveedores = ({proveedores, onClickChangeStateProveedor}) => {
                             <td className="text-center">{p.domicilio}</td>
                             <td className="text-center">{p.localidad}</td>
                             <td className="text-center">{p.email}</td>
-                            <td className="text-center">
-                                <Link className="btn btn-warning" to={`/proveedores/editar/${p.id}`}>
-                                    <FontAwesomeIcon icon={faPencil} />
-                                </Link>
-                            </td>
-                            <td className="text-center">
-                                <button onClick={() => onClickChangeStateProveedor(p.id, p.estado)}
-                                    className={`btn btn-sm ${p.estado === 1 ? 'btn-success' : 'btn-danger'}`}>
-                                    {p.estado === 1 ? "Activo" : "Inactivo"}
-                                </button>
-                            </td>
+                            {user?.roles.includes(1) && <>
+                                <td className="text-center">
+                                    <Link className="btn btn-warning" to={`/proveedores/editar/${p.id}`}>
+                                        <FontAwesomeIcon icon={faPencil} />
+                                    </Link>
+                                </td>
+                                <td className="text-center">
+                                    <button onClick={() => onClickChangeStateProveedor(p.id, p.estado)}
+                                        className={`btn btn-sm ${p.estado === 1 ? 'btn-success' : 'btn-danger'}`}>
+                                        {p.estado === 1 ? "Activo" : "Inactivo"}
+                                    </button>
+                                </td>
+                            </>}
                         </tr>
                     )}
                 </tbody>

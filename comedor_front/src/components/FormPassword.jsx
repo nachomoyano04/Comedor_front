@@ -45,7 +45,6 @@ const FormPassword = ({ onSubmit }) => {
         <div className="col-12 d-flex justify-content-end gap-2">
             <button type="submit" className="btn btn-primary" disabled={borderRepetida}>Guardar cambios</button>
             <button type="button" className="btn btn-outline-secondary" onClick={handleReset}>Cancelar</button>
-
         </div>
     </form>
 

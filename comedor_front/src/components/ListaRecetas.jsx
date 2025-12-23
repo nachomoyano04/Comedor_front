@@ -12,10 +12,10 @@ const ListaRecetas = ({ recetas, onClickStateButton }) => {
                     <div className="card-header border-0 d-flex justify-content-between align-items-center">
                         <h5 className="mb-0 fw-semibold">{r.nombre}</h5>
                         <div>
+                            <button onClick={() => onClickStateButton(r.id, r.estado)} className={`btn badge rounded-pill px-3 py-2 fw-normal ${r.estado === 1 ? "btn-success text-ligth" : "btn-danger text-ligth"}`} disabled={!user?.roles.some(r => [1, 2].includes(r))}>
+                                {r.estado === 1 ? "Activa" : "Inactiva"}
+                            </button>
                             {user?.roles.some(r => [1, 2].includes(r)) && <>
-                                <button onClick={() => onClickStateButton(r.id, r.estado)} className={`btn badge rounded-pill px-3 py-2 fw-normal ${r.estado === 1 ? "btn-success text-ligth" : "btn-danger text-ligth"}`}>
-                                    {r.estado === 1 ? "Activa" : "Inactiva"}
-                                </button>
                                 <Link to={`/recetas/editar/${r.id}`}>
                                     <FontAwesomeIcon icon={faPencil} className="btn btn-warning mx-1" />
                                 </Link>

@@ -15,8 +15,6 @@ const ChangePass = () => {
         });
         if (res.isConfirmed) {
             try {
-                console.log(formData);
-                console.log(user);
                 const { actual, nueva } = formData;
                 const respuesta = await changePasswordUser(actual, nueva, user.id);
                 await Swal.fire({ title: respuesta, icon: "success", timer: 2000 });
