@@ -73,7 +73,7 @@ const Sidebar = ({ onToggle }) => {
             {/* Menús */}
             <div>
                 {/* Usuarios */}
-                {user?.roles.includes(1) &&
+                {user?.roles.includes(1) && //SOLO ADMINS
                     <div>
                         <button className="btn w-100 text-start text-white d-flex align-items-center justify-content-between mb-1" onClick={() => toggleMenu("usuarios")}>
                             <div className="d-flex align-items-center">
@@ -100,7 +100,7 @@ const Sidebar = ({ onToggle }) => {
                 }
 
                 {/* Insumos */}
-                {user?.roles.includes(3) && <div>
+                <div>
                     <button className="btn w-100 text-start text-white d-flex align-items-center justify-content-between mb-1" onClick={() => toggleMenu("insumos")}>
                         <div className="d-flex align-items-center">
                             <FaBox className="me-2" />
@@ -110,106 +110,113 @@ const Sidebar = ({ onToggle }) => {
                     </button>
                     {openMenu === "insumos" && isOpen && (
                         <ul className="list-unstyled ms-3">
-                            <li className="mb-1">
-                                <NavLink to="/insumos/nuevo" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
-                                    Registrar
-                                </NavLink>
-                            </li>
-                            <li className="mb-1">
-                                <NavLink to="/insumos/listado" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
-                                    Listado
-                                </NavLink>
-                            </li>
-                            <li className="mb-1">
-                                <NavLink to="/insumos/nueva_compra" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
-                                    Comprar
-                                </NavLink>
-                            </li>
-                            <li className="mb-1">
-                                <NavLink to="/insumos/compras" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
-                                    Compras
-                                </NavLink>
-                            </li>
-                            <li className="mb-1">
-                                <NavLink to="/insumos/calculadora_compras" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
-                                    Calculadora
-                                </NavLink>
-                            </li>
+                            {user?.roles.some(r => [1, 2].includes(r)) &&
+                                <li className="mb-1">
+                                    <NavLink to="/insumos/nuevo" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
+                                        Registrar
+                                    </NavLink>
+                                </li>
+                            }
+                            <NavLink to="/insumos/listado" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
+                                Listado
+                            </NavLink>
+                            {user?.roles.some(r => [1, 4].includes(r)) && //SOLO ADMIN Y COMPRADOR
+                                <>
+                                    <li className="mb-1">
+                                        <NavLink to="/insumos/nueva_compra" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
+                                            Comprar
+                                        </NavLink>
+                                    </li>
+                                    <li className="mb-1">
+                                        <NavLink to="/insumos/compras" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
+                                            Compras
+                                        </NavLink>
+                                    </li>
+                                    <li className="mb-1">
+                                        <NavLink to="/insumos/calculadora_compras" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
+                                            Calculadora
+                                        </NavLink>
+                                    </li>
+                                </>
+                            }
                         </ul>)}
-                </div>}
+                </div>
                 {/* Recetas */}
-                {user?.roles.includes(1) && <div>
-                    <button className="btn w-100 text-start text-white d-flex align-items-center justify-content-between mb-1" onClick={() => toggleMenu("recetas")}>
-                        <div className="d-flex align-items-center">
-                            <FaFlask className="me-2" />
-                            {isOpen && <span className="text-truncate">Recetas</span>}
-                        </div>
-                        {isOpen && (openMenu === "recetas" ? <FaChevronDown /> : <FaChevronRight />)}
-                    </button>
-                    {openMenu === "recetas" && isOpen && (
-                        <ul className="list-unstyled ms-3">
-                            <li className="mb-1">
-                                <NavLink to="/recetas/listado" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
-                                    Listado
-                                </NavLink>
-                            </li>
-                            <li className="mb-1">
-                                <NavLink to="/recetas/nueva" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
-                                    Nueva
-                                </NavLink>
-                            </li>
-                        </ul>)}
-                </div>}
+                {user?.roles.some(r => [1, 2].includes(r)) && // SOLO ADMIN Y COCINA
+                    <div>
+                        <button className="btn w-100 text-start text-white d-flex align-items-center justify-content-between mb-1" onClick={() => toggleMenu("recetas")}>
+                            <div className="d-flex align-items-center">
+                                <FaFlask className="me-2" />
+                                {isOpen && <span className="text-truncate">Recetas</span>}
+                            </div>
+                            {isOpen && (openMenu === "recetas" ? <FaChevronDown /> : <FaChevronRight />)}
+                        </button>
+                        {openMenu === "recetas" && isOpen && (
+                            <ul className="list-unstyled ms-3">
+                                <li className="mb-1">
+                                    <NavLink to="/recetas/listado" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
+                                        Listado
+                                    </NavLink>
+                                </li>
+                                <li className="mb-1">
+                                    <NavLink to="/recetas/nueva" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
+                                        Nueva
+                                    </NavLink>
+                                </li>
+                            </ul>)}
+                    </div>}
 
                 {/* Proveedores */}
-                {user?.roles.includes(1) && <div>
-                    <button
-                        className="btn w-100 text-start text-white d-flex align-items-center justify-content-between mb-1" onClick={() => toggleMenu("proveedores")}>
-                        <div className="d-flex align-items-center">
-                            <FaTruck className="me-2" />
-                            {isOpen && <span className="text-truncate">Proveedores</span>}
-                        </div>
-                        {isOpen && (openMenu === "proveedores" ? <FaChevronDown /> : <FaChevronRight />)}
-                    </button>
-                    {openMenu === "proveedores" && isOpen && (
-                        <ul className="list-unstyled ms-3">
-                            <li>
-                                <NavLink to="/proveedores/listado" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
-                                    Lista
-                                </NavLink>
-                            </li>
-                            <li>
-                                <NavLink to="/proveedores/registrar" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
-                                    Registrar
-                                </NavLink>
-                            </li>
-                        </ul>
-                    )}
-                </div>}
+                {user?.roles.includes(1) && //SOLO ADMIN
+                    <div>
+                        <button
+                            className="btn w-100 text-start text-white d-flex align-items-center justify-content-between mb-1" onClick={() => toggleMenu("proveedores")}>
+                            <div className="d-flex align-items-center">
+                                <FaTruck className="me-2" />
+                                {isOpen && <span className="text-truncate">Proveedores</span>}
+                            </div>
+                            {isOpen && (openMenu === "proveedores" ? <FaChevronDown /> : <FaChevronRight />)}
+                        </button>
+                        {openMenu === "proveedores" && isOpen && (
+                            <ul className="list-unstyled ms-3">
+                                <li>
+                                    <NavLink to="/proveedores/listado" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
+                                        Lista
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <NavLink to="/proveedores/registrar" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
+                                        Registrar
+                                    </NavLink>
+                                </li>
+                            </ul>
+                        )}
+                    </div>}
                 {/* Producción */}
-                {user?.roles.includes(1) && <div>
-                    <button className="btn w-100 text-start text-white d-flex align-items-center justify-content-between mb-1" onClick={() => toggleMenu("produccion")}>
-                        <div className="d-flex align-items-center">
-                            <FaHamburger className="me-2" />
-                            {isOpen && <span className="text-truncate">Producción</span>}
-                        </div>
-                        {isOpen && (openMenu === "produccion" ? <FaChevronDown /> : <FaChevronRight />)}
-                    </button>
-                    {openMenu === "produccion" && isOpen && (
-                        <ul className="list-unstyled ms-3">
-                            <li>
-                                <NavLink to="/produccion/listado" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
-                                    Lista
-                                </NavLink>
-                            </li>
-                            <li>
-                                <NavLink to="/produccion/registrar" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
-                                    Registrar
-                                </NavLink>
-                            </li>
-                        </ul>
-                    )}
-                </div>}
+                {user?.roles.some(r => [1, 2].includes(r)) // SOLO ADMIN Y COCINA
+                    && <div>
+                        <button className="btn w-100 text-start text-white d-flex align-items-center justify-content-between mb-1" onClick={() => toggleMenu("produccion")}>
+                            <div className="d-flex align-items-center">
+                                <FaHamburger className="me-2" />
+                                {isOpen && <span className="text-truncate">Producción</span>}
+                            </div>
+                            {isOpen && (openMenu === "produccion" ? <FaChevronDown /> : <FaChevronRight />)}
+                        </button>
+                        {openMenu === "produccion" && isOpen && (
+                            <ul className="list-unstyled ms-3">
+                                <li>
+                                    <NavLink to="/produccion/listado" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
+                                        Lista
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <NavLink to="/produccion/registrar" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
+                                        Registrar
+                                    </NavLink>
+                                </li>
+                            </ul>
+                        )}
+                    </div>}
                 {/* Precios */}
                 {user?.roles.includes(1) && <div>
                     <button className="btn w-100 text-start text-white d-flex align-items-center justify-content-between mb-1" onClick={() => toggleMenu("precios")} >
