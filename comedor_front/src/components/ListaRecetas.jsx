@@ -1,7 +1,10 @@
-import {Link} from "react-router-dom"
+import { Link } from "react-router-dom"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faPencil } from "@fortawesome/free-solid-svg-icons"
-const ListaRecetas = ({ recetas, onClickStateButton}) => {
+import { useContext } from "react"
+import { AuthContext } from "../services/AuthProvider"
+const ListaRecetas = ({ recetas, onClickStateButton }) => {
+    const { user } = useContext(AuthContext);
     return <div className="row row-cols-1 row-cols-md-2 g-4">
         {recetas.map(r => {
             return <div key={r.id} className="col">
@@ -9,12 +12,15 @@ const ListaRecetas = ({ recetas, onClickStateButton}) => {
                     <div className="card-header border-0 d-flex justify-content-between align-items-center">
                         <h5 className="mb-0 fw-semibold">{r.nombre}</h5>
                         <div>
-                            <button onClick={() => onClickStateButton(r.id, r.estado)} className={`btn badge rounded-pill px-3 py-2 fw-normal ${r.estado === 1 ? "btn-success text-ligth" : "btn-danger text-ligth"}`}>
-                                {r.estado === 1 ? "Activa" : "Inactiva"}
-                            </button>
-                            <Link to={`/recetas/editar/${r.id}`}>
-                                <FontAwesomeIcon icon={faPencil} className="btn btn-warning mx-1"/>    
-                            </Link>
+                            {user?.roles.some(r => [1, 2].includes(r)) && <>
+                                <button onClick={() => onClickStateButton(r.id, r.estado)} className={`btn badge rounded-pill px-3 py-2 fw-normal ${r.estado === 1 ? "btn-success text-ligth" : "btn-danger text-ligth"}`}>
+                                    {r.estado === 1 ? "Activa" : "Inactiva"}
+                                </button>
+                                <Link to={`/recetas/editar/${r.id}`}>
+                                    <FontAwesomeIcon icon={faPencil} className="btn btn-warning mx-1" />
+                                </Link>
+                            </>
+                            }
                         </div>
                     </div>
                     <div className="card-body">
