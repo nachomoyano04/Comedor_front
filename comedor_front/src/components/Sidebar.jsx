@@ -58,16 +58,18 @@ const Sidebar = ({ onToggle }) => {
             {isOpen && <h4 className="text-center mb-4">Comedor</h4>}
 
             {user && (
-                <div className={`d-flex align-items-center p-2 rounded mb-4 shadow-sm ${isOpen ? "bg-secondary" : "bg-transparent"}`} style={{ transition: "0.3s", border: isOpen ? "1px solid rgba(255,255,255,0.15)" : "none", }}>
-                    <div className="bg-light text-dark rounded-circle d-flex justify-content-center align-items-center" style={{ width: isOpen ? "40px" : "20px", height: isOpen ? "40px" : "20px", fontSize: isOpen ? "1.1rem" : "1rem", fontWeight: "bold", transition: "0.3s", }}>
-                        {user.nombre?.charAt(0).toUpperCase()}
-                    </div>
-                    {isOpen && (
-                        <div className="ms-3" style={{ overflow: "hidden" }}>
-                            <div className="fw-semibold text-white text-truncate">{user.nombre}</div>
+                <NavLink to={"/usuario/perfil"} className={"text-decoration-none"}>
+                    <div className={`d-flex align-items-center p-2 rounded mb-4 shadow-sm ${isOpen ? "bg-secondary" : "bg-transparent"}`} style={{ transition: "0.3s", border: isOpen ? "1px solid rgba(255,255,255,0.15)" : "none", }}>
+                        <div className="bg-light text-dark rounded-circle d-flex justify-content-center align-items-center" style={{ width: isOpen ? "40px" : "20px", height: isOpen ? "40px" : "20px", fontSize: isOpen ? "1.1rem" : "1rem", fontWeight: "bold", transition: "0.3s", }}>
+                            {user.nombre?.charAt(0).toUpperCase()}
                         </div>
-                    )}
-                </div>
+                        {isOpen && (
+                            <div className="ms-3" style={{ overflow: "hidden" }}>
+                                <div className="fw-semibold text-white text-truncate">{user.nombre}</div>
+                            </div>
+                        )}
+                    </div>
+                </NavLink>
             )}
 
             {/* Menús */}
