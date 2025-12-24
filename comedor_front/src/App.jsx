@@ -31,6 +31,7 @@ import ChangePass from "./pages/ChangePass";
 import { Forbidden } from "./pages/Forbidden";
 import { RequireRole } from "./components/RequireRole";
 import { ROLES } from "./constants/Roles";
+import { PerfilUser } from "./pages/PerfilUser";
 
 function App() {
   return (
@@ -45,30 +46,31 @@ function App() {
           <Route path="registrar" element={<RequireRole allowedRoles={[ROLES.ADMIN]}><RegisterUser /></RequireRole>} />
           <Route path="editar/:dni" element={<RequireRole allowedRoles={[ROLES.ADMIN]}><UpdateUser /></RequireRole>} />
           <Route path="pass" element={<ChangePass />} />
+          <Route path="perfil" element={<PerfilUser />} />
         </Route>
         {/* Insumos */}
         <Route path="insumos" element={<LayoutInsumos />}>
           <Route path="listado" element={<Insumos />} />
-          <Route path="nuevo" element={<RegisterInsumo />} />
-          <Route path="editar/:id" element={<UpdateInsumo />} />
-          <Route path="nueva_compra" element={<RegisterCompra />} />
-          <Route path="compras" element={<Compras />} />
-          <Route path="calculadora_compras" element={<CompraCalculator />} />
+          <Route path="nuevo" element={<RequireRole allowedRoles={[ROLES.ADMIN, ROLES.COCINA]}><RegisterInsumo /></RequireRole>} />
+          <Route path="editar/:id" element={<RequireRole allowedRoles={[ROLES.ADMIN, ROLES.COCINA]}><UpdateInsumo /></RequireRole>} />
+          <Route path="nueva_compra" element={<RequireRole allowedRoles={[ROLES.ADMIN, ROLES.COMPRADOR]}><RegisterCompra /></RequireRole>} />
+          <Route path="compras" element={<RequireRole allowedRoles={[ROLES.ADMIN, ROLES.COMPRADOR]}><Compras /></RequireRole>} />
+          <Route path="calculadora_compras" element={<RequireRole allowedRoles={[ROLES.ADMIN, ROLES.COMPRADOR]}><CompraCalculator /></RequireRole>} />
         </Route>
         {/* Recetas */}
         <Route path="recetas" element={<LayoutRecetas />}>
-          <Route path="listado" element={<Recetas />} />
-          <Route path="nueva" element={<RegisterReceta />} />
-          <Route path="editar/:id" element={<UpdateReceta />} />
+          <Route path="listado" element={<RequireRole allowedRoles={[ROLES.ADMIN, ROLES.COCINA]}><Recetas /></RequireRole>} />
+          <Route path="nueva" element={<RequireRole allowedRoles={[ROLES.ADMIN, ROLES.COCINA]}><RegisterReceta /></RequireRole>} />
+          <Route path="editar/:id" element={<RequireRole allowedRoles={[ROLES.ADMIN, ROLES.COCINA]}><UpdateReceta /></RequireRole>} />
         </Route>
         {/* Proveedores */}
         <Route path="proveedores" element={<LayoutProveedores />}>
-          <Route path="listado" element={<Proveedores />} />
-          <Route path="registrar" element={<RegisterProve />} />
-          <Route path="editar/:id" element={<UpdateProve />} />
+          <Route path="listado" element={<RequireRole allowedRoles={[ROLES.ADMIN, ROLES.COMPRADOR]}><Proveedores /></RequireRole>} />
+          <Route path="registrar" element={<RequireRole allowedRoles={[ROLES.ADMIN]}><RegisterProve /></RequireRole>} />
+          <Route path="editar/:id" element={<RequireRole allowedRoles={[ROLES.ADMIN]}><UpdateProve /></RequireRole>} />
         </Route>
         {/* Producciones */}
-        <Route path="produccion" element={<LayoutProducciones />}>
+        <Route path="produccion" element={<RequireRole allowedRoles={[ROLES.ADMIN, ROLES.COCINA]}><LayoutProducciones /></RequireRole>}>
           <Route path="listado" element={<Producciones />} />
           <Route path="registrar" element={<RegisterProduccion />} />
           <Route path="editar/:id" element={<UpdateProduccion />} />

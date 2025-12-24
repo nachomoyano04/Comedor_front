@@ -18,7 +18,7 @@ const ChangePass = () => {
                 const { actual, nueva } = formData;
                 const respuesta = await changePasswordUser(actual, nueva, user.id);
                 await Swal.fire({ title: respuesta, icon: "success", timer: 2000 });
-                navigate("/usuario/listado")
+                navigate("/")
             } catch (error) {
                 Swal.fire({ title: error.response.data, icon: "error" })
             }
