@@ -9,6 +9,7 @@ import axios from "axios";
 
 const Sidebar = ({ onToggle }) => {
     const { user, setUser } = useContext(AuthContext);
+    console.log(user);
     const navigate = useNavigate();
     const [openMenu, setOpenMenu] = useState(null);
     const [isOpen, setIsOpen] = useState(true);
