@@ -1,11 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../services/AuthProvider";
-import { getUsuarioByDni } from "../services/api_endpoints";
+import { getUsuarioByDni, updateUsuario } from "../services/api_endpoints";
 import { useNavigate } from "react-router-dom";
 import FormUsuario from "../components/FormUsuario";
+import Swal from "sweetalert2"
 
 export const PerfilUser = () => {
-    const { user } = useContext(AuthContext);
+    const { user, setUser } = useContext(AuthContext);
     const [usuario, setUsuario] = useState(null);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -28,11 +29,9 @@ export const PerfilUser = () => {
 
     const handleSubmitForm = async formData => {
         try {
-            if (formData.rol.length == 0) {
-                throw Error("Debe asignar un rol")
-            }
             const answer = await updateUsuario(formData, usuario.id);
             await Swal.fire({ title: answer, icon: "success", timer: 2000 });
+            setUser(prev => ({ ...prev, nombre: formData.nombre }));
             navigate("/usuario/listado");
         } catch (err) {
             Swal.fire({ title: err.response ? err.response.data.error : err, icon: "error" })
@@ -56,7 +55,7 @@ export const PerfilUser = () => {
             ) : (
                 <div className="card-body d-flex justify-content-center">
                     <div style={{ width: "100%", maxWidth: "800px" }}>
-                        <FormUsuario usuario={usuario} onSubmit={handleSubmitForm} />
+                        <FormUsuario u={usuario} onSubmit={handleSubmitForm} />
                     </div>
                 </div>
             )}

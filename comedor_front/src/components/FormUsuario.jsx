@@ -1,20 +1,18 @@
-import { useContext, useState } from "react";
-import { isEqualWith } from "lodash";
+import { useState } from "react";
+import { isEqualWith, trim } from "lodash";
 import { trimer } from "../services/globalFunctions";
-import { AuthContext } from "../services/AuthProvider";
 
-const FormUsuario = ({ usuario = null, roles, onSubmit }) => {
-    const { user } = useContext(AuthContext);
-    const [formData, setFormData] = useState({
-        nombre: usuario?.nombre || "",
-        apellido: usuario?.apellido || "",
-        dni: usuario?.dni || "",
-        cuil: usuario?.cuil || "",
-        correo: usuario?.correo || "",
-        telefono: usuario?.telefono || "",
-        rol: usuario?.rol || []
-    });
-    const isEditing = usuario !== null
+const FormUsuario = ({ u = null, onSubmit }) => {
+    const usuario = {
+        nombre: u?.nombre || "",
+        apellido: u?.apellido || "",
+        dni: u?.dni || "",
+        cuil: u?.cuil || "",
+        correo: u?.correo || "",
+        telefono: u?.telefono || "",
+        rol: []
+    }
+    const [formData, setFormData] = useState(usuario);
     const [areChanges, setAreChanges] = useState(false);
 
     const handleSubmit = e => {
@@ -24,31 +22,14 @@ const FormUsuario = ({ usuario = null, roles, onSubmit }) => {
 
     const handleChange = e => {
         const { name, value } = e.target;
-        let newFormData;
-        if (name == "rol") {
-            const yaEstaIncluido = formData.rol.some(r => r == value);
-            newFormData = { ...formData, rol: yaEstaIncluido ? formData.rol.filter(r => r != value).sort((a, b) => a - b) : [...formData.rol, Number(value)].sort((a, b) => a - b) };
-        } else {
-            newFormData = { ...formData, [name]: value };
-        }
-        if (isEditing) {
-            const { id, estado, ...restUsuario } = usuario;
-            setAreChanges(!isEqualWith(newFormData, restUsuario, trimer));
-        }
+        let newFormData = { ...formData, [name]: value };
         setFormData(newFormData);
+        setAreChanges(!isEqualWith(usuario, newFormData, trimer));
     }
 
     const handleReset = () => {
-        setFormData({
-            nombre: usuario?.nombre || "",
-            apellido: usuario?.apellido || "",
-            dni: usuario?.dni || "",
-            cuil: usuario?.cuil || "",
-            correo: usuario?.correo || "",
-            telefono: usuario?.telefono || "",
-            rol: usuario?.rol || []
-        });
-        isEditing && setAreChanges(false);
+        setFormData(usuario);
+        setAreChanges(false);
     }
 
     return <form className="row g-2" onSubmit={handleSubmit}>
@@ -76,22 +57,11 @@ const FormUsuario = ({ usuario = null, roles, onSubmit }) => {
             <label className="form-label">Teléfono</label>
             <input name="telefono" onChange={handleChange} type="text" className="form-control" value={formData.telefono} required />
         </div>
-        {user?.roles.includes(1) && <>
-            <div className="col-md-12 mb-3 p-2 bg-light rounded">
-                <legend className="small">Roles</legend>
-                {roles.map(r =>
-                    <div className="form-check mb-1" key={r.id}>
-                        <input name="rol" onChange={handleChange} value={r.id} checked={formData.rol.some(rol => rol == r.id)} className="form-check-input" type="checkbox" />
-                        <label className="form-check-label">{r.nombre_rol}</label>
-                    </div>
-                )}
-            </div>
-        </>}
         <div className="col-12 d-flex justify-content-end gap-2">
-            <button type="submit" className="btn btn-primary" disabled={isEditing && !areChanges}>{isEditing ? "Guardar cambios" : "Registrar"}</button>
-            <button type="button" className="btn btn-outline-secondary" onClick={handleReset} disabled={isEditing && !areChanges}>Cancelar</button>
+            <button type="submit" className="btn btn-primary" disabled={!areChanges}>Guardar cambios</button>
+            <button type="button" className="btn btn-outline-secondary" onClick={handleReset} disabled={!areChanges}>Cancelar</button>
         </div>
-        {isEditing && !areChanges && (
+        {!areChanges && (
             <div className="text-end">
                 <small style={{ color: "#555555", fontStyle: "italic" }}>No hay cambios aún</small>
             </div>
