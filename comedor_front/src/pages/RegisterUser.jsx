@@ -34,7 +34,7 @@ const RegisterUser = () => {
         </div>
         <div className="card-body d-flex justify-content-center">
             <div style={{width: "100%", maxWidth: "800px"}}>
-                <FormUsuario roles={roles} onSubmit={handleSubmitForm}/>
+                <FormUsuario roles={roles} onSubmit={handleSubmitForm} u={null}/>
             </div>
         </div>
     </>

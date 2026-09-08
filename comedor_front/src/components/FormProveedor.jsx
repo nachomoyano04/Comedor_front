@@ -62,6 +62,14 @@ const FormProveedor = ({ proveedor = null, onSubmit, onClickBtnBorrarContacto })
                 <input name="codigo" onChange={handleChange} type="text" className="form-control" value={formData.codigo} required />
             </div>
             <div className="col-md-4 mb-3">
+                <label className="form-label">Principal</label>
+                <div className="form-check">
+                    <input className="form-check-input" type="checkbox" name="es_principal"
+                        checked={formDataContacto.es_principal}
+                        onChange={e => setFormDataContacto(prev => ({...prev, es_principal: e.target.checked}))} />
+                </div>
+            </div>
+            <div className="col-md-4 mb-3">
                 <label className="form-label">Email</label>
                 <input name="email" onChange={handleChange} type="text" className="form-control" value={formData.email} required />
             </div>

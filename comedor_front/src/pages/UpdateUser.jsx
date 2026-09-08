@@ -64,7 +64,7 @@ const UpdateUser = () => {
                 ) : (
                     <div className="card-body d-flex justify-content-center">
                         <div style={{width: "100%", maxWidth: "800px"}}>
-                            <FormUsuario usuario={usuario} roles={roles} onSubmit={handleSubmitForm}/>
+                            <FormUsuario u={usuario} roles={roles} onSubmit={handleSubmitForm}/>
                         </div>
                     </div>
                 )}

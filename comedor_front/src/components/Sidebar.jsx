@@ -9,7 +9,6 @@ import axios from "axios";
 
 const Sidebar = ({ onToggle }) => {
     const { user, setUser } = useContext(AuthContext);
-    console.log(user);
     const navigate = useNavigate();
     const [openMenu, setOpenMenu] = useState(null);
     const [isOpen, setIsOpen] = useState(true);
@@ -38,7 +37,7 @@ const Sidebar = ({ onToggle }) => {
         }
         try {
             localStorage.removeItem("token");
-            await axios.post("http://localhost:6970/usuario/auth/logout", null, { withCredentials: true }); //Borramos el refresh_token del httpOnly
+            await axios.post("import.meta.env.VITE_API_URL/usuario/auth/logout", null, { withCredentials: true }); //Borramos el refresh_token del httpOnly
             setUser(null);
             navigate("/login");
             await Swal.fire({ title: "Sesión cerrada", timer: 1200 });
@@ -170,7 +169,7 @@ const Sidebar = ({ onToggle }) => {
                     </div>}
 
                 {/* Proveedores */}
-                {user?.roles.some(r => [1, 4].includes(r)) && //SOLO ADMIN
+                {user?.roles.some(r => [1, 4].includes(r)) && //ADMIN Y COMPRADOR
                     <div>
                         <button
                             className="btn w-100 text-start text-white d-flex align-items-center justify-content-between mb-1" onClick={() => toggleMenu("proveedores")}>

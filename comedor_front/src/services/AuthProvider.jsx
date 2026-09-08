@@ -10,15 +10,12 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    console.log("Paso 1 - Token:", token);
     if (token) {
       const payload = jwtDecode(token);
-      console.log("Paso 2 - Payload:", payload);
 
       const getUserLogged = async () => {
         try {
           const response = await getUsuarioByDni(payload.dni);
-          console.log("Paso 3 - Respuesta de la API:", response);
           // response es un array (una fila por rol, por el LEFT JOIN de findUsuarioByDNI).
           // Lo normalizamos a la misma forma que arma Login.jsx con el JWT.
           const usuarioNormalizado = response.reduce((acc, fila) => {
