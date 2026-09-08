@@ -44,14 +44,6 @@ export const getUsuarioByDni = async dni => {
         throw error;
     }
 }
-
-export const getUsuarioById = async id => {
-    try {
-        
-    } catch (error) {
-        throw error;
-    }
-}
  
 export const changeStateUsuarioById = async (id, state) => {
     try {
