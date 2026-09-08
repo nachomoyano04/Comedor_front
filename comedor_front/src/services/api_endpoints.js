@@ -151,7 +151,7 @@ export const getUdm = async() => {
         const response = await api(`/udm`);
         return response.data;
     } catch (error) {
-        
+        throw error;
     }
 }
 
