@@ -10,7 +10,7 @@ api.interceptors.request.use(config => {
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }
-    return config
+    return config;
 })
 
 let isRefreshing = false;
@@ -31,7 +31,7 @@ api.interceptors.response.use(res => res, async error => {
         if (!isRefreshing) {
             isRefreshing = true;
             try {
-                const res = await axios.post("http://localhost:6970/usuario/auth/refresh", {}, { withCredentials: true });
+                const res = await axios.post(`${import.meta.env.VITE_API_URL}/usuario/auth/refresh`, {}, { withCredentials: true });
                 const nuevo_token = res.data.access_token;
                 localStorage.setItem("token", nuevo_token);
 
