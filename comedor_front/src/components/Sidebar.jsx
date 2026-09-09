@@ -37,7 +37,7 @@ const Sidebar = ({ onToggle }) => {
         }
         try {
             localStorage.removeItem("token");
-            await axios.post("import.meta.env.VITE_API_URL/usuario/auth/logout", null, { withCredentials: true }); //Borramos el refresh_token del httpOnly
+            await axios.post(`${import.meta.env.VITE_API_URL}/usuario/auth/logout`, null, { withCredentials: true }); //Borramos el refresh_token del httpOnly
             setUser(null);
             navigate("/login");
             await Swal.fire({ title: "Sesión cerrada", timer: 1200 });
