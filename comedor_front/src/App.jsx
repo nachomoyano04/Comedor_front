@@ -32,6 +32,7 @@ import { Forbidden } from "./pages/Forbidden";
 import { RequireRole } from "./components/RequireRole";
 import { ROLES } from "./constants/Roles";
 import { PerfilUser } from "./pages/PerfilUser";
+import Dashboard from "./components/Dashboard";
 
 function App() {
   return (
@@ -39,6 +40,8 @@ function App() {
       {/* Login */}
       <Route path="/login" element={<Login />}></Route>
       <Route path="/" element={<LayoutGeneral />}>
+        {/* Dashboard */}
+        <Route index element={<Dashboard />} />
         {/* Usuarios */}
         <Route path="forbidden" element={<Forbidden />} />
         <Route path="usuario" element={<LayoutUsers />}>

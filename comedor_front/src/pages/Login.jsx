@@ -21,7 +21,7 @@ const Login = () => {
             const payload = jwtDecode(access_token);
             setUser(payload); // seteamos el usuario logueado en el authContext
             
-            navigate("/produccion/listado")
+            navigate("/")
         } catch (error) {
             console.log(error);
             if(error.status == 401){
