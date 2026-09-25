@@ -62,7 +62,7 @@ function App() {
         </Route>
         {/* Recetas */}
         <Route path="recetas" element={<LayoutRecetas />}>
-          <Route path="listado" element={<RequireRole allowedRoles={[ROLES.ADMIN, ROLES.COCINA]}><Recetas /></RequireRole>} />
+          <Route path="listado" element={<RequireRole allowedRoles={[ROLES.ADMIN, ROLES.COCINA, ROLES.DIRECTIVOS]}><Recetas /></RequireRole>} />
           <Route path="nueva" element={<RequireRole allowedRoles={[ROLES.ADMIN, ROLES.COCINA]}><RegisterReceta /></RequireRole>} />
           <Route path="editar/:id" element={<RequireRole allowedRoles={[ROLES.ADMIN, ROLES.COCINA]}><UpdateReceta /></RequireRole>} />
         </Route>
@@ -73,10 +73,10 @@ function App() {
           <Route path="editar/:id" element={<RequireRole allowedRoles={[ROLES.ADMIN]}><UpdateProve /></RequireRole>} />
         </Route>
         {/* Producciones */}
-        <Route path="produccion" element={<RequireRole allowedRoles={[ROLES.ADMIN, ROLES.COCINA]}><LayoutProducciones /></RequireRole>}>
+        <Route path="produccion" element={<RequireRole allowedRoles={[ROLES.ADMIN, ROLES.COCINA, ROLES.DIRECTIVOS]}><LayoutProducciones /></RequireRole>}>
           <Route path="listado" element={<Producciones />} />
-          <Route path="registrar" element={<RegisterProduccion />} />
-          <Route path="editar/:id" element={<UpdateProduccion />} />
+          <Route path="registrar" element={<RequireRole allowedRoles={[ROLES.ADMIN, ROLES.COCINA]}><RegisterProduccion /></RequireRole>} />
+          <Route path="editar/:id" element={<RequireRole allowedRoles={[ROLES.ADMIN, ROLES.COCINA]}><UpdateProduccion /></RequireRole>} />
         </Route>
         {/* Precios */}
         <Route path="precios" element={<LayoutPrecios />}>
