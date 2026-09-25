@@ -18,6 +18,9 @@ const Login = () => {
             await Swal.fire({icon: "success", title: mensaje, timer: 3000});
             
             localStorage.setItem("token", access_token); // guardamos token en localstorage
+            if (refresh_token) {
+                localStorage.setItem("refresh_token", refresh_token);
+            }
             const payload = jwtDecode(access_token);
             setUser(payload); // seteamos el usuario logueado en el authContext
             

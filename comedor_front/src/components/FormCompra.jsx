@@ -21,8 +21,8 @@ const FormCompra = ({onSubmit, udm, insumos, proveedores}) => {
             setFormData(prev => {
                 const formUpdated = {...prev, [name]: value};
                 if(name == "cantidad" || name == "precio_unitario"){
-                    const cantidad = parseFloat(formUpdated.cantidad) || 1; 
-                    const precio_unitario = parseFloat(formUpdated.precio_unitario) || 0; 
+                    const cantidad = parseFloat(String(formUpdated.cantidad).replace(",", ".")) || 1; 
+                    const precio_unitario = parseFloat(String(formUpdated.precio_unitario).replace(",", ".")) || 0; 
                     formUpdated.precio_total = (cantidad * precio_unitario).toFixed(2);
                 }
                 return formUpdated;
@@ -43,38 +43,52 @@ const FormCompra = ({onSubmit, udm, insumos, proveedores}) => {
 
     const handleSubmit = e => {
         e.preventDefault();
-        onSubmit(formData);
+        const precioUnitarioNum = parseFloat(String(formData.precio_unitario).replace(",", "."));
+        const cantidadNum = parseFloat(String(formData.cantidad).replace(",", "."));
+        if (!precioUnitarioNum || precioUnitarioNum <= 0) {
+            alert("Por favor ingrese un precio unitario válido mayor a 0");
+            return;
+        }
+        if (!formData.insumo_id || !formData.proveedor_id) {
+            alert("Debe seleccionar un insumo y un proveedor");
+            return;
+        }
+        onSubmit({
+            ...formData,
+            precio_unitario: precioUnitarioNum,
+            cantidad: cantidadNum > 0 ? cantidadNum : 1
+        });
     }
 
     return <>
         <form className="row g-3" onSubmit={handleSubmit}>
             <div className="col-md-6">
                 <label className="form-label">Insumo</label>
-                <Select required name="insumo_id" onChange={handleChange} value={{value: formData.insumo_id, label: formData.insumo_nombre }} options={insumos}></Select>  
+                <Select required name="insumo_id" onChange={handleChange} value={formData.insumo_id ? {value: formData.insumo_id, label: formData.insumo_nombre } : null} options={insumos} placeholder="Seleccionar insumo..."></Select>  
             </div>
             <div className="col-md-6">
                 <label className="form-label">Proveedor</label>
-                <Select required name="proveedor_id" onChange={handleChange} value={{value: formData.proveedor_id, label: formData.proveedor_razon_social }} options={proveedores}></Select>
+                <Select required name="proveedor_id" onChange={handleChange} value={formData.proveedor_id ? {value: formData.proveedor_id, label: formData.proveedor_razon_social } : null} options={proveedores} placeholder="Seleccionar proveedor..."></Select>
             </div>
             <div className="col-md-4">
                 <label className="form-label">Precio unitario {udmInsumoActual && `(${udmInsumoActual.nombre}/ ${udmInsumoActual.simbolo})`}</label>
-                <input name="precio_unitario" onChange={handleChange} value={formData.precio_unitario} type="text" className="form-control" required/>
+                <input name="precio_unitario" onChange={handleChange} value={formData.precio_unitario} type="text" placeholder="Ej: 1500.50" className="form-control" required/>
             </div>
             <div className="col-md-4">
                 <label className="form-label">Fecha</label>
                 <input name="fecha_desde" onChange={handleChange} value={formData.fecha_desde} type="datetime-local" className="form-control" required/>
             </div>
             <div className="col-md-4">
-                <label className="form-label">Vencimiento</label>
-                <input name="fecha_vencimiento" onChange={handleChange} value={formData.fecha_vencimiento} type="date" className="form-control" required/>
+                <label className="form-label">Vencimiento (Opcional)</label>
+                <input name="fecha_vencimiento" onChange={handleChange} value={formData.fecha_vencimiento} type="date" className="form-control"/>
             </div>
             <div className="col-md-6">
                 <label className="form-label">Cantidad</label>
-                <input name="cantidad" onChange={handleChange} value={formData.cantidad} type="number" min={"0"} className="form-control" required/>
+                <input name="cantidad" onChange={handleChange} value={formData.cantidad} type="number" step="any" min={"0.01"} className="form-control" required/>
             </div>
             <div className="col-md-6">
-                <label className="form-label">Precio total</label>
-                <input name="precio_total" onChange={handleChange} value={formData.precio_total} type="number" disabled={formData.precio_unitario.length>0?"":"disabled"} className="form-control" required/>
+                <label className="form-label">Precio total (Calculado)</label>
+                <input name="precio_total" value={formData.precio_total} type="text" readOnly className="form-control bg-light"/>
             </div>
             <div className="col-12 d-flex justify-content-end gap-2">
                 <button className="btn btn-primary" type="submit">Guardar</button>

@@ -37,6 +37,7 @@ const Sidebar = ({ onToggle }) => {
         }
         try {
             localStorage.removeItem("token");
+            localStorage.removeItem("refresh_token");
             await axios.post(`${import.meta.env.VITE_API_URL}/usuario/auth/logout`, null, { withCredentials: true }); //Borramos el refresh_token del httpOnly
             setUser(null);
             navigate("/login");
@@ -122,11 +123,11 @@ const Sidebar = ({ onToggle }) => {
                             <NavLink to="/insumos/listado" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
                                 Listado
                             </NavLink>
-                            {user?.roles.some(r => [1, 4].includes(r)) && //SOLO ADMIN Y COMPRADOR
+                            {user?.roles?.some(r => [1, 2, 4].includes(r)) && // ADMIN, COCINA Y COMPRADOR
                                 <>
                                     <li className="mb-1">
                                         <NavLink to="/insumos/nueva_compra" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
-                                            Comprar
+                                            Cargar Precio / Compra
                                         </NavLink>
                                     </li>
                                     <li className="mb-1">
@@ -232,11 +233,18 @@ const Sidebar = ({ onToggle }) => {
                     </button>
                     {openMenu === "precios" && isOpen && (
                         <ul className="list-unstyled ms-3">
-                            <li>
+                            <li className="mb-1">
                                 <NavLink to="/precios/listado" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
                                     Listado
                                 </NavLink>
                             </li>
+                            {user?.roles?.some(r => [1, 2, 4].includes(r)) && (
+                                <li className="mb-1">
+                                    <NavLink to="/insumos/nueva_compra" className={({ isActive }) => `nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? "bg-light text-dark fw-semibold" : "text-white"}`}>
+                                        Cargar Precio
+                                    </NavLink>
+                                </li>
+                            )}
                         </ul>
                     )}
                 </div>

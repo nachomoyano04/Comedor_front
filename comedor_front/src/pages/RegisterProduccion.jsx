@@ -17,10 +17,11 @@ const RegisterProduccion = () => {
     if (res.isConfirmed) {
       try {
         const r = await newProduccion(formData);
-        Swal.fire({ title: r, icon: "success", timer: 2000 });
+        await Swal.fire({ title: r, icon: "success", timer: 2000 });
         navigate("/produccion/listado");
       } catch (err) {
-        Swal.fire({ title: err.response.data.error, icon: "error" });
+        const msg = err.response?.data?.error || err.response?.data || err.message || "Error al registrar producción";
+        Swal.fire({ title: typeof msg === "string" ? msg : JSON.stringify(msg), icon: "error" });
       }
     }
   };

@@ -27,7 +27,15 @@ export const useFormProduccion = ({ produccion, recetas, insumosBD }) => {
 
     const handleSelectReceta = e => {
         setReceta(e);
-        setFormData({...formData, fecha: e? horaActual:"", insumos: e? e.insumos: [], receta_id: e? e.value : "", turno: ""});
+        const cantProd = parseFloat(formData.cantidad_producida) || 1;
+        const insumosCalculados = e?.insumos ? cambiarCantInsumos(e.insumos, cantProd) : [];
+        setFormData({
+            ...formData,
+            fecha: e ? horaActual : "",
+            insumos: insumosCalculados,
+            receta_id: e ? e.value : "",
+            turno: ""
+        });
         setTurno(null);
     }
 
@@ -41,28 +49,32 @@ export const useFormProduccion = ({ produccion, recetas, insumosBD }) => {
 
     const handleChange = e => {
         const {name, value} = e.target;
-        if (name == "cantidad_producida" && formData.insumos.length > 0 && receta && value <= 1000 && value.length < 5) {
+        if (name == "cantidad_producida") {
             const soloNumeros = value.replace(/\D/g, "");
-            if(soloNumeros.length > 4 || soloNumeros > 1000) return;
+            if (soloNumeros.length > 4 || Number(soloNumeros) > 1000) return;
             let newFormData;
-            if (soloNumeros && soloNumeros != 0) { //acá hacemos el producto entre la cantidad de produccion y la cantidad en cada insumo
+            if (soloNumeros && soloNumeros !== "0") {
                 const cantidad = parseFloat(soloNumeros);
-                const insumosConCantidad = isEditing ? cambiarCantInsumos(produccionOriginal.insumos, cantidad) : cambiarCantInsumos(receta.insumos, cantidad);
-                newFormData = {...formData, cantidad_producida: Number(soloNumeros), insumos: insumosConCantidad };
+                const insumosConCantidad = isEditing 
+                    ? (produccionOriginal?.insumos ? cambiarCantInsumos(produccionOriginal.insumos, cantidad) : formData.insumos) 
+                    : (receta?.insumos ? cambiarCantInsumos(receta.insumos, cantidad) : formData.insumos);
+                newFormData = { ...formData, cantidad_producida: Number(soloNumeros), insumos: insumosConCantidad };
             } else {
-                newFormData = {...formData, cantidad_producida: "", insumos: isEditing ? formData.insumos : receta.insumos };
+                newFormData = { ...formData, cantidad_producida: soloNumeros === "" ? "" : 0, insumos: isEditing ? (produccionOriginal?.insumos || formData.insumos) : (receta?.insumos || []) };
             }
             isEditing && setAreChanges(!isEqual(newFormData, restProduccion) && newFormData.cantidad_comensales > 0);
-            setFormData(newFormData)
+            setFormData(newFormData);
         }
-        if (name == "cantidad_comensales" && value <= 10000 && value.length < 6) {
-            const newFormData = { ...formData, cantidad_comensales: Number(value.replace(/[^0-9]/g, '')) }
-            isEditing && setAreChanges(!isEqual(newFormData, restProduccion) && value > 0);
-            setFormData(newFormData)
+        if (name == "cantidad_comensales") {
+            const soloNumeros = value.replace(/\D/g, "");
+            if (soloNumeros.length > 5 || Number(soloNumeros) > 10000) return;
+            const newFormData = { ...formData, cantidad_comensales: soloNumeros === "" ? "" : Number(soloNumeros) };
+            isEditing && setAreChanges(!isEqual(newFormData, restProduccion) && Number(soloNumeros) > 0);
+            setFormData(newFormData);
         }
         if (name == "insumo") {
             const insumo_id = e.target.getAttribute("data-id");
-            const newFormData = { ...formData, insumos: formData.insumos.map(i => i.value == insumo_id ? { ...i, cantidad: Number(value) } : i) }
+            const newFormData = { ...formData, insumos: formData.insumos.map(i => i.value == insumo_id ? { ...i, cantidad: value === "" ? "" : Number(value) } : i) };
             isEditing && setAreChanges(!isEqual(newFormData, restProduccion) && newFormData.cantidad_comensales > 0 && newFormData.cantidad_producida > 0);
             setFormData(newFormData);
         }

@@ -22,9 +22,10 @@ const RegisterReceta = () => {
                 try {
                     const resultado = await newReceta(formData);
                     await Swal.fire({ icon: "success", title: resultado });
-                    navigate("/recetas/listado")
+                    navigate("/recetas/listado");
                 } catch (err) {
-                    Swal.fire({ icon: "error", title: err.response.data.error });
+                    const msg = err.response?.data?.error || err.response?.data || err.message || "Error al registrar receta";
+                    Swal.fire({ icon: "error", title: typeof msg === "string" ? msg : JSON.stringify(msg) });
                 }
             }
         }

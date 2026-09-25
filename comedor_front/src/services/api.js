@@ -31,7 +31,8 @@ api.interceptors.response.use(res => res, async error => {
         if (!isRefreshing) {
             isRefreshing = true;
             try {
-                const res = await axios.post(`${import.meta.env.VITE_API_URL}/usuario/auth/refresh`, {}, { withCredentials: true });
+                const storedRefreshToken = localStorage.getItem("refresh_token");
+                const res = await axios.post(`${import.meta.env.VITE_API_URL}/usuario/auth/refresh`, { refresh_token: storedRefreshToken }, { withCredentials: true });
                 const nuevo_token = res.data.access_token;
                 localStorage.setItem("token", nuevo_token);
 
@@ -39,6 +40,7 @@ api.interceptors.response.use(res => res, async error => {
                 pendingRequests = [];
             } catch (err) {
                 localStorage.removeItem("token");
+                localStorage.removeItem("refresh_token");
                 window.location.href = "/login";
                 return Promise.reject(err)
             } finally {
@@ -54,10 +56,6 @@ api.interceptors.response.use(res => res, async error => {
         });
     }
 
-
-    if (status == 403) {
-        window.location.href = "/forbidden";
-    }
     return Promise.reject(error);
 });
 
