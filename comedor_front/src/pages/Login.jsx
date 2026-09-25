@@ -18,20 +18,20 @@ const Login = () => {
         try {
             const data = await loginUser(formData);
             const { access_token, refresh_token, mensaje } = data;
-            await Swal.fire({ 
-                icon: "success", 
-                title: mensaje || "¡Bienvenido/a!", 
+            await Swal.fire({
+                icon: "success",
+                title: mensaje || "¡Bienvenido/a!",
                 timer: 1500,
                 showConfirmButton: false
             });
-            
+
             localStorage.setItem("token", access_token);
             if (refresh_token) {
                 localStorage.setItem("refresh_token", refresh_token);
             }
             const payload = jwtDecode(access_token);
             setUser(payload);
-            
+
             navigate("/");
         } catch (error) {
             console.log(error);
@@ -55,15 +55,15 @@ const Login = () => {
     return (
         <div className="min-vh-100 d-flex justify-content-center align-items-center p-3" style={{ background: "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)" }}>
             <div className="card border-0 shadow-lg p-4 p-md-5" style={{ maxWidth: "440px", width: "100%", borderRadius: "1.25rem", background: "#ffffff" }}>
-                
+
                 {/* Brand Header */}
                 <div className="text-center mb-4">
-                    <div 
-                        className="mx-auto d-flex align-items-center justify-content-center shadow-sm mb-3" 
-                        style={{ 
-                            width: "56px", 
-                            height: "56px", 
-                            borderRadius: "16px", 
+                    <div
+                        className="mx-auto d-flex align-items-center justify-content-center shadow-sm mb-3"
+                        style={{
+                            width: "56px",
+                            height: "56px",
+                            borderRadius: "16px",
                             background: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
                             color: "#ffffff",
                             fontSize: "1.6rem"
@@ -84,16 +84,15 @@ const Login = () => {
                             <span className="input-group-text bg-light border-end-0 text-muted">
                                 <FaIdCard />
                             </span>
-                            <input 
-                                type="text" 
+                            <input
+                                type="text"
                                 inputMode="numeric"
-                                autoComplete="username" 
-                                className="form-control bg-light border-start-0 ps-0" 
-                                value={formData.dni} 
-                                onChange={handleChange} 
-                                id="dni" 
-                                name="dni" 
-                                placeholder="Ej: 44480378" 
+                                autoComplete="username"
+                                className="form-control bg-light border-start-0 ps-0"
+                                value={formData.dni}
+                                onChange={handleChange}
+                                id="dni"
+                                name="dni"
                                 required
                             />
                         </div>
@@ -107,22 +106,21 @@ const Login = () => {
                             <span className="input-group-text bg-light border-end-0 text-muted">
                                 <FaLock />
                             </span>
-                            <input 
-                                type="password" 
-                                autoComplete="current-password" 
-                                className="form-control bg-light border-start-0 ps-0" 
-                                value={formData.password} 
-                                onChange={handleChange} 
-                                id="password" 
-                                name="password" 
-                                placeholder="••••••••" 
+                            <input
+                                type="password"
+                                autoComplete="current-password"
+                                className="form-control bg-light border-start-0 ps-0"
+                                value={formData.password}
+                                onChange={handleChange}
+                                id="password"
+                                name="password"
                                 required
                             />
                         </div>
                     </div>
 
-                    <button 
-                        type="submit" 
+                    <button
+                        type="submit"
                         className="btn btn-primary w-100 py-2 fw-semibold shadow-sm"
                         disabled={cargando}
                         style={{ borderRadius: "0.6rem" }}
