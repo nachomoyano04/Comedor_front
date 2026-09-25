@@ -56,8 +56,8 @@ function App() {
           <Route path="listado" element={<Insumos />} />
           <Route path="nuevo" element={<RequireRole allowedRoles={[ROLES.ADMIN, ROLES.COCINA]}><RegisterInsumo /></RequireRole>} />
           <Route path="editar/:id" element={<RequireRole allowedRoles={[ROLES.ADMIN, ROLES.COCINA]}><UpdateInsumo /></RequireRole>} />
-          <Route path="nueva_compra" element={<RequireRole allowedRoles={[ROLES.ADMIN, ROLES.COMPRADOR]}><RegisterCompra /></RequireRole>} />
-          <Route path="compras" element={<RequireRole allowedRoles={[ROLES.ADMIN, ROLES.COMPRADOR]}><Compras /></RequireRole>} />
+          <Route path="nueva_compra" element={<RequireRole allowedRoles={[ROLES.ADMIN, ROLES.COMPRADOR, ROLES.COCINA]}><RegisterCompra /></RequireRole>} />
+          <Route path="compras" element={<RequireRole allowedRoles={[ROLES.ADMIN, ROLES.COMPRADOR, ROLES.COCINA]}><Compras /></RequireRole>} />
           <Route path="calculadora_compras" element={<RequireRole allowedRoles={[ROLES.ADMIN, ROLES.COMPRADOR]}><CompraCalculator /></RequireRole>} />
         </Route>
         {/* Recetas */}

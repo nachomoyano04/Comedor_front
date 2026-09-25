@@ -2,12 +2,12 @@ import { useState } from "react";
 import { isEqualWith } from "lodash";
 import { trimer } from "../services/globalFunctions";
 
-const FormInsumo = ({insumo = null, unidades_de_medida, onSubmit}) => {
+const FormInsumo = ({insumo = null, unidades_de_medida = [], onSubmit}) => {
     const [formData, setFormData] = useState({
         codigo: insumo?.codigo || "",
         producto: insumo?.producto || "",
         marca: insumo?.marca || "",
-        id_unidad_de_medida: insumo?.id_unidad_de_medida || unidades_de_medida[0].id
+        id_unidad_de_medida: insumo?.id_unidad_de_medida || (unidades_de_medida?.[0]?.id ?? "")
     });
 
     const isEditing = insumo !== null;

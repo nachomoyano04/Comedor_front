@@ -15,8 +15,9 @@ const ListaProducciones = ({producciones, onClickStateButton}) => {
     return (
         <div className="row row-cols-1 row-cols-md-2 g-4">
             {producciones.map(p => {
-                const costo_primo_total = p.costo_primo_total.replace(".",",");
-                const costo_primo_unitario = Number(parseFloat(p.costo_primo_total) / parseFloat(p.cantidad_comensales > 0? p.cantidad_comensales : 1)).toFixed(2).replace(".", ",");
+                const costo_primo_total = String(p.costo_primo_total ?? "0").replace(".", ",");
+                const comensales = parseFloat(p.cantidad_comensales) > 0 ? parseFloat(p.cantidad_comensales) : 1;
+                const costo_primo_unitario = (parseFloat(p.costo_primo_total || 0) / comensales).toFixed(2).replace(".", ",");
                 return (
                     <div key={p.id} className="col">
                         <div className={`card h-100 border-start border-4 shadow-sm ${p.estado == 1 ? "border-success-subtle bg-white" : "border-danger-subtle bg-danger-subtle"}`} style={{borderRadius: "1rem"}}>
@@ -24,7 +25,7 @@ const ListaProducciones = ({producciones, onClickStateButton}) => {
                                 <div>
                                     <h5 className="mb-0 fw-semibold">{p.nombre}</h5>
                                     <small className="text-secondary">
-                                        {new Date(p.fecha).toLocaleDateString("es-AR", {year: "numeric", month: "short", day: "numeric"})}
+                                        {p.fecha ? new Date(p.fecha).toLocaleDateString("es-AR", {year: "numeric", month: "short", day: "numeric"}) : "---"}
                                     </small>
                                 </div>
                                 <div className="d-flex align-items-center">

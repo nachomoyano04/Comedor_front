@@ -15,17 +15,27 @@ const FormReceta = ({ receta, ins, onSubmit }) => {
 
     const handleSubmit = e => {
         e.preventDefault();
-        const insumosBien = formData.insumo.every(i => i.cantidad > 0);
-        onSubmit(insumosBien ? formData : { error: "Las cantidades de los insumos deben ser mayores a 0" });
+        if (formData.insumo.length === 0) {
+            return onSubmit({ error: "Debe seleccionar al menos un insumo para la receta" });
+        }
+        const insumosBien = formData.insumo.every(i => Number(i.cantidad) > 0);
+        if (!insumosBien) {
+            return onSubmit({ error: "Las cantidades de los insumos deben ser mayores a 0" });
+        }
+        onSubmit({
+            ...formData,
+            cuantos_comen: Number(formData.cuantos_comen) || 1,
+            insumo: formData.insumo.map(i => ({ ...i, cantidad: Number(i.cantidad) }))
+        });
     }
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         let newFormData;
         if (name == "insumo") { // Para manejar los insumos con sus respectivas cantidades
-            const insumo_id = e.target.getAttribute("data-id")
-            newFormData = { ...formData, insumo: formData.insumo.map(i => i.value == insumo_id ? { ...i, cantidad: Number(value) } : i).sort((a, b) => a.value - b.value) };
-            setFormData(newFormData)
+            const insumo_id = e.target.getAttribute("data-id");
+            newFormData = { ...formData, insumo: formData.insumo.map(i => i.value == insumo_id ? { ...i, cantidad: value === "" ? "" : value } : i).sort((a, b) => a.value - b.value) };
+            setFormData(newFormData);
         } else { // Para manejar el nombre y la descripcion...
             newFormData = { ...formData, [name]: name == "cuantos_comen" ? Number(value) : value };
         }
@@ -34,7 +44,7 @@ const FormReceta = ({ receta, ins, onSubmit }) => {
     }
 
     const handleSelect = (insumoSeleccionado) => { //sacar el insumo de los insumos y agregarlo a listaInsumos...
-        const nuevo = { ...insumoSeleccionado, cantidad: 0 };
+        const nuevo = { ...insumoSeleccionado, cantidad: "" };
         const newFormData = { ...formData, insumo: [...formData.insumo, nuevo] };
         setFormData(newFormData)
         setInsumos(prev => prev.filter(i => i.value != insumoSeleccionado.value));
@@ -61,7 +71,7 @@ const FormReceta = ({ receta, ins, onSubmit }) => {
         <div className="col-md-2 mb-3"></div>
         <div className="col-md-3 mb-3">
             <label className="form-label">Cuantos comen</label>
-            <input name="cuantos_comen" autoComplete="off" onChange={handleChange} type="number" className="form-control" value={formData.cuantos_comen} required />
+            <input name="cuantos_comen" autoComplete="off" onChange={handleChange} type="number" min="1" className="form-control" value={formData.cuantos_comen} required />
         </div>
         <div className="col-md-7 mb-3">
             <label className="form-label">Descripción</label>
@@ -70,7 +80,7 @@ const FormReceta = ({ receta, ins, onSubmit }) => {
         <div className="col-md-3 mb-3"></div>
         <div className="col-md-4 mb-3">
             <label className="form-label">Insumos</label>
-            <Select name="insumos" options={insumos} onChange={handleSelect} />
+            <Select name="insumos" options={insumos} onChange={handleSelect} placeholder="Seleccionar insumo..." />
         </div>
         <div className="col-md-8 mb-3">
             <label className="form-label fw-semibold">Lista de insumos</label>
@@ -81,7 +91,7 @@ const FormReceta = ({ receta, ins, onSubmit }) => {
                             <span className="fw-medium">{l.label}</span>
                         </div>
                         <div className="d-flex align-items-center ms-3">
-                            <input type="number" name="insumo" data-id={l.value} value={l.cantidad || 0} onChange={handleChange} className="form-control form-control-sm text-end" style={{ width: "150px" }} placeholder={"cantidad (" + l.simbolo + ")"} required />
+                            <input type="number" step="any" min="0.001" name="insumo" data-id={l.value} value={l.cantidad === "" ? "" : (l.cantidad ?? "")} onChange={handleChange} className="form-control form-control-sm text-end" style={{ width: "150px" }} placeholder={"cantidad (" + l.simbolo + ")"} required />
                             <small className="ms-2 text-muted">{l.simbolo}</small>
                         </div>
                         <button type="button" className="btn btn-sm ms-3 p-1" onClick={() => handleClickBtnListaInsumos(l)}><FontAwesomeIcon icon={faTrash} className="text-danger" style={{ color: "#ff0000", }} /></button>

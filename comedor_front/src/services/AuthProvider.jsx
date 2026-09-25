@@ -18,6 +18,7 @@ export const AuthProvider = ({ children }) => {
           const response = await getUsuarioByDni(payload.dni);
           // response es un array (una fila por rol, por el LEFT JOIN de findUsuarioByDNI).
           // Lo normalizamos a la misma forma que arma Login.jsx con el JWT.
+          const rolesFromPayload = payload.roles || [];
           const usuarioNormalizado = response.reduce((acc, fila) => {
             if (!acc) {
               acc = {
@@ -29,10 +30,11 @@ export const AuthProvider = ({ children }) => {
                 correo: fila.correo,
                 telefono: fila.telefono,
                 estado: fila.estado,
-                roles: [],
+                roles: [...rolesFromPayload],
               };
             }
-            if (fila.rol_id) acc.roles.push(fila.rol_id);
+            const rol = fila.numero_rol ?? fila.rol_id;
+            if (rol && !acc.roles.includes(rol)) acc.roles.push(rol);
             return acc;
           }, null);
           setUser(usuarioNormalizado);

@@ -46,11 +46,15 @@ const RegisterCompra = () => {
         if(res.isConfirmed){
             try {
                 const {insumo_nombre, proveedor_razon_social, precio_total, ...compra} = formData;
+                if (!compra.fecha_vencimiento) {
+                    delete compra.fecha_vencimiento;
+                }
                 const resultado = await newCompra(compra); //Debo registrar la compra y modificar el stock del insumo
                 await Swal.fire({ icon: "success", title: resultado });
                 navigate("/insumos/compras");
             } catch (err) {
-                await Swal.fire({icon: "error", title: err.response.data.error});                
+                const msg = err.response?.data?.error || err.response?.data || err.message || "Error al registrar compra";
+                await Swal.fire({icon: "error", title: typeof msg === "string" ? msg : JSON.stringify(msg)});                
             }
         }
     }

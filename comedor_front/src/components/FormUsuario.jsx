@@ -15,6 +15,7 @@ const FormUsuario = ({ u = null, roles = [], onSubmit }) => {
 
   const [formData, setFormData] = useState(usuario);
   const [areChanges, setAreChanges] = useState(false);
+  const isEditing = u !== null;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -143,22 +144,22 @@ const FormUsuario = ({ u = null, roles = [], onSubmit }) => {
         <button
           type="submit"
           className="btn btn-primary"
-          disabled={!areChanges}
+          disabled={isEditing && !areChanges}
         >
-          Guardar cambios
+          {isEditing ? "Guardar cambios" : "Registrar"}
         </button>
 
         <button
           type="button"
           className="btn btn-outline-secondary"
           onClick={handleReset}
-          disabled={!areChanges}
+          disabled={isEditing && !areChanges}
         >
           Cancelar
         </button>
       </div>
 
-      {!areChanges && (
+      {isEditing && !areChanges && (
         <div className="text-end">
           <small
             style={{

@@ -48,7 +48,7 @@ const FormProduccion = ({ recetas, insumosBD, produccion = null, onSubmit }) => 
                             <div className="fw-medium flex-grow-1">{l.label}</div>
                             <div className="d-flex flex-wrap align-items-center gap-2 mt-2 mt-sm-0">
                                 {formData.cantidad_producida > 0 && (<small className="text-muted">x{formData.cantidad_producida}</small>)}
-                                <input type="number" name="insumo" data-id={l.value} value={l.cantidad || 0} onChange={handleChange} className="form-control form-control-sm text-end" style={{ width: "120px", minWidth: "100px" }} placeholder={"cantidad (" + l.simbolo + ")"} required />
+                                <input type="number" step="any" min="0" name="insumo" data-id={l.value} value={l.cantidad === "" ? "" : (l.cantidad ?? "")} onChange={handleChange} className="form-control form-control-sm text-end" style={{ width: "120px", minWidth: "100px" }} placeholder={"cantidad (" + l.simbolo + ")"} required />
                                 <small className="text-muted">{l.simbolo}</small>
                             </div>
                             {isEditing && (<button type="button" className="btn btn-sm p-1 ms-1" onClick={() => handleClickBtnListaInsumos(l)}><FontAwesomeIcon icon={faTrash} className="text-danger" style={{ color: "#ff0000", }} /></button>)}
