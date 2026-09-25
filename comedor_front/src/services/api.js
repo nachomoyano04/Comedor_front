@@ -1,7 +1,10 @@
 import axios from "axios";
 
+const rawApiUrl = import.meta.env.VITE_API_URL || "http://localhost:6970";
+export const API_URL = rawApiUrl.replace(/\/+$/, "");
+
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL, // <-- Reemplaza el string fijo
+    baseURL: API_URL,
     withCredentials: true
 });
 
@@ -32,7 +35,7 @@ api.interceptors.response.use(res => res, async error => {
             isRefreshing = true;
             try {
                 const storedRefreshToken = localStorage.getItem("refresh_token");
-                const res = await axios.post(`${import.meta.env.VITE_API_URL}/usuario/auth/refresh`, { refresh_token: storedRefreshToken }, { withCredentials: true });
+                const res = await axios.post(`${API_URL}/usuario/auth/refresh`, { refresh_token: storedRefreshToken }, { withCredentials: true });
                 const nuevo_token = res.data.access_token;
                 localStorage.setItem("token", nuevo_token);
 

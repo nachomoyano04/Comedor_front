@@ -18,6 +18,7 @@ import {
     FaAngleRight
 } from "react-icons/fa";
 import { AuthContext } from "../services/AuthProvider";
+import { API_URL } from "../services/api";
 import Swal from "sweetalert2";
 import axios from "axios";
 
@@ -50,7 +51,7 @@ const Sidebar = ({ isMobile, mobileOpen, onCloseMobile, collapsed, onToggleColla
         try {
             localStorage.removeItem("token");
             localStorage.removeItem("refresh_token");
-            await axios.post(`${import.meta.env.VITE_API_URL}/usuario/auth/logout`, null, { withCredentials: true });
+            await axios.post(`${API_URL}/usuario/auth/logout`, null, { withCredentials: true });
             setUser(null);
             navigate("/login");
             await Swal.fire({ title: "Sesión cerrada", icon: "success", timer: 1200 });
