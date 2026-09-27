@@ -164,10 +164,29 @@ const Dashboard = () => {
             }
         }
 
-        // Si no hay producciones este mes pero hay histórico, usamos el histórico para no mostrar ceros vacíos
+        // Si no hay producciones este mes pero hay histórico, usamos el histórico para poblar gráficos y métricas
         const usandoHistorico = totalComensalesMes === 0 && totalComensalesHistorico > 0;
         const comensalesCalculados = usandoHistorico ? totalComensalesHistorico : totalComensalesMes;
         const costoCalculado = usandoHistorico ? totalCostoHistorico : totalCostoMes;
+
+        if (usandoHistorico) {
+            for (const p of prodsOrdenadas) {
+                const f = new Date(p.fecha);
+                const turnoKey = p.turno?.toLowerCase().trim();
+                if (turnoKey === "mañana" || turnoKey === "manana") comensalesPorTurno.mañana += p.cantidad_comensales;
+                else if (turnoKey === "tarde") comensalesPorTurno.tarde += p.cantidad_comensales;
+                else if (turnoKey === "noche") comensalesPorTurno.noche += p.cantidad_comensales;
+                else comensalesPorTurno.otro += p.cantidad_comensales;
+
+                const diaStr = f.toLocaleDateString("es-AR", { day: "2-digit", month: "short" });
+                if (!temporalMap.has(diaStr)) {
+                    temporalMap.set(diaStr, { costo: 0, comensales: 0 });
+                }
+                const prev = temporalMap.get(diaStr);
+                prev.costo += p.costo_primo_total;
+                prev.comensales += p.cantidad_comensales;
+            }
+        }
 
         // KPI Clave del informe: Costo promedio por alumno / ración
         const costoPromedioPorAlumno = comensalesCalculados > 0 
@@ -321,6 +340,16 @@ const Dashboard = () => {
                     </Link>
                 </div>
             </div>
+
+            {/* AVISO DE PERÍODO SI SE USA HISTÓRICO */}
+            {metricas.usandoHistorico && (
+                <div className="alert alert-info py-2 px-3 mb-4 d-flex align-items-center gap-2 rounded-3 shadow-sm border-0">
+                    <FaInfoCircle className="flex-shrink-0 text-primary" size={18} />
+                    <span className="small mb-0">
+                        <strong>Período con registros (Histórico):</strong> Como aún no hay producciones cargadas en el mes en curso, las estadísticas y gráficos muestran la actividad del último período registrado. Al cargar una producción de hoy, el panel alternará automáticamente al mes actual.
+                    </span>
+                </div>
+            )}
 
             {/* SECCIÓN 1: KPIS EJECUTIVOS PARA DIRECTIVOS Y ADMINISTRACIÓN */}
             <div className="row g-3 mb-4">

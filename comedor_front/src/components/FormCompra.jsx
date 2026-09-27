@@ -1,7 +1,8 @@
 import { useState } from "react";
-import Select from "react-select"
+import Select from "react-select";
+import notify from "../utils/notify";
 
-const FormCompra = ({onSubmit, udm, insumos, proveedores}) => {
+const FormCompra = ({ onSubmit, udm, insumos, proveedores, submitting = false }) => {
     const [formData, setFormData] = useState({
         insumo_id: "", 
         proveedor_id: "", 
@@ -45,12 +46,12 @@ const FormCompra = ({onSubmit, udm, insumos, proveedores}) => {
         e.preventDefault();
         const precioUnitarioNum = parseFloat(String(formData.precio_unitario).replace(",", "."));
         const cantidadNum = parseFloat(String(formData.cantidad).replace(",", "."));
-        if (!precioUnitarioNum || precioUnitarioNum <= 0) {
-            alert("Por favor ingrese un precio unitario válido mayor a 0");
+        if (!formData.insumo_id || !formData.proveedor_id) {
+            notify.warning("Debe seleccionar un insumo y un proveedor");
             return;
         }
-        if (!formData.insumo_id || !formData.proveedor_id) {
-            alert("Debe seleccionar un insumo y un proveedor");
+        if (!precioUnitarioNum || precioUnitarioNum <= 0) {
+            notify.warning("Por favor ingrese un precio unitario válido mayor a 0");
             return;
         }
         onSubmit({
@@ -90,9 +91,12 @@ const FormCompra = ({onSubmit, udm, insumos, proveedores}) => {
                 <label className="form-label">Precio total (Calculado)</label>
                 <input name="precio_total" value={formData.precio_total} type="text" readOnly className="form-control bg-light"/>
             </div>
-            <div className="col-12 d-flex justify-content-end gap-2">
-                <button className="btn btn-primary" type="submit">Guardar</button>
-                <input className="btn btn-secondary ms-2" type="button" onClick={handleReset} value={"Cancelar"}/>
+            <div className="col-12 d-flex justify-content-end gap-2 pt-2">
+                <button className="btn btn-primary d-flex align-items-center gap-2" type="submit" disabled={submitting}>
+                    {submitting && <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>}
+                    {submitting ? "Guardando compra..." : "Guardar Compra"}
+                </button>
+                <input className="btn btn-secondary" type="button" onClick={handleReset} value={"Cancelar"} disabled={submitting}/>
             </div>
         </form>
     </>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getInsumos, getProveedores, newCompra } from "../services/api_endpoints";
 import FormCompra from "../components/FormCompra";
-import Swal from "sweetalert2";
+import notify from "../utils/notify";
 import { useNavigate, useOutletContext } from "react-router-dom";
 
 const RegisterCompra = () => {
@@ -35,27 +35,30 @@ const RegisterCompra = () => {
         loadInsumosYProveedores();
     }, [])
 
+    const [submitting, setSubmitting] = useState(false);
+
     const handleSubmit = async formData => {
-        const res = await Swal.fire({
-            icon: "warning",
-            title: "Seguro desea registrar esta compra?",
-            showCancelButton: true,
-            cancelButtonText: "Cancelar",
-            confirmButtonText: "Si"
+        const confirmado = await notify.confirm({
+            title: "¿Registrar compra?",
+            text: "Se registrará el precio y se actualizará el stock del insumo.",
+            confirmButtonText: "Sí, registrar"
         });
-        if(res.isConfirmed){
-            try {
-                const {insumo_nombre, proveedor_razon_social, precio_total, ...compra} = formData;
-                if (!compra.fecha_vencimiento) {
-                    delete compra.fecha_vencimiento;
-                }
-                const resultado = await newCompra(compra); //Debo registrar la compra y modificar el stock del insumo
-                await Swal.fire({ icon: "success", title: resultado });
-                navigate("/insumos/compras");
-            } catch (err) {
-                const msg = err.response?.data?.error || err.response?.data || err.message || "Error al registrar compra";
-                await Swal.fire({icon: "error", title: typeof msg === "string" ? msg : JSON.stringify(msg)});                
+        if (!confirmado) return;
+
+        setSubmitting(true);
+        try {
+            const {insumo_nombre, proveedor_razon_social, precio_total, ...compra} = formData;
+            if (!compra.fecha_vencimiento) {
+                delete compra.fecha_vencimiento;
             }
+            const resultado = await newCompra(compra);
+            notify.success(typeof resultado === "string" ? resultado : "¡Compra registrada con éxito!");
+            navigate("/insumos/compras");
+        } catch (err) {
+            const msg = err.response?.data?.error || err.response?.data || err.message || "Error al registrar compra";
+            notify.error(typeof msg === "string" ? msg : JSON.stringify(msg));
+        } finally {
+            setSubmitting(false);
         }
     }
 
@@ -68,7 +71,7 @@ const RegisterCompra = () => {
                 {loading ? (<div className="spinner-border" role="status">
                     <span className="visually-hidden">Cargando...</span>
                 </div>) :
-                    (<FormCompra insumos={ins} udm={unidades_de_medida} proveedores={proveedores} onSubmit={handleSubmit}/>)
+                    (<FormCompra insumos={ins} udm={unidades_de_medida} proveedores={proveedores} onSubmit={handleSubmit} submitting={submitting}/>)
                 }
             </div>
     </>

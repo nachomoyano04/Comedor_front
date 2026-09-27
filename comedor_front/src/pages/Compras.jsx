@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import ListaCompras from "../components/ListaCompras";
 import { deleteCompra, getPreciosByInsumo } from "../services/api_endpoints";
-import Swal from "sweetalert2";
+import notify from "../utils/notify";
 import { useOutletContext } from "react-router-dom";
 
 const Compras = () => {
@@ -41,14 +41,18 @@ const Compras = () => {
     }, []); 
 
     const handleDeleteCompra = async id => {
-        const res = await Swal.fire({ icon: "warning", title: `Seguro desea eliminar la compra?` });
-        if(res.isConfirmed){
+        const confirmado = await notify.confirm({
+            title: "¿Eliminar compra?",
+            text: "¿Estás seguro de que deseas eliminar este registro de compra?",
+            confirmButtonText: "Sí, eliminar"
+        });
+        if (confirmado) {
             try {
                 const resultado = await deleteCompra(id);
-                await Swal.fire({ icon: "success", title: resultado, timer: 2000 });
-                setCompras(compras.filter(c => c.id != id));
+                notify.success(typeof resultado === "string" ? resultado : "Compra eliminada");
+                setCompras(prev => prev.filter(c => c.id != id));
             } catch (err) {
-                await Swal.fire({icon: "error", title: err.response.data.error});
+                notify.error(err.response?.data?.error || "Error al eliminar la compra");
             }   
         }
     }

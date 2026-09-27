@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { loginUser } from "../services/api_endpoints";
-import Swal from "sweetalert2";
+import notify from "../utils/notify";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../services/AuthProvider";
 import { jwtDecode } from "jwt-decode";
@@ -18,13 +18,7 @@ const Login = () => {
         try {
             const data = await loginUser(formData);
             const { access_token, refresh_token, mensaje } = data;
-            await Swal.fire({
-                icon: "success",
-                title: mensaje || "¡Bienvenido/a!",
-                timer: 1500,
-                showConfirmButton: false
-            });
-
+            
             localStorage.setItem("token", access_token);
             if (refresh_token) {
                 localStorage.setItem("refresh_token", refresh_token);
@@ -32,16 +26,13 @@ const Login = () => {
             const payload = jwtDecode(access_token);
             setUser(payload);
 
+            notify.success(mensaje || "¡Bienvenido/a!");
             navigate("/");
         } catch (error) {
             console.log(error);
             const status = error.response?.status;
             const errorMsg = error.response?.data?.error || error.response?.data || error.message || "Error al iniciar sesión";
-            Swal.fire({
-                icon: status === 401 ? "warning" : "error",
-                title: typeof errorMsg === "string" ? errorMsg : "DNI y/o contraseña incorrectos",
-                confirmButtonColor: "#2563eb"
-            });
+            notify.error(status === 401 ? "DNI y/o contraseña incorrectos" : errorMsg);
         } finally {
             setCargando(false);
         }
