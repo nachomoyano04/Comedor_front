@@ -43,10 +43,38 @@ const Precios = () => {
             </Link>
         </div>
         <div className="card-body">
-            {error && <span className="bs-danger">{error}</span>}
             {loading ? (
-                <div className="spinner-border" role="status">
-                    <span className="visually-hidden">Cargando...</span>
+                <div className="d-flex justify-content-center p-4">
+                    <div className="spinner-border text-primary" role="status">
+                        <span className="visually-hidden">Cargando...</span>
+                    </div>
+                </div>
+            ) : error ? (
+                <div className="alert alert-danger d-flex justify-content-between align-items-center m-3" role="alert">
+                    <div>
+                        <strong>Error:</strong> {error}
+                    </div>
+                    <button 
+                        className="btn btn-sm btn-outline-danger" 
+                        onClick={() => {
+                            setLoading(true);
+                            setError(null);
+                            const fetchAgain = async () => {
+                                try {
+                                    const prices = id ? await getPreciosByInsumo(id) : await getPrecios();
+                                    setPrecios(prices);
+                                } catch (err) {
+                                    console.error(err);
+                                    setError("Error al obtener precios");
+                                } finally {
+                                    setLoading(false);
+                                }
+                            };
+                            fetchAgain();
+                        }}
+                    >
+                        Reintentar
+                    </button>
                 </div>
             ) : precios.length === 0 ? (
                 <EmptyState 

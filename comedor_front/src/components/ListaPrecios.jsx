@@ -21,7 +21,7 @@ const ListaPrecios = ({precios}) => {
                 <tbody>
                     {precios.length == 0 ? (
                         <tr>
-                            <td colSpan="6" className="text-center text-danger">
+                            <td colSpan="7" className="text-center text-muted py-4">
                                 No hay precios todavía
                             </td>
                         </tr>
