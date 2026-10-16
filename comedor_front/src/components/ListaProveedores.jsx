@@ -3,6 +3,8 @@ import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../services/AuthProvider";
+import EmptyState from "./EmptyState";
+import { FaTruck, FaPlus } from "react-icons/fa";
 
 const ListaProveedores = ({ proveedores, onClickChangeStateProveedor }) => {
     const { user } = useContext(AuthContext);
@@ -20,11 +22,17 @@ const ListaProveedores = ({ proveedores, onClickChangeStateProveedor }) => {
     }, [proveedores, filtroTexto]);
 
     // Chequeo de lista vacía desde la base de datos
-    if (proveedores.length === 0) {
+    if (!proveedores || proveedores.length === 0) {
         return (
-            <div className="text-center text-danger my-5 fw-semibold fs-5">
-                No hay proveedores registrados todavía
-            </div>
+            <EmptyState 
+                icon={FaTruck}
+                title="No hay proveedores registrados todavía"
+                description="Carga los comercios, distribuidores y proveedores que abastecen de mercadería al comedor escolar."
+                actionLink="/proveedores/registrar"
+                actionText="Registrar Nuevo Proveedor"
+                actionIcon={FaPlus}
+                canCreate={user?.roles?.some(r => [1, 4].includes(r))}
+            />
         );
     }
 

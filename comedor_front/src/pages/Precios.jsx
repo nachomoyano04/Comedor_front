@@ -7,6 +7,9 @@ import LineApexChart from "../components/LineApexChart";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
+import EmptyState from "../components/EmptyState";
+import { FaDollarSign, FaPlus } from "react-icons/fa";
+
 const Precios = () => {
     const {id} = useParams();
     const [precios, setPrecios] = useState([]);
@@ -41,11 +44,22 @@ const Precios = () => {
         </div>
         <div className="card-body">
             {error && <span className="bs-danger">{error}</span>}
-            {loading ? (<div className="spinner-border" role="status">
-                <span className="visually-hidden">Cargando...</span>
-            </div>) :
-                (id ? <><ListaPreciosInsumo historial={precios} /><LineApexChart precios={precios}/></>:<ListaPrecios precios={precios}/>)
-            }
+            {loading ? (
+                <div className="spinner-border" role="status">
+                    <span className="visually-hidden">Cargando...</span>
+                </div>
+            ) : precios.length === 0 ? (
+                <EmptyState 
+                    icon={FaDollarSign}
+                    title={id ? "Este insumo aún no tiene compras o precios registrados" : "No hay precios registrados todavía"}
+                    description="Cada vez que registres una compra de este insumo, se guardará aquí el precio unitario y se graficará su evolución histórica en el tiempo."
+                    actionLink="/insumos/nueva_compra"
+                    actionText="Registrar Compra para este Insumo"
+                    actionIcon={FaPlus}
+                />
+            ) : (
+                id ? <><ListaPreciosInsumo historial={precios} /><LineApexChart precios={precios}/></> : <ListaPrecios precios={precios}/>
+            )}
         </div>
     </>
 }

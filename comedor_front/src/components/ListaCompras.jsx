@@ -3,6 +3,8 @@ import { faTrash, faSort, faSortUp, faSortDown } from "@fortawesome/free-solid-s
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Select from "react-select";
 import { parsearFechaDate, parsearHoraDateTime } from "../services/globalFunctions";
+import EmptyState from "./EmptyState";
+import { FaShoppingCart, FaPlus } from "react-icons/fa";
 
 const ListaCompras = ({ insumos, compras, onClickDeleteCompra }) => {
     const [filtroInsumo, setFiltroInsumo] = useState(null);
@@ -43,6 +45,19 @@ const ListaCompras = ({ insumos, compras, onClickDeleteCompra }) => {
         else if (ordenPrecio === "asc") setOrdenPrecio("desc");
         else setOrdenPrecio(null);
     };
+
+    if (!compras || compras.length === 0) {
+        return (
+            <EmptyState 
+                icon={FaShoppingCart}
+                title="No hay compras registradas todavía"
+                description="Registra los ingresos de mercadería para cargar precios de proveedores, actualizar el stock de insumos y controlar vencimientos."
+                actionLink="/insumos/nueva_compra"
+                actionText="Registrar Nueva Compra"
+                actionIcon={FaPlus}
+            />
+        );
+    }
 
     const opcionesInsumos = [{ value: "TODOS", label: "Ver historial completo" }, ...insumos];
 

@@ -1,8 +1,23 @@
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {faPencil} from "@fortawesome/free-solid-svg-icons"
+import { faPencil } from "@fortawesome/free-solid-svg-icons";
+import EmptyState from "./EmptyState";
+import { FaUsers, FaPlus } from "react-icons/fa";
 
 const ListaUsuarios = ({usuarios, onClickChangeStateUsuario}) => {
+    if (!usuarios || usuarios.length === 0) {
+        return (
+            <EmptyState 
+                icon={FaUsers}
+                title="No hay otros usuarios registrados"
+                description="Registra al personal del comedor para asignar roles de Administración, Cocina, Directivos o Compras."
+                actionLink="/usuario/registro"
+                actionText="Registrar Nuevo Usuario"
+                actionIcon={FaPlus}
+            />
+        );
+    }
+
     return <>
     <div className="table-responsive">
         <table className="table table-striped table-hover align-middle">

@@ -1,11 +1,28 @@
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPencil } from "@fortawesome/free-solid-svg-icons"
+import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { AuthContext } from "../services/AuthProvider";
 import { useContext } from "react";
+import EmptyState from "./EmptyState";
+import { FaBoxes, FaPlus } from "react-icons/fa";
 
 const ListaInsumos = ({ insumos, unidades_de_medida, onClickChangeStateInsumo }) => {
     const { user } = useContext(AuthContext);
+
+    if (!insumos || insumos.length === 0) {
+        return (
+            <EmptyState 
+                icon={FaBoxes}
+                title="No hay insumos registrados todavía"
+                description="Carga los alimentos y materias primas (leche, harina, arroz, carnes, verduras) para gestionar el inventario del comedor."
+                actionLink="/insumos/nuevo_insumo"
+                actionText="Agregar Nuevo Insumo"
+                actionIcon={FaPlus}
+                canCreate={user?.roles?.some(r => [1, 2].includes(r))}
+            />
+        );
+    }
+
     return <>
         <div className="table-responsive">
             <table className="table table-striped table-hover align-middle">

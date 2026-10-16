@@ -1,14 +1,24 @@
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
+import EmptyState from "./EmptyState";
+import { FaUtensils, FaPlus, FaBookOpen } from "react-icons/fa";
 
 const ListaProducciones = ({producciones, onClickStateButton}) => {
     // Verificación de lista vacía
-    if (producciones.length === 0) {
+    if (!producciones || producciones.length === 0) {
         return (
-            <div className="text-center text-danger my-5 fw-semibold fs-5">
-                No hay producciones registradas todavía
-            </div>
+            <EmptyState 
+                icon={FaUtensils}
+                title="No hay producciones registradas todavía"
+                description="Comienza registrando la elaboración de comidas del día. Al registrar una producción, los ingredientes se descontarán automáticamente de la despensa."
+                actionLink="/produccion/registrar"
+                actionText="Registrar Producción"
+                actionIcon={FaPlus}
+                secondaryLink="/recetas/listado"
+                secondaryText="Ver Recetas"
+                secondaryIcon={FaBookOpen}
+            />
         );
     }
 

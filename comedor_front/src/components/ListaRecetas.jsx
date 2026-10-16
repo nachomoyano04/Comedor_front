@@ -1,10 +1,28 @@
-import { Link } from "react-router-dom"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faPencil } from "@fortawesome/free-solid-svg-icons"
-import { useContext } from "react"
-import { AuthContext } from "../services/AuthProvider"
+import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPencil } from "@fortawesome/free-solid-svg-icons";
+import { useContext } from "react";
+import { AuthContext } from "../services/AuthProvider";
+import EmptyState from "./EmptyState";
+import { FaUtensils, FaPlus } from "react-icons/fa";
+
 const ListaRecetas = ({ recetas, onClickStateButton }) => {
     const { user } = useContext(AuthContext);
+
+    if (!recetas || recetas.length === 0) {
+        return (
+            <EmptyState 
+                icon={FaUtensils}
+                title="No hay recetas cargadas todavía"
+                description="Crea la primera receta indicando sus ingredientes para que el personal de cocina pueda seleccionarla y registrar producciones diarias."
+                actionLink="/recetas/nueva_receta"
+                actionText="Crear Nueva Receta"
+                actionIcon={FaPlus}
+                canCreate={user?.roles?.some(r => [1, 2].includes(r))}
+            />
+        );
+    }
+
     return <div className="row row-cols-1 row-cols-md-2 g-4">
         {recetas.map(r => {
             return <div key={r.id} className="col">
