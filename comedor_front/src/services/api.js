@@ -19,6 +19,17 @@ api.interceptors.request.use(config => {
 let isRefreshing = false;
 let pendingRequests = [];
 
+const processQueue = (err, token = null) => {
+    pendingRequests.forEach(prom => {
+        if (err) {
+            prom.reject(err);
+        } else {
+            prom.resolve(token);
+        }
+    });
+    pendingRequests = [];
+};
+
 api.interceptors.response.use(res => res, async error => {
     const status = error.response?.status;
     if (status === 401 && !error.config._retry) {
@@ -26,7 +37,7 @@ api.interceptors.response.use(res => res, async error => {
             return Promise.reject(error);
         }
 
-        if (error.config?.url?.includes("/auth/logout")) {
+        if (error.config?.url?.includes("/auth/logout") || error.config?.url?.includes("/auth/refresh")) {
             return Promise.reject(error);
         }
         const original = error.config;
@@ -39,22 +50,27 @@ api.interceptors.response.use(res => res, async error => {
                 const nuevo_token = res.data.access_token;
                 localStorage.setItem("token", nuevo_token);
 
-                pendingRequests.forEach(cb => cb(nuevo_token));
-                pendingRequests = [];
+                processQueue(null, nuevo_token);
             } catch (err) {
+                processQueue(err, null);
                 localStorage.removeItem("token");
                 localStorage.removeItem("refresh_token");
                 window.location.href = "/login";
-                return Promise.reject(err)
+                return Promise.reject(err);
             } finally {
                 isRefreshing = false;
             }
         }
 
-        return new Promise((resolve) => {
-            pendingRequests.push((newToken) => {
-                original.headers.Authorization = `Bearer ${newToken}`;
-                resolve(api(original));
+        return new Promise((resolve, reject) => {
+            pendingRequests.push({
+                resolve: (newToken) => {
+                    original.headers.Authorization = `Bearer ${newToken}`;
+                    resolve(api(original));
+                },
+                reject: (err) => {
+                    reject(err);
+                }
             });
         });
     }
