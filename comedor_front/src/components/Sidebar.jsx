@@ -80,8 +80,12 @@ const Sidebar = ({ isMobile, mobileOpen, onCloseMobile, collapsed, onToggleColla
             {/* Header del Sidebar */}
             <div className="sidebar-brand justify-content-between">
                 <NavLink to="/" onClick={handleLinkClick} className="d-flex align-items-center gap-2 text-decoration-none text-white overflow-hidden">
-                    <div className="brand-icon-box">
-                        <FaUtensils />
+                    <div className="brand-icon-box p-0 overflow-hidden" style={{ background: "transparent" }}>
+                        <img 
+                            src="/logo.jpg" 
+                            alt="Benito Juárez" 
+                            style={{ width: "38px", height: "38px", borderRadius: "8px", objectFit: "cover" }} 
+                        />
                     </div>
                     {!isCollapsedDesktop && (
                         <div className="d-flex flex-column text-truncate">

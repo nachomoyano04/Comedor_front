@@ -49,21 +49,20 @@ const Login = () => {
 
                 {/* Brand Header */}
                 <div className="text-center mb-4">
-                    <div
-                        className="mx-auto d-flex align-items-center justify-content-center shadow-sm mb-3"
+                    <img
+                        src="/logo.jpg"
+                        alt="Escuela Benito Juárez"
+                        className="mx-auto d-block shadow-sm mb-3"
                         style={{
-                            width: "56px",
-                            height: "56px",
+                            width: "68px",
+                            height: "68px",
                             borderRadius: "16px",
-                            background: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
-                            color: "#ffffff",
-                            fontSize: "1.6rem"
+                            objectFit: "cover",
+                            border: "2px solid #e2e8f0"
                         }}
-                    >
-                        <FaUtensils />
-                    </div>
+                    />
                     <h2 className="fw-bold mb-1" style={{ color: "#0f172a", letterSpacing: "-0.02em" }}>Comedor Escolar</h2>
-                    <p className="text-muted small mb-0">Sistema de Gestión de Alimentos y Producción</p>
+                    <p className="text-muted small mb-0">Escuela Benito Juárez - Villa Mercedes</p>
                 </div>
 
                 <form onSubmit={handleSubmitForm}>
