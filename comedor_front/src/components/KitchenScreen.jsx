@@ -39,7 +39,7 @@ const KitchenScreen = ({ recetas = [], insumosBD = [], onSubmit, onSwitchToStand
     // Recetas filtradas para selección rápida táctil
     const recetasFiltradas = useMemo(() => {
         if (!filtroBusqueda.trim()) return recetas;
-        return recetas.filter(r => 
+        return recetas.filter(r =>
             r.label?.toLowerCase().includes(filtroBusqueda.toLowerCase())
         );
     }, [recetas, filtroBusqueda]);
@@ -53,9 +53,9 @@ const KitchenScreen = ({ recetas = [], insumosBD = [], onSubmit, onSwitchToStand
         return recetaActual.insumos.map(ins => {
             const cantBase = parseFloat(ins.cantidad || 0);
             const cantRequerida = Number((cantBase * factor).toFixed(2));
-            
+
             // Buscar stock actual en base de datos (por ID o por nombre)
-            const insumoReal = insumosBD.find(ibd => 
+            const insumoReal = insumosBD.find(ibd =>
                 String(ibd.id || ibd.value) === String(ins.value) ||
                 (ibd.label && ins.label && ibd.label.trim().toLowerCase() === ins.label.trim().toLowerCase())
             );
@@ -117,9 +117,9 @@ const KitchenScreen = ({ recetas = [], insumosBD = [], onSubmit, onSwitchToStand
                 </div>
 
                 <div className="d-flex gap-2 align-items-center">
-                    <button 
-                        type="button" 
-                        onClick={onSwitchToStandard} 
+                    <button
+                        type="button"
+                        onClick={onSwitchToStandard}
                         className="btn btn-outline-light btn-lg px-3 py-2 fw-semibold d-flex align-items-center gap-2 rounded-3"
                         title="Cambiar a formulario estándar de oficina"
                     >
@@ -140,10 +140,10 @@ const KitchenScreen = ({ recetas = [], insumosBD = [], onSubmit, onSwitchToStand
                             </div>
                             <div className="input-group">
                                 <span className="input-group-text bg-secondary border-0 text-white"><FaSearch /></span>
-                                <input 
-                                    type="text" 
-                                    className="form-control form-control-lg bg-secondary text-white border-0" 
-                                    placeholder="Buscar receta rápida..." 
+                                <input
+                                    type="text"
+                                    className="form-control form-control-lg bg-secondary text-white border-0"
+                                    placeholder="Buscar receta rápida..."
                                     value={filtroBusqueda}
                                     onChange={e => setFiltroBusqueda(e.target.value)}
                                 />
@@ -164,11 +164,10 @@ const KitchenScreen = ({ recetas = [], insumosBD = [], onSubmit, onSwitchToStand
                                             key={r.value}
                                             type="button"
                                             onClick={() => setSelectedRecetaId(r.value)}
-                                            className={`btn text-start p-3 rounded-4 transition-all d-flex align-items-center justify-content-between ${
-                                                isSelected 
-                                                    ? "btn-primary shadow-lg border-2 border-white" 
-                                                    : "btn-outline-secondary text-white hover-bg-dark"
-                                            }`}
+                                            className={`btn text-start p-3 rounded-4 transition-all d-flex align-items-center justify-content-between ${isSelected
+                                                ? "btn-primary shadow-lg border-2 border-white"
+                                                : "btn-outline-secondary text-white hover-bg-dark"
+                                                }`}
                                             style={{ minHeight: "72px" }}
                                         >
                                             <div className="d-flex align-items-center gap-3">
@@ -210,9 +209,8 @@ const KitchenScreen = ({ recetas = [], insumosBD = [], onSubmit, onSwitchToStand
                                             <button
                                                 type="button"
                                                 onClick={() => setTurno(t.id)}
-                                                className={`btn w-100 py-3 rounded-4 fw-bold d-flex flex-column align-items-center justify-content-center gap-2 border-2 ${
-                                                    isSel ? `${t.color} border-white shadow-lg` : "btn-outline-secondary text-white"
-                                                }`}
+                                                className={`btn w-100 py-3 rounded-4 fw-bold d-flex flex-column align-items-center justify-content-center gap-2 border-2 ${isSel ? `${t.color} border-white shadow-lg` : "btn-outline-secondary text-white"
+                                                    }`}
                                                 style={{ minHeight: "80px", fontSize: "1.1rem" }}
                                             >
                                                 <Icon size={26} />
@@ -232,17 +230,17 @@ const KitchenScreen = ({ recetas = [], insumosBD = [], onSubmit, onSwitchToStand
                             </div>
 
                             <div className="d-flex flex-wrap align-items-center justify-content-center gap-3 my-2">
-                                <button 
+                                <button
                                     type="button"
-                                    onClick={() => handleCambiarComensales(-10)} 
+                                    onClick={() => handleCambiarComensales(-10)}
                                     className="btn btn-outline-danger btn-lg p-3 rounded-4 fw-bold fs-4"
                                     style={{ minWidth: "60px", minHeight: "60px" }}
                                 >
                                     -10
                                 </button>
-                                <button 
+                                <button
                                     type="button"
-                                    onClick={() => handleCambiarComensales(-1)} 
+                                    onClick={() => handleCambiarComensales(-1)}
                                     className="btn btn-outline-secondary btn-lg p-3 rounded-4 fw-bold fs-4"
                                     style={{ minWidth: "60px", minHeight: "60px" }}
                                 >
@@ -250,8 +248,8 @@ const KitchenScreen = ({ recetas = [], insumosBD = [], onSubmit, onSwitchToStand
                                 </button>
 
                                 <div className="text-center px-4 py-2 bg-black rounded-4 border border-secondary shadow-inner" style={{ minWidth: "160px" }}>
-                                    <input 
-                                        type="number" 
+                                    <input
+                                        type="number"
                                         min="1"
                                         className="form-control text-center bg-transparent border-0 text-warning fw-bolder fs-1 p-0"
                                         value={comensales}
@@ -261,17 +259,17 @@ const KitchenScreen = ({ recetas = [], insumosBD = [], onSubmit, onSwitchToStand
                                     <small className="text-light text-uppercase fw-bold letter-spacing-1">Platos / Alumnos</small>
                                 </div>
 
-                                <button 
+                                <button
                                     type="button"
-                                    onClick={() => handleCambiarComensales(1)} 
+                                    onClick={() => handleCambiarComensales(1)}
                                     className="btn btn-outline-secondary btn-lg p-3 rounded-4 fw-bold fs-4"
                                     style={{ minWidth: "60px", minHeight: "60px" }}
                                 >
                                     <FaPlus />
                                 </button>
-                                <button 
+                                <button
                                     type="button"
-                                    onClick={() => handleCambiarComensales(10)} 
+                                    onClick={() => handleCambiarComensales(10)}
                                     className="btn btn-outline-success btn-lg p-3 rounded-4 fw-bold fs-4"
                                     style={{ minWidth: "60px", minHeight: "60px" }}
                                 >
@@ -279,19 +277,6 @@ const KitchenScreen = ({ recetas = [], insumosBD = [], onSubmit, onSwitchToStand
                                 </button>
                             </div>
 
-                            {/* Accesos rápidos a tamaños estándar escolares */}
-                            <div className="d-flex flex-wrap justify-content-center gap-2 mt-3 pt-3 border-top border-secondary">
-                                {[25, 50, 100, 150, 200, 250].map(cant => (
-                                    <button
-                                        key={cant}
-                                        type="button"
-                                        onClick={() => handleSetComensalesDirecto(cant)}
-                                        className={`btn btn-sm rounded-pill px-3 py-2 fw-bold ${comensales === cant ? "btn-warning text-dark" : "btn-secondary text-white"}`}
-                                    >
-                                        {cant} alumnos
-                                    </button>
-                                ))}
-                            </div>
                         </div>
 
                         {/* 4. Ingredientes necesarios y Stock en Despensa (Compacto y Básico) */}
@@ -351,11 +336,11 @@ const KitchenScreen = ({ recetas = [], insumosBD = [], onSubmit, onSwitchToStand
                                                     </td>
                                                     <td className="text-center pe-2 py-1 text-nowrap">
                                                         {i.stockSuficiente ? (
-                                                            <span className="badge bg-success bg-opacity-25 text-success border border-success px-1 py-0" style={{ fontSize: "0.68rem" }}>
+                                                            <span className="badge bg-success bg-opacity-25 text-success border border-success px-1 py-1" style={{ fontSize: "0.68rem" }}>
                                                                 OK
                                                             </span>
                                                         ) : (
-                                                            <span className="badge bg-danger bg-opacity-25 text-danger border border-danger px-1 py-0" style={{ fontSize: "0.68rem" }}>
+                                                            <span className="badge bg-danger bg-opacity-10 text-danger border border-danger px-1 py-1" style={{ fontSize: "0.68rem" }}>
                                                                 Falta {i.faltante} {i.simbolo}
                                                             </span>
                                                         )}
@@ -378,7 +363,7 @@ const KitchenScreen = ({ recetas = [], insumosBD = [], onSubmit, onSwitchToStand
                                 style={{ minHeight: "56px", fontSize: "1.2rem", letterSpacing: "0.5px" }}
                             >
                                 <FaCheckCircle size={24} />
-                                <span>¡REGISTRAR PRODUCCIÓN AHORA!</span>
+                                <span>Registrar Producción</span>
                             </button>
                         </div>
                     </div>
@@ -436,16 +421,16 @@ const KitchenScreen = ({ recetas = [], insumosBD = [], onSubmit, onSwitchToStand
                             </div>
 
                             <div className="modal-footer border-0 pt-0 d-flex gap-3">
-                                <button 
-                                    type="button" 
+                                <button
+                                    type="button"
                                     className="btn btn-secondary btn-lg flex-grow-1 py-3 rounded-4 fw-bold fs-5"
                                     onClick={() => setMostrarModalConfirm(false)}
                                     disabled={enviando}
                                 >
                                     CANCELAR
                                 </button>
-                                <button 
-                                    type="button" 
+                                <button
+                                    type="button"
                                     className="btn btn-success btn-lg flex-grow-1 py-3 rounded-4 fw-bold fs-5 d-flex align-items-center justify-content-center gap-2"
                                     onClick={handleConfirmarYEnviar}
                                     disabled={enviando}
