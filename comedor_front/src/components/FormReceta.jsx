@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Select from "react-select";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheckCircle, faInfoCircle, faLayerGroup, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faLayerGroup, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { isEqualWith } from "lodash";
 import { trimer } from "../services/globalFunctions";
 
@@ -102,7 +102,7 @@ const FormReceta = ({ receta, ins, onSubmit }) => {
             </div>
             <div className="col-md-2 mb-3"></div>
             <div className="col-md-3 mb-3">
-                <label className="form-label fw-semibold">¿Cuántos comen?</label>
+                <label className="form-label fw-semibold">Cuantos comen</label>
                 <input name="cuantos_comen" autoComplete="off" onChange={handleChange} type="number" min="1" className="form-control" value={formData.cuantos_comen} required />
             </div>
 
@@ -119,12 +119,6 @@ const FormReceta = ({ receta, ins, onSubmit }) => {
             <div className="col-md-5 mb-3">
                 <div className="d-flex justify-content-between align-items-center mb-1">
                     <label className="form-label fw-semibold mb-0">Agregar insumo a la receta</label>
-                    {formData.insumo.length > 0 && (
-                        <span className="badge bg-success-subtle text-success border border-success-subtle d-flex align-items-center gap-1" style={{ fontSize: "0.74rem" }}>
-                            <FontAwesomeIcon icon={faCheckCircle} />
-                            Podés seguir sumando
-                        </span>
-                    )}
                 </div>
                 <Select
                     name="insumos"
@@ -135,14 +129,6 @@ const FormReceta = ({ receta, ins, onSubmit }) => {
                     noOptionsMessage={() => "No quedan más insumos disponibles"}
                     isClearable={false}
                 />
-                <div className="form-text text-muted mt-2 d-flex align-items-start gap-1" style={{ fontSize: "0.82rem" }}>
-                    <FontAwesomeIcon icon={faInfoCircle} className="text-primary mt-1" />
-                    <span>
-                        {formData.insumo.length === 0
-                            ? "Elegí un ingrediente para comenzar. Cada insumo que sumes quedará arriba de la pila."
-                            : "Al seleccionar un insumo, el buscador se limpiará automáticamente para que puedas seguir agregando todos los que necesites."}
-                    </span>
-                </div>
             </div>
 
             {/* LISTA DE INSUMOS (PILA LIFO) */}
@@ -150,7 +136,7 @@ const FormReceta = ({ receta, ins, onSubmit }) => {
                 <div className="d-flex justify-content-between align-items-center mb-1">
                     <label className="form-label fw-semibold mb-0 d-flex align-items-center gap-2">
                         <FontAwesomeIcon icon={faLayerGroup} className="text-primary" />
-                        <span>Lista de ingredientes (Pila)</span>
+                        <span>Lista de ingredientes</span>
                     </label>
                     <span className="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1">
                         {formData.insumo.length} {formData.insumo.length === 1 ? "insumo en la pila" : "insumos en la pila"}
@@ -162,24 +148,17 @@ const FormReceta = ({ receta, ins, onSubmit }) => {
                             <div className="text-muted py-2">
                                 <FontAwesomeIcon icon={faLayerGroup} className="text-secondary opacity-50 fs-2 mb-2" />
                                 <p className="mb-1 fw-medium text-dark">Aún no agregaste insumos a la receta</p>
-                                <small className="text-secondary">Elegí ingredientes desde el selector de la izquierda para comenzar a armar la pila.</small>
                             </div>
                         </li>
                     ) : (
                         formData.insumo.map((l, index) => (
                             <li
                                 key={l.value}
-                                className={`list-group-item d-flex justify-content-between align-items-center py-2 px-3 ${
-                                    index === 0 ? "border-start border-4 border-primary bg-primary bg-opacity-10" : ""
-                                }`}
+                                className={`list-group-item d-flex justify-content-between align-items-center py-2 px-3 ${index === 0 ? "border-start border-4 border-primary bg-primary bg-opacity-10" : ""
+                                    }`}
                             >
                                 <div className="d-flex align-items-center flex-grow-1">
                                     <span className="fw-medium">{l.label}</span>
-                                    {index === 0 && (
-                                        <span className="badge bg-primary text-white ms-2 shadow-sm" style={{ fontSize: "0.68rem" }}>
-                                            Último agregado (arriba)
-                                        </span>
-                                    )}
                                 </div>
                                 <div className="d-flex align-items-center ms-3">
                                     <input
