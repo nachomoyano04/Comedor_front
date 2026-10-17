@@ -54,8 +54,11 @@ const KitchenScreen = ({ recetas = [], insumosBD = [], onSubmit, onSwitchToStand
             const cantBase = parseFloat(ins.cantidad || 0);
             const cantRequerida = Number((cantBase * factor).toFixed(2));
             
-            // Buscar stock actual en base de datos
-            const insumoReal = insumosBD.find(ibd => String(ibd.id || ibd.value) === String(ins.value));
+            // Buscar stock actual en base de datos (por ID o por nombre)
+            const insumoReal = insumosBD.find(ibd => 
+                String(ibd.id || ibd.value) === String(ins.value) ||
+                (ibd.label && ins.label && ibd.label.trim().toLowerCase() === ins.label.trim().toLowerCase())
+            );
             const stockDisponible = parseFloat(insumoReal?.stock || 0);
             const stockSuficiente = stockDisponible >= cantRequerida;
             const faltante = Number((cantRequerida - stockDisponible).toFixed(2));
@@ -291,72 +294,90 @@ const KitchenScreen = ({ recetas = [], insumosBD = [], onSubmit, onSwitchToStand
                             </div>
                         </div>
 
-                        {/* 4. Ingredientes necesarios y Stock en Despensa */}
-                        <div className="card bg-dark border-secondary rounded-4 p-3 shadow-sm">
-                            <div className="d-flex justify-content-between align-items-center mb-3">
+                        {/* 4. Ingredientes necesarios y Stock en Despensa (Compacto y Básico) */}
+                        <div className="card bg-dark border-secondary rounded-3 p-2 shadow-sm">
+                            <div className="d-flex justify-content-between align-items-center mb-2 px-1">
                                 <div>
-                                    <h5 className="fw-bold text-info mb-0">4. INGREDIENTES A DESCONTAR DEL STOCK</h5>
-                                    <small className="text-secondary">Verificación automática de stock disponible en despensa</small>
+                                    <span className="fw-bold text-info" style={{ fontSize: "0.92rem" }}>
+                                        4. INGREDIENTES A DESCONTAR
+                                    </span>
+                                    {insumosCalculados.length > 0 && (
+                                        <span className="text-secondary ms-2" style={{ fontSize: "0.78rem" }}>
+                                            ({insumosCalculados.length} {insumosCalculados.length === 1 ? "insumo" : "insumos"})
+                                        </span>
+                                    )}
                                 </div>
-                                {hayInsumosInsuficientes ? (
-                                    <span className="badge bg-danger p-2 fs-6 d-flex align-items-center gap-1">
-                                        <FaExclamationTriangle /> Stock insuficiente
-                                    </span>
-                                ) : (
-                                    <span className="badge bg-success p-2 fs-6 d-flex align-items-center gap-1">
-                                        <FaCheck /> Stock completo OK
-                                    </span>
+                                {insumosCalculados.length > 0 && (
+                                    hayInsumosInsuficientes ? (
+                                        <span className="badge bg-warning text-dark px-2 py-1 d-flex align-items-center gap-1" style={{ fontSize: "0.72rem" }}>
+                                            <FaExclamationTriangle /> Stock ajustado
+                                        </span>
+                                    ) : (
+                                        <span className="badge bg-success bg-opacity-75 text-white px-2 py-1 d-flex align-items-center gap-1" style={{ fontSize: "0.72rem" }}>
+                                            <FaCheck /> Stock OK
+                                        </span>
+                                    )
                                 )}
                             </div>
 
-                            <div className="list-group list-group-flush rounded-4 overflow-hidden border border-secondary" style={{ maxHeight: "240px", overflowY: "auto" }}>
-                                {insumosCalculados.length === 0 ? (
-                                    <div className="p-4 text-center text-secondary">
-                                        Seleccione una receta para calcular los ingredientes necesarios.
-                                    </div>
-                                ) : (
-                                    insumosCalculados.map(i => (
-                                        <div 
-                                            key={i.value} 
-                                            className={`list-group-item d-flex justify-content-between align-items-center p-3 ${
-                                                i.stockSuficiente 
-                                                    ? "bg-dark text-white border-secondary" 
-                                                    : "bg-danger bg-opacity-25 text-white border-danger"
-                                            }`}
-                                        >
-                                            <div>
-                                                <div className="fw-bold fs-6">{i.label}</div>
-                                                <small className="text-secondary">
-                                                    Stock en despensa: <strong>{i.stockDisponible} {i.simbolo}</strong>
-                                                </small>
-                                            </div>
-
-                                            <div className="text-end">
-                                                <div className="fw-bolder fs-5 text-warning">
-                                                    {i.cantidadRequerida} {i.simbolo}
-                                                </div>
-                                                {!i.stockSuficiente && (
-                                                    <small className="text-danger fw-bold">
-                                                        ⚠️ Faltan {i.faltante} {i.simbolo}
-                                                    </small>
-                                                )}
-                                            </div>
-                                        </div>
-                                    ))
-                                )}
+                            <div className="table-responsive rounded border border-secondary" style={{ maxHeight: "175px", overflowY: "auto" }}>
+                                <table className="table table-dark table-sm table-striped align-middle mb-0" style={{ fontSize: "0.82rem" }}>
+                                    <thead className="table-dark text-secondary sticky-top border-bottom border-secondary" style={{ fontSize: "0.75rem" }}>
+                                        <tr>
+                                            <th className="ps-2 py-1">Ingrediente</th>
+                                            <th className="text-end py-1">A descontar</th>
+                                            <th className="text-end py-1">En stock</th>
+                                            <th className="text-center pe-2 py-1">Estado</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {insumosCalculados.length === 0 ? (
+                                            <tr>
+                                                <td colSpan="4" className="py-3 text-center text-secondary">
+                                                    Seleccione una receta para ver los ingredientes necesarios.
+                                                </td>
+                                            </tr>
+                                        ) : (
+                                            insumosCalculados.map(i => (
+                                                <tr key={i.value}>
+                                                    <td className="ps-2 py-1 fw-semibold text-truncate" style={{ maxWidth: "160px" }}>
+                                                        {i.label}
+                                                    </td>
+                                                    <td className="text-end py-1 fw-bold text-warning text-nowrap">
+                                                        {i.cantidadRequerida} <span className="text-secondary" style={{ fontSize: "0.72rem" }}>{i.simbolo}</span>
+                                                    </td>
+                                                    <td className="text-end py-1 text-nowrap text-light">
+                                                        {i.stockDisponible} <span className="text-secondary" style={{ fontSize: "0.72rem" }}>{i.simbolo}</span>
+                                                    </td>
+                                                    <td className="text-center pe-2 py-1 text-nowrap">
+                                                        {i.stockSuficiente ? (
+                                                            <span className="badge bg-success bg-opacity-25 text-success border border-success px-1 py-0" style={{ fontSize: "0.68rem" }}>
+                                                                OK
+                                                            </span>
+                                                        ) : (
+                                                            <span className="badge bg-danger bg-opacity-25 text-danger border border-danger px-1 py-0" style={{ fontSize: "0.68rem" }}>
+                                                                Falta {i.faltante} {i.simbolo}
+                                                            </span>
+                                                        )}
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        )}
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
 
-                        {/* Botón Gigante de Confirmación */}
+                        {/* Botón de Confirmación Táctil */}
                         <div className="pt-2">
                             <button
                                 type="button"
                                 disabled={!recetaActual || enviando}
                                 onClick={() => setMostrarModalConfirm(true)}
-                                className="btn btn-success btn-lg w-100 py-3 rounded-4 shadow-lg fw-bold d-flex align-items-center justify-content-center gap-3 border-2 border-white"
-                                style={{ minHeight: "75px", fontSize: "1.4rem", letterSpacing: "0.5px" }}
+                                className="btn btn-success btn-lg w-100 py-3 rounded-3 shadow fw-bold d-flex align-items-center justify-content-center gap-2 border-1 border-white"
+                                style={{ minHeight: "56px", fontSize: "1.2rem", letterSpacing: "0.5px" }}
                             >
-                                <FaCheckCircle size={32} />
+                                <FaCheckCircle size={24} />
                                 <span>¡REGISTRAR PRODUCCIÓN AHORA!</span>
                             </button>
                         </div>

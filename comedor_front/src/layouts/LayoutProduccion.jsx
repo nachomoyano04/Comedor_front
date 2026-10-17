@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import { getInsumosParaReceta, getRecetas } from "../services/api_endpoints";
+import { getInsumos, getInsumosParaReceta, getRecetas } from "../services/api_endpoints";
 import { useEffect, useState } from "react";
 
 const LayoutProducciones = () => {
@@ -11,25 +11,47 @@ const LayoutProducciones = () => {
     useEffect(() => {
         const loadRecetasEInsumos = async () => {
             try {
-                const resultado = await getRecetas();
-                const i = await getInsumosParaReceta();
+                const [resultado, i, todosInsumos] = await Promise.all([
+                    getRecetas(),
+                    getInsumosParaReceta(),
+                    getInsumos().catch(() => [])
+                ]);
+                const stockMap = new Map((todosInsumos || []).map(ti => [String(ti.id), parseFloat(ti.stock) || 0]));
+
                 let recipes = resultado.reduce((acc, el) => {
-                    if(!acc[el.id]){
-                        acc[el.id] = {value: el.id, label:el.nombre, estado: el.estado, insumos: []}
+                    if (!acc[el.id]) {
+                        acc[el.id] = {
+                            value: el.id,
+                            label: el.nombre,
+                            estado: el.estado,
+                            cuantos_comen: parseFloat(el.cuantos_comen) || 1,
+                            insumos: []
+                        };
                     }
-                    acc[el.id].insumos.push({label: el.producto, cantidad: el.cantidad, simbolo: el.simbolo, value: el.insumo_id}); 
+                    acc[el.id].insumos.push({
+                        label: el.producto,
+                        cantidad: el.cantidad,
+                        simbolo: el.simbolo,
+                        value: el.insumo_id
+                    });
                     return acc;
                 }, {});
-                recipes = Object.values(recipes).filter(r => r.estado == 1).map(r => ({...r, insumos: r.insumos.sort((a,b) => a.value - b.value)}));
+                recipes = Object.values(recipes).filter(r => r.estado == 1).map(r => ({ ...r, insumos: r.insumos.sort((a, b) => a.value - b.value) }));
                 setRecetas(recipes);
-                setInsumos(i.map(ins => ({value: ins.id, label: ins.producto, simbolo: ins.simbolo})));
+                setInsumos(i.map(ins => ({
+                    value: ins.id,
+                    id: ins.id,
+                    label: ins.producto,
+                    simbolo: ins.simbolo,
+                    stock: stockMap.has(String(ins.id)) ? stockMap.get(String(ins.id)) : (parseFloat(ins.stock) || 0)
+                })));
             } catch (err) {
                 console.log(err);
                 setError("Error al cargar recetas");
             } finally {
                 setLoading(false);
             }
-        }
+        };
         loadRecetasEInsumos();
     }, []);
     return (
