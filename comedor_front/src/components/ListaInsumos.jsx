@@ -12,7 +12,6 @@ import {
     FaSort,
     FaSortUp,
     FaSortDown,
-    FaFilter,
     FaChevronLeft,
     FaChevronRight
 } from "react-icons/fa";
@@ -22,8 +21,6 @@ const ListaInsumos = ({ insumos = [], unidades_de_medida = [], onClickChangeStat
 
     // Estados de búsqueda, filtros, ordenamiento y paginación
     const [busqueda, setBusqueda] = useState("");
-    const [filtroStock, setFiltroStock] = useState("todos"); // 'todos', 'con_stock', 'bajo_stock', 'sin_stock'
-    const [filtroEstado, setFiltroEstado] = useState("todos"); // 'todos', 'activos', 'inactivos'
     const [sortConfig, setSortConfig] = useState({ key: "producto", direction: "asc" });
     const [paginaActual, setPaginaActual] = useState(1);
     const [itemsPorPagina, setItemsPorPagina] = useState(15);
@@ -36,7 +33,7 @@ const ListaInsumos = ({ insumos = [], unidades_de_medida = [], onClickChangeStat
     // Si cambian los filtros o la búsqueda, volver a la página 1
     useEffect(() => {
         setPaginaActual(1);
-    }, [busqueda, filtroStock, filtroEstado, itemsPorPagina]);
+    }, [busqueda, itemsPorPagina]);
 
     // Ordenamiento por columna
     const handleSort = (key) => {
@@ -71,19 +68,9 @@ const ListaInsumos = ({ insumos = [], unidades_de_medida = [], onClickChangeStat
                 if (!coincideTexto) return false;
             }
 
-            // Filtro por Stock
-            const stockVal = parseFloat(i.stock) || 0;
-            if (filtroStock === "con_stock" && stockVal <= 0) return false;
-            if (filtroStock === "sin_stock" && stockVal > 0) return false;
-            if (filtroStock === "bajo_stock" && (stockVal <= 0 || stockVal > 5)) return false;
-
-            // Filtro por Estado
-            if (filtroEstado === "activos" && i.estado !== 1) return false;
-            if (filtroEstado === "inactivos" && i.estado === 1) return false;
-
             return true;
         });
-    }, [insumos, busqueda, filtroStock, filtroEstado, unidades_de_medida]);
+    }, [insumos, busqueda, unidades_de_medida]);
 
     // 2. Ordenamiento
     const insumosOrdenados = useMemo(() => {
@@ -165,15 +152,13 @@ const ListaInsumos = ({ insumos = [], unidades_de_medida = [], onClickChangeStat
             : <FaSortDown className="text-primary ms-1" style={{ fontSize: "0.85rem" }} />;
     };
 
-    // Reset general de filtros
+    // Reset de búsqueda y orden
     const handleLimpiarFiltros = () => {
         setBusqueda("");
-        setFiltroStock("todos");
-        setFiltroEstado("todos");
         setSortConfig({ key: "producto", direction: "asc" });
     };
 
-    const hayFiltrosActivos = busqueda.trim() !== "" || filtroStock !== "todos" || filtroEstado !== "todos";
+    const hayFiltrosActivos = busqueda.trim() !== "";
 
     if (!insumos || insumos.length === 0) {
         return (
@@ -191,11 +176,11 @@ const ListaInsumos = ({ insumos = [], unidades_de_medida = [], onClickChangeStat
 
     return (
         <div className="lista-insumos">
-            {/* Barra de Filtros, Búsqueda y Opciones */}
+            {/* Barra de Búsqueda y Opciones de Paginación */}
             <div className="bg-white p-3 rounded-3 border mb-3 shadow-sm">
                 <div className="row g-2 align-items-center">
                     {/* Buscador */}
-                    <div className="col-12 col-md-5">
+                    <div className="col-12 col-md-8 col-lg-9">
                         <div className="input-group">
                             <span className="input-group-text bg-light text-muted border-end-0">
                                 <FaSearch />
@@ -203,7 +188,7 @@ const ListaInsumos = ({ insumos = [], unidades_de_medida = [], onClickChangeStat
                             <input
                                 type="text"
                                 className="form-control border-start-0 ps-0"
-                                placeholder="Buscar por código, producto, marca..."
+                                placeholder="Buscar por código, producto, marca, unidad..."
                                 value={busqueda}
                                 onChange={e => setBusqueda(e.target.value)}
                             />
@@ -220,64 +205,35 @@ const ListaInsumos = ({ insumos = [], unidades_de_medida = [], onClickChangeStat
                         </div>
                     </div>
 
-                    {/* Filtro rápido por Stock */}
-                    <div className="col-6 col-md-3">
-                        <div className="input-group input-group-sm">
-                            <span className="input-group-text bg-light text-muted" title="Filtrar por Stock">
-                                <FaFilter size={11} className="me-1" /> Stock
-                            </span>
-                            <select
-                                className="form-select form-select-sm"
-                                value={filtroStock}
-                                onChange={e => setFiltroStock(e.target.value)}
-                            >
-                                <option value="todos">Todos los stocks</option>
-                                <option value="con_stock">Con stock (&gt; 0)</option>
-                                <option value="bajo_stock">Stock bajo (&le; 5)</option>
-                                <option value="sin_stock">Sin stock (0 o negativo)</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    {/* Filtro por Estado */}
-                    <div className="col-6 col-md-2">
-                        <select
-                            className="form-select form-select-sm"
-                            value={filtroEstado}
-                            onChange={e => setFiltroEstado(e.target.value)}
-                        >
-                            <option value="todos">Todos los estados</option>
-                            <option value="activos">Solo activos</option>
-                            <option value="inactivos">Solo inactivos</option>
-                        </select>
-                    </div>
-
                     {/* Cantidad por página y botón limpiar */}
-                    <div className="col-12 col-md-2 d-flex justify-content-md-end align-items-center gap-2">
+                    <div className="col-12 col-md-4 col-lg-3 d-flex justify-content-md-end align-items-center gap-2">
                         {hayFiltrosActivos && (
                             <button
                                 type="button"
                                 onClick={handleLimpiarFiltros}
                                 className="btn btn-sm btn-outline-danger d-flex align-items-center gap-1"
-                                title="Restablecer filtros"
+                                title="Limpiar búsqueda"
                             >
                                 <FaTimes size={11} />
                                 <span className="small">Limpiar</span>
                             </button>
                         )}
-                        <select
-                            className="form-select form-select-sm"
-                            style={{ width: "auto" }}
-                            value={itemsPorPagina}
-                            onChange={e => setItemsPorPagina(Number(e.target.value))}
-                            title="Insumos por página"
-                        >
-                            <option value={10}>10 / pág</option>
-                            <option value={15}>15 / pág</option>
-                            <option value={25}>25 / pág</option>
-                            <option value={50}>50 / pág</option>
-                            <option value={100}>100 / pág</option>
-                        </select>
+                        <div className="d-flex align-items-center gap-1">
+                            <small className="text-muted text-nowrap">Mostrar:</small>
+                            <select
+                                className="form-select form-select-sm"
+                                style={{ width: "auto" }}
+                                value={itemsPorPagina}
+                                onChange={e => setItemsPorPagina(Number(e.target.value))}
+                                title="Insumos por página"
+                            >
+                                <option value={10}>10 / pág</option>
+                                <option value={15}>15 / pág</option>
+                                <option value={25}>25 / pág</option>
+                                <option value={50}>50 / pág</option>
+                                <option value={100}>100 / pág</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
@@ -393,7 +349,7 @@ const ListaInsumos = ({ insumos = [], unidades_de_medida = [], onClickChangeStat
                                                 onClick={handleLimpiarFiltros}
                                                 className="btn btn-sm btn-outline-primary mt-2"
                                             >
-                                                Restablecer filtros
+                                                Limpiar búsqueda
                                             </button>
                                         )}
                                     </div>
