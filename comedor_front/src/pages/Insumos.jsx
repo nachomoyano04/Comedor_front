@@ -1,10 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { changeStateInsumoById, getInsumos } from "../services/api_endpoints";
 import ListaInsumos from "../components/ListaInsumos";
-import { useOutletContext } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 import Swal from "sweetalert2";
+import { AuthContext } from "../services/AuthProvider";
+import { FaPlus } from "react-icons/fa";
 
 const Insumos = () => {
+    const { user } = useContext(AuthContext);
     const [insumos, setInsumos] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -50,8 +53,14 @@ const Insumos = () => {
     }
 
     return <>
-        <div className="card-header bg-primary text-white">
+        <div className="card-header bg-primary text-white d-flex justify-content-between align-items-center">
             <h5 className="mb-0">Lista de insumos</h5>
+            {user?.roles?.some(r => [1, 2].includes(r)) && (
+                <Link to="/insumos/nuevo" className="btn btn-sm btn-light fw-semibold d-flex align-items-center gap-1">
+                    <FaPlus size={11} />
+                    <span>Nuevo Insumo</span>
+                </Link>
+            )}
         </div>
         <div className="card-body">
             {error && <span className="bs-danger">{error}</span>}
