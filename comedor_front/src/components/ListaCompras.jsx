@@ -210,30 +210,32 @@ const ListaCompras = ({ insumos = [], compras = [], onClickDeleteCompra }) => {
 
         if (diffDias < 0) {
             return (
-                <span 
-                    className="badge rounded-pill text-nowrap px-2 py-1"
-                    style={{ 
-                        backgroundColor: "#fee2e2", 
-                        color: "#991b1b", 
+                <span
+                    className="badge rounded-pill text-nowrap px-2 py-0"
+                    style={{
+                        backgroundColor: "#fee2e2",
+                        color: "#991b1b",
                         border: "1px solid #fca5a5",
                         fontWeight: "600",
-                        fontSize: "0.82rem"
+                        fontSize: "0.75rem",
+                        lineHeight: "1.5"
                     }}
                     title={`Lote vencido hace ${Math.abs(diffDias)} días (${fechaTexto})`}
                 >
-                    {fechaTexto} <small className="fw-bold ms-1">(Vencido)</small>
+                    {fechaTexto} <small className="fw-bold ms-1">(Venc.)</small>
                 </span>
             );
         } else if (diffDias <= 30) {
             return (
-                <span 
-                    className="badge rounded-pill text-nowrap px-2 py-1"
-                    style={{ 
-                        backgroundColor: "#fef3c7", 
-                        color: "#92400e", 
+                <span
+                    className="badge rounded-pill text-nowrap px-2 py-0"
+                    style={{
+                        backgroundColor: "#fef3c7",
+                        color: "#92400e",
                         border: "1px solid #fcd34d",
                         fontWeight: "600",
-                        fontSize: "0.82rem"
+                        fontSize: "0.75rem",
+                        lineHeight: "1.5"
                     }}
                     title={`Vence en ${diffDias} días (${fechaTexto})`}
                 >
@@ -241,7 +243,7 @@ const ListaCompras = ({ insumos = [], compras = [], onClickDeleteCompra }) => {
                 </span>
             );
         }
-        return <span className="text-secondary text-nowrap fw-medium">{fechaTexto}</span>;
+        return <span className="text-secondary text-nowrap fw-medium" style={{ fontSize: "0.82rem" }}>{fechaTexto}</span>;
     };
 
     if (!compras || compras.length === 0) {
@@ -384,18 +386,18 @@ const ListaCompras = ({ insumos = [], compras = [], onClickDeleteCompra }) => {
             {/* Tabla de Compras con Ordenamiento Interactivo por Cabecera */}
             {/* Tabla de Compras con Ordenamiento Interactivo por Cabecera */}
             <div className="table-responsive rounded-3 shadow-sm border bg-white w-100" style={{ overflowX: "auto" }}>
-                <table className="table table-hover align-middle mb-0 w-100">
-                    <thead className="table-dark">
+                <table className="table table-hover table-sm align-middle mb-0 w-100" style={{ fontSize: "0.85rem" }}>
+                    <thead className="table-dark" style={{ fontSize: "0.80rem" }}>
                         <tr>
                             <th
                                 scope="col"
                                 className="user-select-none"
                                 onClick={() => handleSort("producto")}
-                                style={{ cursor: "pointer", minWidth: "120px" }}
+                                style={{ cursor: "pointer", minWidth: "110px" }}
                                 title="Ordenar por Insumo"
                             >
                                 <div className="d-flex align-items-center gap-1">
-                                    <span>Insumo</span>
+                                    <span>Nombre</span>
                                     {renderSortIcon("producto")}
                                 </div>
                             </th>
@@ -403,19 +405,19 @@ const ListaCompras = ({ insumos = [], compras = [], onClickDeleteCompra }) => {
                                 scope="col"
                                 className="user-select-none"
                                 onClick={() => handleSort("razon_social")}
-                                style={{ cursor: "pointer", minWidth: "120px" }}
+                                style={{ cursor: "pointer", minWidth: "100px" }}
                                 title="Ordenar por Proveedor"
                             >
                                 <div className="d-flex align-items-center gap-1">
-                                    <span>Proveedor</span>
+                                    <span>Prov.</span>
                                     {renderSortIcon("razon_social")}
                                 </div>
                             </th>
                             <th
                                 scope="col"
-                                className="text-end pe-3 user-select-none text-nowrap"
+                                className="text-end pe-2 user-select-none text-nowrap"
                                 onClick={() => handleSort("precio_unitario")}
-                                style={{ cursor: "pointer", minWidth: "110px" }}
+                                style={{ cursor: "pointer", width: "100px", minWidth: "95px" }}
                                 title="Ordenar por Precio Unitario"
                             >
                                 <div className="d-flex align-items-center justify-content-end gap-1">
@@ -425,21 +427,21 @@ const ListaCompras = ({ insumos = [], compras = [], onClickDeleteCompra }) => {
                             </th>
                             <th
                                 scope="col"
-                                className="text-end pe-3 user-select-none text-nowrap"
+                                className="text-end pe-2 user-select-none text-nowrap"
                                 onClick={() => handleSort("cantidad")}
-                                style={{ cursor: "pointer", minWidth: "90px" }}
+                                style={{ cursor: "pointer", width: "80px", minWidth: "75px" }}
                                 title="Ordenar por Cantidad"
                             >
                                 <div className="d-flex align-items-center justify-content-end gap-1">
-                                    <span>Cantidad</span>
+                                    <span>Cant</span>
                                     {renderSortIcon("cantidad")}
                                 </div>
                             </th>
                             <th
                                 scope="col"
-                                className="text-end pe-3 user-select-none text-nowrap"
+                                className="text-end pe-2 user-select-none text-nowrap"
                                 onClick={() => handleSort("total")}
-                                style={{ cursor: "pointer", minWidth: "115px" }}
+                                style={{ cursor: "pointer", width: "110px", minWidth: "105px" }}
                                 title="Ordenar por Total"
                             >
                                 <div className="d-flex align-items-center justify-content-end gap-1">
@@ -451,11 +453,11 @@ const ListaCompras = ({ insumos = [], compras = [], onClickDeleteCompra }) => {
                                 scope="col"
                                 className="text-center user-select-none text-nowrap"
                                 onClick={() => handleSort("fecha_desde")}
-                                style={{ cursor: "pointer", minWidth: "135px" }}
+                                style={{ cursor: "pointer", width: "125px", minWidth: "120px" }}
                                 title="Ordenar por Fecha de Compra"
                             >
                                 <div className="d-flex align-items-center justify-content-center gap-1">
-                                    <span>Fecha de compra</span>
+                                    <span>Fecha</span>
                                     {renderSortIcon("fecha_desde")}
                                 </div>
                             </th>
@@ -463,30 +465,31 @@ const ListaCompras = ({ insumos = [], compras = [], onClickDeleteCompra }) => {
                                 scope="col"
                                 className="text-center user-select-none text-nowrap"
                                 onClick={() => handleSort("fecha_vencimiento")}
-                                style={{ cursor: "pointer", minWidth: "125px" }}
+                                style={{ cursor: "pointer", width: "115px", minWidth: "110px" }}
                                 title="Ordenar por Vencimiento"
                             >
                                 <div className="d-flex align-items-center justify-content-center gap-1">
-                                    <span>Vencimiento</span>
+                                    <span>Venc.</span>
                                     {renderSortIcon("fecha_vencimiento")}
                                 </div>
                             </th>
-                            <th scope="col" className="text-center text-nowrap" style={{ width: "55px", minWidth: "55px" }}>
-                                Acciones
+                            <th scope="col" className="text-center text-nowrap" style={{ width: "45px", minWidth: "45px" }}>
+                                Acc.
                             </th>
                         </tr>
                     </thead>
                     <tbody>
                         {comprasPaginadas.length === 0 ? (
                             <tr>
-                                <td colSpan="8" className="text-center py-5 text-muted">
-                                    <FaSearch size={30} className="mb-2 opacity-25" />
+                                <td colSpan="8" className="text-center py-4 text-muted">
+                                    <FaSearch size={26} className="mb-2 opacity-25" />
                                     <p className="mb-1 fw-semibold">No se encontraron compras con los filtros seleccionados.</p>
                                     {hayFiltrosActivos && (
                                         <button
                                             type="button"
                                             onClick={handleLimpiarFiltros}
-                                            className="btn btn-sm btn-outline-primary mt-2"
+                                            className="btn btn-sm btn-outline-primary mt-1 py-0 px-2"
+                                            style={{ fontSize: "0.8rem" }}
                                         >
                                             Restablecer filtros
                                         </button>
@@ -507,13 +510,13 @@ const ListaCompras = ({ insumos = [], compras = [], onClickDeleteCompra }) => {
                                         <td className="text-secondary">
                                             {c.razon_social || <span className="text-muted fst-italic">Sin proveedor</span>}
                                         </td>
-                                        <td className="text-end pe-3 font-monospace text-nowrap">
+                                        <td className="text-end pe-2 font-monospace text-nowrap">
                                             {formatearMoneda(pu)}
                                         </td>
-                                        <td className="text-end pe-3 text-nowrap">
+                                        <td className="text-end pe-2 text-nowrap">
                                             <strong>{cant}</strong> <small className="text-muted">{c.simbolo || ""}</small>
                                         </td>
-                                        <td className="text-end pe-3 fw-bold text-success font-monospace text-nowrap">
+                                        <td className="text-end pe-2 fw-bold text-success font-monospace text-nowrap">
                                             {formatearMoneda(total)}
                                         </td>
                                         <td className="text-center text-nowrap text-secondary">
@@ -525,11 +528,12 @@ const ListaCompras = ({ insumos = [], compras = [], onClickDeleteCompra }) => {
                                         <td className="text-center text-nowrap">
                                             <button
                                                 type="button"
-                                                className="btn btn-sm btn-outline-danger p-1 px-2"
+                                                className="btn btn-sm btn-outline-danger p-0 px-1"
                                                 onClick={() => onClickDeleteCompra(c.id)}
                                                 title="Eliminar registro de compra"
+                                                style={{ lineHeight: 1.4 }}
                                             >
-                                                <FaTrash size={13} />
+                                                <FaTrash size={11} />
                                             </button>
                                         </td>
                                     </tr>
