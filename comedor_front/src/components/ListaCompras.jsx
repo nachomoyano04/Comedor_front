@@ -189,37 +189,59 @@ const ListaCompras = ({ insumos = [], compras = [], onClickDeleteCompra }) => {
 
     const hayFiltrosActivos = busqueda.trim() !== "" || insumoSeleccionado !== "" || fechaInicio !== "" || fechaFin !== "";
 
-    // Formatear montos en pesos argentinos
+    // Formatear montos en pesos argentinos con punto para miles y coma para decimales (sin desfase)
     const formatearMoneda = (monto) => {
-        return `$ ${Number(monto || 0).toLocaleString("es-AR", {
+        const valor = Number(monto || 0).toLocaleString("es-AR", {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
-        })}`;
+        });
+        return `$\u00A0${valor}`;
     };
 
-    // Helper visual para estado de vencimiento
+    // Helper visual para estado de vencimiento limpio, legible y sin cuadrados toscos
     const renderVencimiento = (fechaVenc) => {
-        if (!fechaVenc) return <span className="text-muted fst-italic">---</span>;
+        if (!fechaVenc) return <span className="text-muted fst-italic text-nowrap">---</span>;
         const fechaV = new Date(fechaVenc);
         const hoy = new Date();
         hoy.setHours(0, 0, 0, 0);
 
         const diffDias = Math.ceil((fechaV.getTime() - hoy.getTime()) / (1000 * 60 * 60 * 24));
+        const fechaTexto = parsearFechaDate(fechaVenc);
 
         if (diffDias < 0) {
             return (
-                <span className="badge bg-danger bg-opacity-15 text-danger border border-danger px-2 py-1" title="Lote vencido">
-                    Vencido ({parsearFechaDate(fechaVenc)})
+                <span 
+                    className="badge rounded-pill text-nowrap px-2 py-1"
+                    style={{ 
+                        backgroundColor: "#fee2e2", 
+                        color: "#991b1b", 
+                        border: "1px solid #fca5a5",
+                        fontWeight: "600",
+                        fontSize: "0.82rem"
+                    }}
+                    title={`Lote vencido hace ${Math.abs(diffDias)} días (${fechaTexto})`}
+                >
+                    {fechaTexto} <small className="fw-bold ms-1">(Vencido)</small>
                 </span>
             );
         } else if (diffDias <= 30) {
             return (
-                <span className="badge bg-warning bg-opacity-25 text-dark border border-warning px-2 py-1" title={`Vence en ${diffDias} días`}>
-                    Vence pronto ({parsearFechaDate(fechaVenc)})
+                <span 
+                    className="badge rounded-pill text-nowrap px-2 py-1"
+                    style={{ 
+                        backgroundColor: "#fef3c7", 
+                        color: "#92400e", 
+                        border: "1px solid #fcd34d",
+                        fontWeight: "600",
+                        fontSize: "0.82rem"
+                    }}
+                    title={`Vence en ${diffDias} días (${fechaTexto})`}
+                >
+                    {fechaTexto} <small className="fw-bold ms-1">(Pronto)</small>
                 </span>
             );
         }
-        return <span className="text-secondary">{parsearFechaDate(fechaVenc)}</span>;
+        return <span className="text-secondary text-nowrap fw-medium">{fechaTexto}</span>;
     };
 
     if (!compras || compras.length === 0) {
@@ -282,8 +304,8 @@ const ListaCompras = ({ insumos = [], compras = [], onClickDeleteCompra }) => {
                         </select>
                     </div>
 
-                    {/* Filtros por Rango de Fechas (Desde - Hasta) */}
-                    <div className="col-12 col-sm-6 col-md-3">
+                    {/* Filtros por Rango de Fechas (Desde - Hasta) responsivos */}
+                    <div className="col-6 col-sm-6 col-md-3">
                         <div className="input-group input-group-sm">
                             <span className="input-group-text bg-light text-muted" title="Fecha de compra desde">
                                 <FaCalendarAlt size={12} className="me-1" /> Desde
@@ -297,7 +319,7 @@ const ListaCompras = ({ insumos = [], compras = [], onClickDeleteCompra }) => {
                         </div>
                     </div>
 
-                    <div className="col-12 col-sm-6 col-md-2">
+                    <div className="col-6 col-sm-6 col-md-2">
                         <div className="input-group input-group-sm">
                             <span className="input-group-text bg-light text-muted" title="Fecha de compra hasta">
                                 <FaCalendarAlt size={12} className="me-1" /> Hasta
@@ -366,9 +388,9 @@ const ListaCompras = ({ insumos = [], compras = [], onClickDeleteCompra }) => {
                         <tr>
                             <th
                                 scope="col"
-                                className="user-select-none"
+                                className="user-select-none text-nowrap"
                                 onClick={() => handleSort("producto")}
-                                style={{ cursor: "pointer" }}
+                                style={{ cursor: "pointer", minWidth: "150px" }}
                                 title="Ordenar por Insumo"
                             >
                                 <div className="d-flex align-items-center gap-1">
@@ -378,9 +400,9 @@ const ListaCompras = ({ insumos = [], compras = [], onClickDeleteCompra }) => {
                             </th>
                             <th
                                 scope="col"
-                                className="user-select-none"
+                                className="user-select-none text-nowrap"
                                 onClick={() => handleSort("razon_social")}
-                                style={{ cursor: "pointer" }}
+                                style={{ cursor: "pointer", minWidth: "140px" }}
                                 title="Ordenar por Proveedor"
                             >
                                 <div className="d-flex align-items-center gap-1">
@@ -390,9 +412,9 @@ const ListaCompras = ({ insumos = [], compras = [], onClickDeleteCompra }) => {
                             </th>
                             <th
                                 scope="col"
-                                className="text-end pe-3 user-select-none"
+                                className="text-end pe-3 user-select-none text-nowrap"
                                 onClick={() => handleSort("precio_unitario")}
-                                style={{ cursor: "pointer", width: "130px" }}
+                                style={{ cursor: "pointer", minWidth: "125px" }}
                                 title="Ordenar por Precio Unitario"
                             >
                                 <div className="d-flex align-items-center justify-content-end gap-1">
@@ -402,9 +424,9 @@ const ListaCompras = ({ insumos = [], compras = [], onClickDeleteCompra }) => {
                             </th>
                             <th
                                 scope="col"
-                                className="text-end pe-3 user-select-none"
+                                className="text-end pe-3 user-select-none text-nowrap"
                                 onClick={() => handleSort("cantidad")}
-                                style={{ cursor: "pointer", width: "110px" }}
+                                style={{ cursor: "pointer", minWidth: "105px" }}
                                 title="Ordenar por Cantidad"
                             >
                                 <div className="d-flex align-items-center justify-content-end gap-1">
@@ -414,9 +436,9 @@ const ListaCompras = ({ insumos = [], compras = [], onClickDeleteCompra }) => {
                             </th>
                             <th
                                 scope="col"
-                                className="text-end pe-3 user-select-none"
+                                className="text-end pe-3 user-select-none text-nowrap"
                                 onClick={() => handleSort("total")}
-                                style={{ cursor: "pointer", width: "140px" }}
+                                style={{ cursor: "pointer", minWidth: "135px" }}
                                 title="Ordenar por Total"
                             >
                                 <div className="d-flex align-items-center justify-content-end gap-1">
@@ -426,9 +448,9 @@ const ListaCompras = ({ insumos = [], compras = [], onClickDeleteCompra }) => {
                             </th>
                             <th
                                 scope="col"
-                                className="text-center user-select-none"
+                                className="text-center user-select-none text-nowrap"
                                 onClick={() => handleSort("fecha_desde")}
-                                style={{ cursor: "pointer", width: "170px" }}
+                                style={{ cursor: "pointer", minWidth: "155px" }}
                                 title="Ordenar por Fecha de Compra"
                             >
                                 <div className="d-flex align-items-center justify-content-center gap-1">
@@ -438,9 +460,9 @@ const ListaCompras = ({ insumos = [], compras = [], onClickDeleteCompra }) => {
                             </th>
                             <th
                                 scope="col"
-                                className="text-center user-select-none"
+                                className="text-center user-select-none text-nowrap"
                                 onClick={() => handleSort("fecha_vencimiento")}
-                                style={{ cursor: "pointer", width: "170px" }}
+                                style={{ cursor: "pointer", minWidth: "145px" }}
                                 title="Ordenar por Vencimiento"
                             >
                                 <div className="d-flex align-items-center justify-content-center gap-1">
@@ -448,7 +470,7 @@ const ListaCompras = ({ insumos = [], compras = [], onClickDeleteCompra }) => {
                                     {renderSortIcon("fecha_vencimiento")}
                                 </div>
                             </th>
-                            <th scope="col" className="text-center" style={{ width: "70px" }}>
+                            <th scope="col" className="text-center text-nowrap" style={{ width: "70px", minWidth: "70px" }}>
                                 Acciones
                             </th>
                         </tr>
@@ -478,19 +500,19 @@ const ListaCompras = ({ insumos = [], compras = [], onClickDeleteCompra }) => {
 
                                 return (
                                     <tr key={c.id}>
-                                        <td className="fw-semibold text-dark">
+                                        <td className="fw-semibold text-dark text-nowrap">
                                             {c.producto}
                                         </td>
-                                        <td className="text-secondary">
+                                        <td className="text-secondary text-nowrap">
                                             {c.razon_social || <span className="text-muted fst-italic">Sin proveedor</span>}
                                         </td>
-                                        <td className="text-end pe-3 font-monospace">
+                                        <td className="text-end pe-3 font-monospace text-nowrap">
                                             {formatearMoneda(pu)}
                                         </td>
                                         <td className="text-end pe-3 text-nowrap">
                                             <strong>{cant}</strong> <small className="text-muted">{c.simbolo || ""}</small>
                                         </td>
-                                        <td className="text-end pe-3 fw-bold text-success font-monospace">
+                                        <td className="text-end pe-3 fw-bold text-success font-monospace text-nowrap">
                                             {formatearMoneda(total)}
                                         </td>
                                         <td className="text-center text-nowrap text-secondary">
@@ -499,7 +521,7 @@ const ListaCompras = ({ insumos = [], compras = [], onClickDeleteCompra }) => {
                                         <td className="text-center text-nowrap">
                                             {renderVencimiento(c.fecha_vencimiento)}
                                         </td>
-                                        <td className="text-center">
+                                        <td className="text-center text-nowrap">
                                             <button
                                                 type="button"
                                                 className="btn btn-sm btn-outline-danger p-1 px-2"

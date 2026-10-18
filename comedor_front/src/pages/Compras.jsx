@@ -47,7 +47,7 @@ const Compras = () => {
                 setCompras(prev => prev.filter(c => c.id != id));
             } catch (err) {
                 notify.error(err.response?.data?.error || "Error al eliminar la compra");
-            }   
+            }
         }
     };
 
@@ -71,9 +71,9 @@ const Compras = () => {
                         </div>
                     </div>
                 ) : (
-                    <ListaCompras 
-                        insumos={ins} 
-                        compras={compras} 
+                    <ListaCompras
+                        insumos={ins}
+                        compras={compras}
                         onClickDeleteCompra={handleDeleteCompra}
                     />
                 )}
