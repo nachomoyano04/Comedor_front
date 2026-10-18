@@ -244,6 +244,15 @@ export const getPreciosByInsumo = async insumo_id => {
     }
 }
 
+export const getTodasLasCompras = async () => {
+    try {
+        const resultado = await api.get(`/precio/historial/todas`);
+        return resultado.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
 export const getAlertasVencimiento = async () => {
     try {
         const resultado = await api(`/precio/vencimientos/alertas`);

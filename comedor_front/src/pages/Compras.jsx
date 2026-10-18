@@ -1,11 +1,14 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import ListaCompras from "../components/ListaCompras";
-import { deleteCompra, getPreciosByInsumo } from "../services/api_endpoints";
+import { deleteCompra, getTodasLasCompras } from "../services/api_endpoints";
 import notify from "../utils/notify";
-import { useOutletContext } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
+import { AuthContext } from "../services/AuthProvider";
+import { FaPlus } from "react-icons/fa";
 
 const Compras = () => {
-    const {insumos} = useOutletContext();
+    const { user } = useContext(AuthContext);
+    const { insumos = [] } = useOutletContext();
     const [compras, setCompras] = useState([]);
     const [ins, setIns] = useState([]);
     const [error, setError] = useState(null);
@@ -14,31 +17,19 @@ const Compras = () => {
     useEffect(() => {
         const loadCompras = async () => {
             try {
-                const  i = insumos.map(i => {return {value: i.id, label: i.producto}});
+                const i = (insumos || []).map(insumo => ({ value: insumo.id, label: insumo.producto }));
                 setIns(i);
-                if(insumos.length > 0){
-                    const c = await getPreciosByInsumo(insumos[0].id); //le pasamos el primer insumo para ver la lista de precios
-                    setCompras(c);
-                }
+                const c = await getTodasLasCompras();
+                setCompras(Array.isArray(c) ? c : []);
             } catch (err) {
-                console.log(error);
+                console.error(err);
                 setError("Error al cargar las compras realizadas");
             } finally {
                 setLoading(false);
             }
         };
         loadCompras();
-    }, [])
-
-    const handleChangeInsumo = useCallback(async (e) => {
-        try {
-            const c = await getPreciosByInsumo(e.value);
-            setCompras(c.length > 0? c : [])
-        } catch (err) {
-            setError(`Error al cambiar el insumo: ${err}`)
-            setCompras([]);
-        }
-    }, []); 
+    }, [insumos]);
 
     const handleDeleteCompra = async id => {
         const confirmado = await notify.confirm({
@@ -55,21 +46,37 @@ const Compras = () => {
                 notify.error(err.response?.data?.error || "Error al eliminar la compra");
             }   
         }
-    }
+    };
 
-    return <>
-        <div className="card-header bg-primary text-white">
-            <h5 className="mb-0">Listado de compras</h5>
-        </div>
-        <div className="card-body">
-            {error && <span className="bs-danger">{error}</span>}
-            {loading ? (<div className="spinner-border" role="status">
-                <span className="visually-hidden">Cargando...</span>
-            </div>) :
-                (<ListaCompras insumos={ins} onChangeInsumo={handleChangeInsumo} compras={compras} onClickDeleteCompra={handleDeleteCompra}/>)
-            }
-        </div>
-    </>
-}
+    return (
+        <>
+            <div className="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h5 className="mb-0">Historial de Compras</h5>
+                {user?.roles?.some(r => [1, 2, 3].includes(r)) && (
+                    <Link to="/insumos/nueva_compra" className="btn btn-sm btn-light fw-semibold d-flex align-items-center gap-1">
+                        <FaPlus size={11} />
+                        <span>Nueva Compra</span>
+                    </Link>
+                )}
+            </div>
+            <div className="card-body">
+                {error && <div className="alert alert-danger py-2 mb-3">{error}</div>}
+                {loading ? (
+                    <div className="d-flex justify-content-center py-5">
+                        <div className="spinner-border text-primary" role="status">
+                            <span className="visually-hidden">Cargando compras...</span>
+                        </div>
+                    </div>
+                ) : (
+                    <ListaCompras 
+                        insumos={ins} 
+                        compras={compras} 
+                        onClickDeleteCompra={handleDeleteCompra}
+                    />
+                )}
+            </div>
+        </>
+    );
+};
 
 export default Compras;
