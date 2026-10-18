@@ -7,7 +7,6 @@ import { FaCalculator, FaShoppingCart, FaListAlt } from "react-icons/fa";
 const CompraCalculator = () => {
     const { insumos = [] } = useOutletContext();
     const [recetas, setRecetas] = useState([]);
-    const [preciosMap, setPreciosMap] = useState({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -21,18 +20,21 @@ const CompraCalculator = () => {
 
                 // Mapear los precios más recientes por insumo_id
                 const pMap = {};
-                (Array.isArray(preciosData) ? preciosData : []).forEach(p => {
-                    pMap[p.id] = {
-                        precio_unitario: parseFloat(p.precio_unitario) || 0,
-                        proveedor: p.razon_social || "",
-                        unidad_de_medida: p.unidad_de_medida || ""
-                    };
+                (Array.isArray(preciosData) ? preciosData : []).forEach((p) => {
+                    const insId = p.insumo_id || p.id;
+                    if (insId) {
+                        pMap[insId] = {
+                            precio_unitario: parseFloat(p.precio_unitario) || 0,
+                            proveedor: p.razon_social || "",
+                            proveedor_id: p.proveedor_id || "",
+                            unidad_de_medida: p.unidad_de_medida || ""
+                        };
+                    }
                 });
-                setPreciosMap(pMap);
 
                 // Mapear stock desde los insumos del contexto
                 const insumosMap = {};
-                (insumos || []).forEach(i => {
+                (insumos || []).forEach((i) => {
                     insumosMap[i.id] = {
                         stock: parseFloat(i.stock) || 0,
                         codigo: i.codigo || "",
@@ -42,10 +44,15 @@ const CompraCalculator = () => {
 
                 // Agrupar recetas con sus ingredientes enriquecidos
                 let recipes = (resultadoRecetas || []).reduce((acc, el) => {
-                    if (!acc[el.id]) {
-                        acc[el.id] = {
-                            value: el.id,
-                            label: el.nombre,
+                    const id = el.id || el.receta_id || el.value;
+                    if (!id) return acc;
+
+                    if (!acc[id]) {
+                        acc[id] = {
+                            id: id,
+                            value: id,
+                            label: el.nombre || el.label || `Receta #${id}`,
+                            nombre: el.nombre || el.label || `Receta #${id}`,
                             cuantos_comen: parseFloat(el.cuantos_comen) || 1,
                             estado: el.estado,
                             descripcion: el.descripcion || "",
@@ -56,25 +63,29 @@ const CompraCalculator = () => {
                         const stockInfo = insumosMap[el.insumo_id];
                         const precioInfo = pMap[el.insumo_id];
 
-                        acc[el.id].insumos.push({
+                        acc[id].insumos.push({
                             insumo_id: el.insumo_id,
-                            label: el.producto,
+                            label: el.producto || el.insumo_nombre || "Insumo",
+                            producto: el.producto || el.insumo_nombre || "Insumo",
                             cantidad_base: parseFloat(el.cantidad) || 0,
                             simbolo: el.simbolo || stockInfo?.simbolo || "",
                             stock_actual: stockInfo ? stockInfo.stock : 0,
                             precio_unitario: precioInfo ? precioInfo.precio_unitario : 0,
-                            proveedor: precioInfo ? precioInfo.proveedor : ""
+                            proveedor: precioInfo ? precioInfo.proveedor : "",
+                            proveedor_id: precioInfo ? precioInfo.proveedor_id : ""
                         });
                     }
                     return acc;
                 }, {});
 
+                // Filtrar recetas activas (o sin estado explícito) y ordenar alfabéticamente
                 recipes = Object.values(recipes)
-                    .filter(r => r.estado == 1)
-                    .map(r => ({
+                    .filter((r) => r.estado === undefined || r.estado === null || r.estado == 1)
+                    .map((r) => ({
                         ...r,
-                        insumos: r.insumos.sort((a, b) => a.label.localeCompare(b.label))
-                    }));
+                        insumos: r.insumos.sort((a, b) => (a.label || "").localeCompare(b.label || ""))
+                    }))
+                    .sort((a, b) => (a.nombre || a.label || "").localeCompare(b.nombre || b.label || ""));
 
                 setRecetas(recipes);
             } catch (err) {

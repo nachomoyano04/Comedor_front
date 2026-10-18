@@ -1,6 +1,6 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import Select from "react-select";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { notify } from "../utils/notify";
 import {
     FaCalculator,
@@ -21,12 +21,29 @@ import {
 const PRESETS_COMENSALES = [25, 50, 100, 150, 200, 300, 500];
 
 const FormCalculadora = ({ recetas = [] }) => {
+    const navigate = useNavigate();
     const [recetaSeleccionada, setRecetaSeleccionada] = useState(null);
     const [cantidadC, setCantidadC] = useState(50);
     const [descontarStock, setDescontarStock] = useState(true);
     const [ajustesManuales, setAjustesManuales] = useState({});
 
-    // Cuando cambia la receta seleccionada, sugerir su cantidad de comensales base si es válida
+    // Opciones enriquecidas y formateadas para react-select
+    const optionsRecetas = useMemo(() => {
+        return (recetas || []).map((r) => {
+            const comensales = parseFloat(r.cuantos_comen) || 1;
+            const comensalesTexto = `(Rinde ${comensales} ${comensales === 1 ? "comensal" : "comensales"})`;
+            const nombre = r.nombre || r.label || `Receta #${r.id || r.value}`;
+            return {
+                ...r,
+                value: r.value ?? r.id,
+                label: `${nombre} ${comensalesTexto}`,
+                nombre: nombre,
+                cuantos_comen: comensales
+            };
+        });
+    }, [recetas]);
+
+    // Cuando cambia la receta seleccionada
     const handleSelectReceta = (option) => {
         setRecetaSeleccionada(option);
         setAjustesManuales({});
@@ -173,6 +190,58 @@ const FormCalculadora = ({ recetas = [] }) => {
         };
     }, [recetaSeleccionada, cantidadC, descontarStock, ajustesManuales]);
 
+    // Redireccionar a /insumos/nueva_compra con los datos pre-rellenados
+    const handleRegistrarCompra = (itemEspecifico = null) => {
+        if (!recetaSeleccionada) {
+            navigate("/insumos/nueva_compra");
+            return;
+        }
+
+        // Obtener la lista de insumos a comprar
+        const aComprar = insumosCalculados.filter((i) => i.a_comprar > 0);
+
+        if (aComprar.length === 0 && !itemEspecifico) {
+            notify.info(
+                "Stock suficiente",
+                "Todos los insumos de esta receta están cubiertos por la despensa. Si deseás comprar de todas formas, ajustá la cantidad o hacé clic en comprar sobre el insumo deseado."
+            );
+            return;
+        }
+
+        const listaBase = aComprar.length > 0 ? aComprar : insumosCalculados;
+        let indiceInicial = 0;
+
+        if (itemEspecifico) {
+            const encontrado = listaBase.findIndex((i) => String(i.insumo_id) === String(itemEspecifico.insumo_id));
+            if (encontrado !== -1) {
+                indiceInicial = encontrado;
+            } else {
+                listaBase.unshift(itemEspecifico);
+                indiceInicial = 0;
+            }
+        }
+
+        const itemsPendientes = listaBase.map((item) => ({
+            insumo_id: item.insumo_id,
+            insumo_nombre: item.label,
+            cantidad: item.a_comprar > 0 ? item.a_comprar : item.requerido,
+            simbolo: item.simbolo,
+            precio_unitario: item.precio_unitario > 0 ? item.precio_unitario : "",
+            proveedor_id: item.proveedor_id || "",
+            proveedor_razon_social: item.proveedor || ""
+        }));
+
+        navigate("/insumos/nueva_compra", {
+            state: {
+                origen: "calculadora",
+                recetaNombre: recetaSeleccionada.nombre || recetaSeleccionada.label,
+                comensales: cantidadC,
+                itemsPendientes,
+                indiceSeleccionado: indiceInicial
+            }
+        });
+    };
+
     // Copiar lista formateada al portapapeles para WhatsApp o Proveedores
     const handleCopiarLista = async () => {
         if (!recetaSeleccionada || !insumosCalculados.length) return;
@@ -180,7 +249,7 @@ const FormCalculadora = ({ recetas = [] }) => {
         const fechaHoy = new Date().toLocaleDateString("es-AR");
         const aComprar = insumosCalculados.filter((i) => i.a_comprar > 0);
 
-        let texto = `📋 *LISTA DE COMPRAS - ${recetaSeleccionada.label.toUpperCase()}*\n`;
+        let texto = `📋 *LISTA DE COMPRAS - ${(recetaSeleccionada.nombre || recetaSeleccionada.label).toUpperCase()}*\n`;
         texto += `👥 *Comensales:* ${cantidadC}\n`;
         texto += `📅 *Fecha:* ${fechaHoy}\n`;
         texto += `📦 *Cálculo:* ${descontarStock ? "Descontando stock actual en despensa" : "Receta completa sin descontar stock"}\n`;
@@ -216,19 +285,10 @@ const FormCalculadora = ({ recetas = [] }) => {
         window.print();
     };
 
-    // Preparar opciones de recetas enriquecidas para react-select
-    const optionsRecetas = useMemo(() => {
-        return (recetas || []).map((r) => ({
-            ...r,
-            value: r.value || r.id,
-            label: r.label || r.nombre
-        }));
-    }, [recetas]);
-
     return (
         <div className="form-calculadora">
-            {/* Panel Superior: Selección de Receta y Controles */}
-            <div className="card border-0 shadow-sm rounded-4 mb-4 bg-white overflow-hidden">
+            {/* Panel Superior: Selección de Receta y Controles (sin overflow-hidden para no cortar el dropdown) */}
+            <div className="card border-0 shadow-sm rounded-4 mb-4 bg-white" style={{ position: "relative", zIndex: 10 }}>
                 <div className="card-body p-3 p-md-4">
                     <div className="row g-3 align-items-center">
                         {/* Selector de Receta */}
@@ -238,21 +298,46 @@ const FormCalculadora = ({ recetas = [] }) => {
                                 <span>Seleccionar Receta del Menú</span>
                             </label>
                             <Select
-                                value={recetaSeleccionada}
+                                value={
+                                    optionsRecetas.find(
+                                        (o) => String(o.value) === String(recetaSeleccionada?.value ?? recetaSeleccionada?.id)
+                                    ) || null
+                                }
                                 onChange={handleSelectReceta}
                                 options={optionsRecetas}
                                 placeholder="Escribí o seleccioná una receta..."
                                 isClearable
+                                isSearchable
                                 classNamePrefix="react-select"
                                 noOptionsMessage={() => "No se encontraron recetas activas"}
-                                formatOptionLabel={(option) => (
-                                    <div className="d-flex justify-content-between align-items-center py-1">
-                                        <span className="fw-semibold text-dark">{option.label}</span>
-                                        <span className="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-2 py-1 ms-2">
-                                            Rinde {option.cuantos_comen} {option.cuantos_comen === 1 ? "comensal" : "comensales"}
-                                        </span>
-                                    </div>
-                                )}
+                                menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+                                menuPosition="fixed"
+                                formatOptionLabel={(option, { context }) => {
+                                    if (context === "value") {
+                                        return (
+                                            <div className="d-flex align-items-center text-truncate">
+                                                <span className="fw-bold text-dark text-truncate me-2">
+                                                    {option.nombre || option.label}
+                                                </span>
+                                                {option.cuantos_comen ? (
+                                                    <span className="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-2 py-0 small flex-shrink-0">
+                                                        Rinde {option.cuantos_comen}
+                                                    </span>
+                                                ) : null}
+                                            </div>
+                                        );
+                                    }
+                                    return (
+                                        <div className="d-flex justify-content-between align-items-center py-1">
+                                            <span className="fw-semibold text-dark">{option.nombre || option.label}</span>
+                                            {option.cuantos_comen ? (
+                                                <span className="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-2 py-1 ms-2 flex-shrink-0">
+                                                    Rinde {option.cuantos_comen} {option.cuantos_comen === 1 ? "comensal" : "comensales"}
+                                                </span>
+                                            ) : null}
+                                        </div>
+                                    );
+                                }}
                                 styles={{
                                     control: (base, state) => ({
                                         ...base,
@@ -260,6 +345,19 @@ const FormCalculadora = ({ recetas = [] }) => {
                                         borderColor: state.isFocused ? "#2563eb" : "#cbd5e1",
                                         boxShadow: state.isFocused ? "0 0 0 3px rgba(37, 99, 235, 0.15)" : "none",
                                         minHeight: "46px"
+                                    }),
+                                    menuPortal: (base) => ({ ...base, zIndex: 99999 }),
+                                    menu: (base) => ({
+                                        ...base,
+                                        zIndex: 99999,
+                                        borderRadius: "0.65rem",
+                                        boxShadow: "0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1)"
+                                    }),
+                                    singleValue: (base) => ({
+                                        ...base,
+                                        display: "flex",
+                                        alignItems: "center",
+                                        maxWidth: "92%"
                                     })
                                 }}
                             />
@@ -524,7 +622,7 @@ const FormCalculadora = ({ recetas = [] }) => {
                         <div className="d-flex align-items-center gap-2">
                             <h6 className="mb-0 fw-bold text-dark d-flex align-items-center gap-2">
                                 <FaLayerGroup className="text-primary" />
-                                <span>Detalle de Insumos para "{recetaSeleccionada.label}"</span>
+                                <span>Detalle de Insumos para "{recetaSeleccionada.nombre || recetaSeleccionada.label}"</span>
                             </h6>
                             <span className="badge bg-secondary-subtle text-secondary rounded-pill">
                                 {insumosCalculados.length} productos
@@ -552,14 +650,16 @@ const FormCalculadora = ({ recetas = [] }) => {
                                 <span className="d-none d-sm-inline">Imprimir</span>
                             </button>
 
-                            <Link
-                                to="/insumos/nueva_compra"
+                            <button
+                                type="button"
+                                onClick={() => handleRegistrarCompra()}
                                 className="btn btn-sm btn-primary d-flex align-items-center gap-2 fw-semibold shadow-sm"
+                                title="Cargar y rellenar automáticamente la compra en el sistema"
                             >
                                 <FaShoppingCart size={13} />
                                 <span>Registrar Compra</span>
                                 <FaArrowRight size={11} />
-                            </Link>
+                            </button>
                         </div>
                     </div>
 
@@ -577,14 +677,13 @@ const FormCalculadora = ({ recetas = [] }) => {
                                         </th>
                                         <th className="py-3 px-3 text-end text-nowrap">PRECIO UNIT. / PROV.</th>
                                         <th className="py-3 px-3 text-end text-nowrap">SUBTOTAL EST.</th>
-                                        <th className="py-3 px-3 text-center text-nowrap">ESTADO</th>
+                                        <th className="py-3 px-3 text-center text-nowrap">ESTADO / ACCIÓN</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {insumosCalculados.map((item) => {
                                         const tieneStockSuficiente = item.stock_actual >= item.requerido;
                                         const tieneStockParcial = item.stock_actual > 0 && item.stock_actual < item.requerido;
-                                        const sinStock = item.stock_actual <= 0;
 
                                         return (
                                             <tr key={item.insumo_id} className={item.cubierto ? "table-light-subtle" : ""}>
@@ -694,19 +793,34 @@ const FormCalculadora = ({ recetas = [] }) => {
                                                     </span>
                                                 </td>
 
-                                                {/* Estado Badge */}
+                                                {/* Estado Badge y Acción Directa */}
                                                 <td className="py-2 px-3 text-center text-nowrap">
-                                                    {item.cubierto ? (
-                                                        <span className="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-1 fw-semibold">
-                                                            <FaCheckCircle size={10} className="me-1" />
-                                                            Cubierto
-                                                        </span>
-                                                    ) : (
-                                                        <span className="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle rounded-pill px-2 py-1 fw-semibold">
-                                                            <FaShoppingCart size={10} className="me-1" />
-                                                            Comprar
-                                                        </span>
-                                                    )}
+                                                    <div className="d-flex align-items-center justify-content-center gap-2">
+                                                        {item.cubierto ? (
+                                                            <span className="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-1 fw-semibold">
+                                                                <FaCheckCircle size={10} className="me-1" />
+                                                                Cubierto
+                                                            </span>
+                                                        ) : (
+                                                            <span className="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle rounded-pill px-2 py-1 fw-semibold">
+                                                                <FaShoppingCart size={10} className="me-1" />
+                                                                Comprar
+                                                            </span>
+                                                        )}
+
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleRegistrarCompra(item)}
+                                                            className={`btn btn-sm px-2 py-1 rounded-pill d-inline-flex align-items-center gap-1 ${
+                                                                item.cubierto ? "btn-outline-secondary" : "btn-primary"
+                                                            }`}
+                                                            style={{ fontSize: "0.75rem" }}
+                                                            title="Rellenar formulario de compra con este insumo"
+                                                        >
+                                                            <FaShoppingCart size={10} />
+                                                            <span>Cargar</span>
+                                                        </button>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         );
