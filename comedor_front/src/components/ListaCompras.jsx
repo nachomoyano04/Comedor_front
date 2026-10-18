@@ -382,15 +382,16 @@ const ListaCompras = ({ insumos = [], compras = [], onClickDeleteCompra }) => {
             </div>
 
             {/* Tabla de Compras con Ordenamiento Interactivo por Cabecera */}
-            <div className="table-responsive rounded-3 shadow-sm border bg-white">
-                <table className="table table-hover align-middle mb-0">
+            {/* Tabla de Compras con Ordenamiento Interactivo por Cabecera */}
+            <div className="table-responsive rounded-3 shadow-sm border bg-white w-100" style={{ overflowX: "auto" }}>
+                <table className="table table-hover align-middle mb-0 w-100">
                     <thead className="table-dark">
                         <tr>
                             <th
                                 scope="col"
-                                className="user-select-none text-nowrap"
+                                className="user-select-none"
                                 onClick={() => handleSort("producto")}
-                                style={{ cursor: "pointer", minWidth: "150px" }}
+                                style={{ cursor: "pointer", minWidth: "120px" }}
                                 title="Ordenar por Insumo"
                             >
                                 <div className="d-flex align-items-center gap-1">
@@ -400,9 +401,9 @@ const ListaCompras = ({ insumos = [], compras = [], onClickDeleteCompra }) => {
                             </th>
                             <th
                                 scope="col"
-                                className="user-select-none text-nowrap"
+                                className="user-select-none"
                                 onClick={() => handleSort("razon_social")}
-                                style={{ cursor: "pointer", minWidth: "140px" }}
+                                style={{ cursor: "pointer", minWidth: "120px" }}
                                 title="Ordenar por Proveedor"
                             >
                                 <div className="d-flex align-items-center gap-1">
@@ -414,7 +415,7 @@ const ListaCompras = ({ insumos = [], compras = [], onClickDeleteCompra }) => {
                                 scope="col"
                                 className="text-end pe-3 user-select-none text-nowrap"
                                 onClick={() => handleSort("precio_unitario")}
-                                style={{ cursor: "pointer", minWidth: "125px" }}
+                                style={{ cursor: "pointer", minWidth: "110px" }}
                                 title="Ordenar por Precio Unitario"
                             >
                                 <div className="d-flex align-items-center justify-content-end gap-1">
@@ -426,7 +427,7 @@ const ListaCompras = ({ insumos = [], compras = [], onClickDeleteCompra }) => {
                                 scope="col"
                                 className="text-end pe-3 user-select-none text-nowrap"
                                 onClick={() => handleSort("cantidad")}
-                                style={{ cursor: "pointer", minWidth: "105px" }}
+                                style={{ cursor: "pointer", minWidth: "90px" }}
                                 title="Ordenar por Cantidad"
                             >
                                 <div className="d-flex align-items-center justify-content-end gap-1">
@@ -438,7 +439,7 @@ const ListaCompras = ({ insumos = [], compras = [], onClickDeleteCompra }) => {
                                 scope="col"
                                 className="text-end pe-3 user-select-none text-nowrap"
                                 onClick={() => handleSort("total")}
-                                style={{ cursor: "pointer", minWidth: "135px" }}
+                                style={{ cursor: "pointer", minWidth: "115px" }}
                                 title="Ordenar por Total"
                             >
                                 <div className="d-flex align-items-center justify-content-end gap-1">
@@ -450,7 +451,7 @@ const ListaCompras = ({ insumos = [], compras = [], onClickDeleteCompra }) => {
                                 scope="col"
                                 className="text-center user-select-none text-nowrap"
                                 onClick={() => handleSort("fecha_desde")}
-                                style={{ cursor: "pointer", minWidth: "155px" }}
+                                style={{ cursor: "pointer", minWidth: "135px" }}
                                 title="Ordenar por Fecha de Compra"
                             >
                                 <div className="d-flex align-items-center justify-content-center gap-1">
@@ -462,7 +463,7 @@ const ListaCompras = ({ insumos = [], compras = [], onClickDeleteCompra }) => {
                                 scope="col"
                                 className="text-center user-select-none text-nowrap"
                                 onClick={() => handleSort("fecha_vencimiento")}
-                                style={{ cursor: "pointer", minWidth: "145px" }}
+                                style={{ cursor: "pointer", minWidth: "125px" }}
                                 title="Ordenar por Vencimiento"
                             >
                                 <div className="d-flex align-items-center justify-content-center gap-1">
@@ -470,7 +471,7 @@ const ListaCompras = ({ insumos = [], compras = [], onClickDeleteCompra }) => {
                                     {renderSortIcon("fecha_vencimiento")}
                                 </div>
                             </th>
-                            <th scope="col" className="text-center text-nowrap" style={{ width: "70px", minWidth: "70px" }}>
+                            <th scope="col" className="text-center text-nowrap" style={{ width: "55px", minWidth: "55px" }}>
                                 Acciones
                             </th>
                         </tr>
@@ -500,10 +501,10 @@ const ListaCompras = ({ insumos = [], compras = [], onClickDeleteCompra }) => {
 
                                 return (
                                     <tr key={c.id}>
-                                        <td className="fw-semibold text-dark text-nowrap">
+                                        <td className="fw-semibold text-dark">
                                             {c.producto}
                                         </td>
-                                        <td className="text-secondary text-nowrap">
+                                        <td className="text-secondary">
                                             {c.razon_social || <span className="text-muted fst-italic">Sin proveedor</span>}
                                         </td>
                                         <td className="text-end pe-3 font-monospace text-nowrap">
