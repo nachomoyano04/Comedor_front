@@ -247,23 +247,35 @@ export const getPreciosByInsumo = async insumo_id => {
 export const getTodasLasCompras = async () => {
     try {
         const resultado = await api.get(`/precio/historial/todas`);
-        return resultado.data;
-    } catch (error) {
-        if (error.response?.status === 404) {
-            // Fallback resiliente mientras Render compila y despliega el nuevo endpoint
-            try {
-                const resInsumos = await api.get(`/insumos`);
-                const lista = Array.isArray(resInsumos.data) ? resInsumos.data : [];
-                const promesas = lista.map(i => api.get(`/precio/${i.id}`).then(r => r.data).catch(() => []));
-                const resultados = await Promise.all(promesas);
-                const todas = resultados.flat();
-                todas.sort((a, b) => new Date(b.fecha_desde || 0) - new Date(a.fecha_desde || 0));
-                return todas;
-            } catch (fallbackErr) {
-                console.error("Error en fallback de compras:", fallbackErr);
-            }
+        if (Array.isArray(resultado.data)) {
+            return resultado.data;
         }
-        throw error;
+    } catch (error) {
+        if (error.response?.status !== 404) {
+            console.warn("Aviso al consultar /precio/historial/todas:", error.message);
+        }
+    }
+
+    // Fallback resiliente y en lotes controlados mientras Render actualiza el endpoint
+    try {
+        const resInsumos = await api.get(`/insumos`);
+        const lista = Array.isArray(resInsumos.data) ? resInsumos.data : [];
+        
+        const BATCH_SIZE = 15;
+        const resultados = [];
+        for (let i = 0; i < lista.length; i += BATCH_SIZE) {
+            const batch = lista.slice(i, i + BATCH_SIZE);
+            const batchRes = await Promise.all(
+                batch.map(item => api.get(`/precio/${item.id}`).then(r => r.data).catch(() => []))
+            );
+            resultados.push(...batchRes.flat());
+        }
+
+        resultados.sort((a, b) => new Date(b.fecha_desde || 0) - new Date(a.fecha_desde || 0));
+        return resultados;
+    } catch (fallbackErr) {
+        console.error("Error en fallback de compras:", fallbackErr);
+        return [];
     }
 }
 

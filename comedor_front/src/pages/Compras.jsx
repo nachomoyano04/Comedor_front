@@ -15,10 +15,13 @@ const Compras = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        const i = (insumos || []).map(insumo => ({ value: insumo.id, label: insumo.producto }));
+        setIns(i);
+    }, [insumos]);
+
+    useEffect(() => {
         const loadCompras = async () => {
             try {
-                const i = (insumos || []).map(insumo => ({ value: insumo.id, label: insumo.producto }));
-                setIns(i);
                 const c = await getTodasLasCompras();
                 setCompras(Array.isArray(c) ? c : []);
             } catch (err) {
@@ -29,7 +32,7 @@ const Compras = () => {
             }
         };
         loadCompras();
-    }, [insumos]);
+    }, []);
 
     const handleDeleteCompra = async id => {
         const confirmado = await notify.confirm({
