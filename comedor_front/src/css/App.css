@@ -274,3 +274,49 @@
   font-weight: 600;
   border-radius: 0.65rem;
 }
+
+/* ==========================================================================
+   ESTILOS DE IMPRESIÓN (Listas de compras y reportes limpios)
+   ========================================================================== */
+@media print {
+  body {
+    background: #fff !important;
+    color: #000 !important;
+    font-size: 10pt;
+  }
+  .app-sidebar,
+  .app-topbar,
+  .sidebar-backdrop,
+  .no-print,
+  .btn,
+  .form-switch,
+  .input-group button {
+    display: none !important;
+  }
+  .app-content-wrapper {
+    margin: 0 !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    width: 100% !important;
+  }
+  .app-page-body {
+    padding: 0 !important;
+  }
+  .card {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+  .table-responsive {
+    box-shadow: none !important;
+    overflow: visible !important;
+  }
+  .table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+  .table th, .table td {
+    padding: 4px 8px !important;
+    border: 1px solid #dee2e6 !important;
+  }
+}
