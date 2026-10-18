@@ -249,6 +249,20 @@ export const getTodasLasCompras = async () => {
         const resultado = await api.get(`/precio/historial/todas`);
         return resultado.data;
     } catch (error) {
+        if (error.response?.status === 404) {
+            // Fallback resiliente mientras Render compila y despliega el nuevo endpoint
+            try {
+                const resInsumos = await api.get(`/insumos`);
+                const lista = Array.isArray(resInsumos.data) ? resInsumos.data : [];
+                const promesas = lista.map(i => api.get(`/precio/${i.id}`).then(r => r.data).catch(() => []));
+                const resultados = await Promise.all(promesas);
+                const todas = resultados.flat();
+                todas.sort((a, b) => new Date(b.fecha_desde || 0) - new Date(a.fecha_desde || 0));
+                return todas;
+            } catch (fallbackErr) {
+                console.error("Error en fallback de compras:", fallbackErr);
+            }
+        }
         throw error;
     }
 }
