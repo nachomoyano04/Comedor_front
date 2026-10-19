@@ -12,64 +12,6 @@ const formatearMoneda = (monto) => {
     return `$\u00A0${valor}`;
 };
 
-// Formatea string mientras se tipea permitiendo solo números, . para miles y , para decimales
-const formatearPrecioInput = (valorRaw) => {
-    if (valorRaw === "" || valorRaw === null || valorRaw === undefined) return "";
-    let str = String(valorRaw).replace(/[^\d,.]/g, "");
-
-    // Si viene desde la base de datos o prefill con punto decimal (ej: 1500.50), convertirlo a coma
-    if (str.includes(".") && !str.includes(",")) {
-        const partes = str.split(".");
-        if (partes.length === 2 && partes[1].length <= 2) {
-            str = `${partes[0]},${partes[1]}`;
-        }
-    }
-
-    const primerPunto = str.indexOf(".");
-    const primeraComa = str.indexOf(",");
-    let separadorIdx = -1;
-    if (primerPunto !== -1 && primeraComa !== -1) {
-        separadorIdx = Math.min(primerPunto, primeraComa);
-    } else if (primerPunto !== -1) {
-        separadorIdx = primerPunto;
-    } else if (primeraComa !== -1) {
-        separadorIdx = primeraComa;
-    }
-
-    let parteEntera = "";
-    let parteDecimal = "";
-    let tieneSeparador = false;
-
-    if (separadorIdx !== -1) {
-        tieneSeparador = true;
-        parteEntera = str.slice(0, separadorIdx).replace(/\D/g, "");
-        parteDecimal = str.slice(separadorIdx + 1).replace(/\D/g, "").slice(0, 2);
-    } else {
-        parteEntera = str.replace(/\D/g, "");
-    }
-
-    if (!parteEntera && !parteDecimal) {
-        return tieneSeparador ? "0," : "";
-    }
-
-    const enteraFormateada = parteEntera
-        ? Number(parteEntera).toLocaleString("es-AR")
-        : "0";
-
-    if (tieneSeparador) {
-        return `${enteraFormateada},${parteDecimal}`;
-    }
-    return enteraFormateada;
-};
-
-// Convierte string con formato es-AR (1.500,50) a número float (1500.50)
-const desformatearPrecio = (str) => {
-    if (!str && str !== 0) return 0;
-    const limpio = String(str).replace(/\./g, "").replace(",", ".");
-    const num = parseFloat(limpio);
-    return isNaN(num) ? 0 : num;
-};
-
 // Helpers de fecha en formato DD/MM/YY
 const formatearFechaDDMMYY = (yyyy, mm, dd) => {
     const yy = String(yyyy).slice(-2);
@@ -139,9 +81,6 @@ const FormCompra = ({
     const [horaInput, setHoraInput] = useState(inicialPartes.hora);
     const [fechaISOPicker, setFechaISOPicker] = useState(inicialPartes.fechaISO);
 
-    // Estado para precio unitario visible con formato argentino
-    const [precioUnitarioInput, setPrecioUnitarioInput] = useState("");
-
     // Efecto de inicialización y pre-relleno automático
     useEffect(() => {
         if (!prefillData) {
@@ -186,9 +125,6 @@ const FormCompra = ({
             setFechaISOPicker(partesFecha.fechaISO);
         }
 
-        const precioFormatted = precioUnit > 0 ? formatearPrecioInput(precioUnit) : "";
-        setPrecioUnitarioInput(precioFormatted);
-
         setFormData((prev) => ({
             ...prev,
             insumo_id: insumoId,
@@ -205,33 +141,6 @@ const FormCompra = ({
             setUdmInsumoActual(udm.find((u) => u.id == insumoObj.id_udm) || "");
         }
     }, [prefillData, insumos, proveedores, udm]);
-
-    // Manejo de escritura en precio unitario (solo números, . y ,)
-    const handlePrecioKeyDown = (e) => {
-        const permitidas = ["Backspace", "Delete", "Tab", "ArrowLeft", "ArrowRight", "Home", "End", "Enter"];
-        if (permitidas.includes(e.key) || e.ctrlKey || e.metaKey) return;
-        // Impedir cualquier tecla que no sea número, coma o punto
-        if (!/[\d,.]/.test(e.key)) {
-            e.preventDefault();
-        }
-    };
-
-    const handlePrecioChange = (e) => {
-        const raw = e.target.value;
-        const formateado = formatearPrecioInput(raw);
-        setPrecioUnitarioInput(formateado);
-
-        const precioNum = desformatearPrecio(formateado);
-        setFormData((prev) => {
-            const cantidad = parseFloat(prev.cantidad) || 0;
-            const precioTotal = (cantidad * precioNum).toFixed(2);
-            return {
-                ...prev,
-                precio_unitario: precioNum,
-                precio_total: precioTotal
-            };
-        });
-    };
 
     // Manejo de escritura manual en input DD/MM/YY
     const handleFechaInputChange = (e) => {
@@ -265,9 +174,13 @@ const FormCompra = ({
     // Abrir selector nativo de calendario al hacer clic en el botón
     const handleOpenCalendar = () => {
         if (datePickerRef.current) {
-            if (typeof datePickerRef.current.showPicker === "function") {
-                datePickerRef.current.showPicker();
-            } else {
+            try {
+                if (typeof datePickerRef.current.showPicker === "function") {
+                    datePickerRef.current.showPicker();
+                } else {
+                    datePickerRef.current.focus();
+                }
+            } catch {
                 datePickerRef.current.focus();
             }
         }
@@ -302,9 +215,9 @@ const FormCompra = ({
             const { name, value } = e.target;
             setFormData((prev) => {
                 const formUpdated = { ...prev, [name]: value };
-                if (name === "cantidad") {
+                if (name === "cantidad" || name === "precio_unitario") {
                     const cantidad = parseFloat(String(formUpdated.cantidad).replace(",", ".")) || 0;
-                    const precioUnit = parseFloat(formUpdated.precio_unitario) || 0;
+                    const precioUnit = parseFloat(String(formUpdated.precio_unitario).replace(",", ".")) || 0;
                     formUpdated.precio_total = (cantidad * precioUnit).toFixed(2);
                 }
                 return formUpdated;
@@ -327,7 +240,6 @@ const FormCompra = ({
         setFechaInput(partes.fechaDDMMYY);
         setHoraInput(partes.hora);
         setFechaISOPicker(partes.fechaISO);
-        setPrecioUnitarioInput("");
         setFormData({
             insumo_id: "",
             proveedor_id: "",
@@ -344,7 +256,7 @@ const FormCompra = ({
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const precioUnitarioNum = parseFloat(formData.precio_unitario) || desformatearPrecio(precioUnitarioInput);
+        const precioUnitarioNum = parseFloat(String(formData.precio_unitario).replace(",", "."));
         const cantidadNum = parseFloat(String(formData.cantidad).replace(",", "."));
 
         if (!formData.insumo_id || !formData.proveedor_id) {
@@ -432,7 +344,7 @@ const FormCompra = ({
                 />
             </div>
 
-            {/* Precio Unitario con $ y formato es-AR (. miles, , decimales) */}
+            {/* Precio Unitario Simple y Limpio (sin auto-formateo raro que salte la coma) */}
             <div className="col-md-4">
                 <label className="form-label fw-semibold">
                     Precio unitario{" "}
@@ -442,16 +354,21 @@ const FormCompra = ({
                     <span className="input-group-text fw-bold text-secondary bg-light">$</span>
                     <input
                         name="precio_unitario"
-                        onChange={handlePrecioChange}
-                        onKeyDown={handlePrecioKeyDown}
-                        value={precioUnitarioInput}
-                        type="text"
-                        inputMode="decimal"
-                        placeholder="0,00"
+                        onChange={handleChange}
+                        value={formData.precio_unitario}
+                        type="number"
+                        step="any"
+                        min="0"
+                        placeholder="Ej: 1500.50"
                         className="form-control fw-semibold"
                         required
                     />
                 </div>
+                {Number(formData.precio_unitario) > 0 && (
+                    <small className="text-muted d-block mt-1">
+                        Formato: <span className="fw-semibold text-dark">{formatearMoneda(formData.precio_unitario)}</span>
+                    </small>
+                )}
             </div>
 
             {/* Fecha de Compra en formato DD/MM/YY + Hora */}
@@ -463,7 +380,7 @@ const FormCompra = ({
                     </span>
                 </label>
                 <div className="input-group">
-                    {/* Campo de fecha visible DD/MM/YY */}
+                    {/* Campo de fecha visible DD/MM/YY para tipeo directo */}
                     <input
                         type="text"
                         className="form-control text-center font-monospace fw-semibold"
@@ -490,7 +407,7 @@ const FormCompra = ({
                         type="date"
                         value={fechaISOPicker}
                         onChange={handlePickerDateChange}
-                        style={{ position: "absolute", width: "1px", height: "1px", opacity: 0, pointerEvents: "none", bottom: 0 }}
+                        style={{ position: "absolute", width: "1px", height: "1px", opacity: 0, bottom: 0 }}
                         tabIndex={-1}
                     />
 
